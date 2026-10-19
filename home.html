@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="fonts/fonts.css">
+<script>
+// start loading every face the page uses straight away, and let the page wait for exactly these before measuring anything
+window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satoshi', 'italic 400 16px Satoshi', '500 16px Satoshi', '700 16px Satoshi',
+  '400 16px "Bricolage Grotesque"', '500 16px "Bricolage Grotesque"'].map(f => document.fonts.load(f).catch(() => {}))).then(() => document.fonts.ready) : Promise.resolve();
+</script>
+<title>Cover preview</title>
+<!-- load the hero visuals first so nothing pops in -->
+<link rel="preload" as="image" href="board2-export.png" fetchpriority="high">
+<link rel="preload" as="image" href="knight-fig-src.png" fetchpriority="high">
+<link rel="preload" as="image" href="knight-light-src.png">
+<script>try { const t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<style>
+  /* two themes: dark (the Figma design) and light. Everything colour-related reads these. */
+  :root { --bg: #010707; --bgrgb: 1,7,7; --ink: #f2f2f2; --ink2: #fff; --hook: #e4e4e4; --blue: #729FC3;
+          --hi: 255,255,255; --hiA: 1; --shA: 1; --logoF: contrast(1); --sel: #d5d5d5; color-scheme: dark; }
+  :root[data-theme="light"] { --bg: #f4f6f6; --bgrgb: 244,246,246; --ink: #010707; --ink2: #0d1515; --hook: #010707; --blue: #4f7fa8;
+          --hi: 1,7,7; --hiA: .38; --shA: .28; --logoF: invert(1) hue-rotate(180deg); --sel: #2a3232; color-scheme: light; }
+  /* smooth switch between themes */
+  @view-transition { navigation: auto; }
+  .nav { view-transition-name: site-nav; } .logo { view-transition-name: site-logo; } .themeBtn { view-transition-name: site-theme; }
+  ::view-transition-group(site-nav), ::view-transition-group(site-logo), ::view-transition-group(site-theme) { animation: none; }
+  ::view-transition-old(site-nav), ::view-transition-old(site-logo), ::view-transition-old(site-theme) { display: none; }
+  ::view-transition-new(site-nav), ::view-transition-new(site-logo), ::view-transition-new(site-theme) { animation: none; }
+  ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .7s; animation-timing-function: cubic-bezier(.4,0,.2,1); }
+  * { box-sizing: border-box; font-synthesis: none; }
+  html, body { margin: 0; background: var(--bg); overflow-x: hidden; }
+  body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  /* 1440 × 2000 Figma frame "Home 1", scaled to the window width for previewing */
+  .stage { width: 1440px; height: 5022px; position: relative; overflow: hidden; background: var(--bg); transform-origin: top left; }
+  .abs { position: absolute !important; }
+
+  /* nav */
+  .logo { left: 120px; top: 32px; width: 48px; height: 48px; border-radius: 40px; }
+  .logo img { filter: var(--logoF); position: absolute; left: 6.84px; top: 14.76px; width: 34.32px; height: 18.48px; display: block; }
+  .nav { left: 841px; top: 32px; display: flex; gap: 20px; align-items: center; }
+  .nav a { font-family: 'Satoshi', sans-serif; font-weight: 400; font-size: 14px; line-height: 19px; letter-spacing: 0.28px;
+           color: var(--ink); padding: 14px 20px; border-radius: 50px; text-decoration: none; white-space: nowrap;
+           display: flex; align-items: center; gap: 10px; transition: background .25s; }
+  .nav a.glass:hover { background: linear-gradient(135deg, rgba(var(--hi), calc(0.12 * var(--hiA))), rgba(var(--hi), calc(0.17 * var(--hiA)))); }
+  /* "Get In Touch": blue #729FC3 at 40% under the glass */
+  /* the page you're on: brighter glass (22% instead of 10%) */
+  .nav a.glass.current { background: rgba(var(--hi), calc(0.22 * var(--hiA))); }
+  :root[data-theme="light"] .nav a.glass.current { background: rgba(1,7,7,0.09); }
+  .nav a.cta { font-weight: 500; background: rgba(114,159,195,0.4); }
+  :root[data-theme="light"] .nav a.cta { background: rgba(79,127,168,0.4); }
+  .nav a.cta:hover { background: rgba(114,159,195,0.52); }
+  .nav a.cta svg { width: 16px; height: 16px; display: block; }
+
+  /* heading */
+  .hero { left: 310px; top: 232px; width: 820.4px; height: 100px; display: flex; align-items: center; justify-content: center; padding: 0 13.2px; }
+  .hero p { margin: 0; font-family: 'Satoshi', sans-serif; font-weight: 700; font-size: 73.92px; line-height: 1.35; letter-spacing: 1.4784px;
+            color: var(--ink); white-space: pre; }
+  .inf { left: 785.2px; top: 261.68px; width: 79.89px; height: 66.89px; }
+  .inf img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .sub { left: 0; top: 340px; width: 1440px; height: 43px; display: flex; justify-content: center; align-items: flex-start; gap: 12px;
+         padding-left: var(--subShift, 0px); }   /* centred like Figma's line; --subShift fine-tunes it onto Figma's exact centre */
+  .sub p { position: relative; flex: none; }
+  .sub .logos { position: relative; flex: none; width: 246.96px; height: 43px; }
+  .sub .logos img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  .sub p { margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 400; font-size: 32px; line-height: 43.2px; color: var(--ink2); white-space: pre; }
+  .sub p b { font-weight: 500; color: var(--blue); }
+  /* vertical carousel: a one-line window (as wide as "Critical Thinker", so the rest of the line never moves);
+     words slide up from below with a soft spring. The first word is repeated at the end so the loop has no jump. */
+  .rot { display: inline-block; height: 43.2px; transition: width 1.05s cubic-bezier(.42, 0, .18, 1);  overflow: hidden; vertical-align: top; }
+  .rotList { display: flex; flex-direction: column; align-items: flex-end; will-change: transform; }
+  .rotList.moving { transition: transform 1.05s cubic-bezier(.42, 0, .18, 1.07); }
+  .rot b { display: block; height: 43.2px; white-space: pre; }
+  .tag { left: 356.5px; top: 519px; width: 719px; height: 32px; padding-left: 10px; margin: 0;
+         font-family: 'Satoshi', sans-serif; font-weight: 300; font-size: 24px; line-height: 32.4px; color: var(--ink); white-space: nowrap; }
+
+  /* board "image 12" (exported from Figma with its filters), and Figma's two fade rectangles */
+  /* light theme uses the same board, reversed: light tiles, soft seams */
+  .board.light { opacity: 0; }
+  :root[data-theme="light"] .board.light { opacity: 1; }
+  :root[data-theme="light"] .board.dark { opacity: 0; }
+  /* theme switch: round glass button just left of the nav */
+  .themeBtn { left: 774px; top: 32px; width: 47px; height: 47px; border-radius: 50%; border: 0; padding: 0; cursor: pointer;
+              display: grid; place-items: center; color: var(--ink); }
+  .themeBtn svg { width: 18px; height: 18px; grid-area: 1 / 1; transition: opacity .5s ease, transform .6s cubic-bezier(.3,.7,.2,1); }
+  .themeBtn .moon { opacity: 0; transform: rotate(-70deg) scale(.6); }
+  :root[data-theme="light"] .themeBtn .sun { opacity: 0; transform: rotate(70deg) scale(.6); }
+  :root[data-theme="light"] .themeBtn .moon { opacity: 1; transform: none; }
+  .themeBtn:hover { background: linear-gradient(135deg, rgba(var(--hi), calc(0.12 * var(--hiA))), rgba(var(--hi), calc(0.17 * var(--hiA)))); }
+  .themeBtn:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  .board { left: 0; top: 774px; width: 1440px; height: 414px; display: block; }
+  /* Rectangle 4: background colour → transparent, blurred 8px — melts the board's top edge */
+  .fadeTop { left: -7px; top: 768px; width: 1441px; height: 95px; pointer-events: none; filter: blur(8px);
+             background: linear-gradient(to bottom, rgb(var(--bgrgb)) 22.1%, rgba(var(--bgrgb), 0) 100%); }
+  /* Rectangle 5: sits above the board AND the knight's foot, fading everything into the page below */
+  .fadeBottom { left: 0; top: 1023px; width: 1441px; height: 281px; pointer-events: none; filter: blur(8px);
+             background: linear-gradient(to bottom, rgba(var(--bgrgb), .4) 10.1%, rgb(var(--bgrgb)) 55.3%); }
+
+  /* knight "final 1": 229.78 × 344.67 rotated 0.525°, inside a 232.93 × 346.76 box at (604, 620.00) — Figma reports the rotated corner at y 622.10 */
+  .rig { left: 599px; top: 662px; width: 232.93px; height: 346.76px; will-change: transform, opacity; opacity: 0; transform-origin: 50% 58%; }
+  .rig .inner { position: absolute; left: 1.575px; top: 1.045px; width: 229.78px; height: 344.67px; transform: rotate(-0.525deg); }
+  /* the 3D turn, drawn with real transparency; placed on the knight's box inside the 1024×1536 source image */
+  .rig canvas { position: absolute; left: 41.74px; top: 17.05px; width: 145.41px; height: 308.76px; display: block; }
+  /* your exact Figma knight, faded in over the last moment of the settle so the resting knight is pixel-for-pixel the design */
+  .rig .still { position: absolute; inset: 0; opacity: 0; }
+  .rig .still img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+  .forLight { display: none !important; }
+  :root[data-theme="light"] .forLight { display: block !important; }
+  :root[data-theme="light"] .forDark { display: none !important; }
+  /* light mode: the turning knight gets the same colour change as your light-mode knight in Figma */
+  :root[data-theme="light"] .rig canvas { filter: url(#knightLight); }
+  :root[data-theme="light"] .dot { display: none; }
+  /* light mode glass, as in your Figma light frame: a soft 4% fill, barely-there rim */
+  :root[data-theme="light"] .glass, :root[data-theme="light"] .chip { background: rgba(1,7,7,0.04); }
+  :root[data-theme="light"] .glass::before { opacity: .25; }
+  :root[data-theme="light"] .nav a.cta { background: rgba(79,127,168,0.4); }
+  :root[data-theme="light"] .nav a.glass:hover, :root[data-theme="light"] .themeBtn:hover { background: rgba(1,7,7,0.07); }
+  :root[data-theme="light"] .chip.ready:hover { background: rgba(1,7,7,0.06); }
+  #turn { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
+
+  /* Figma "Glass": frosted blur behind, faint fill, thin bright rim (top-left / bottom-right glints), faint inner glow */
+  .glass { position: relative; isolation: isolate;
+    background: linear-gradient(135deg, rgba(var(--hi), calc(0.085 * var(--hiA))) 0%, rgba(var(--hi), calc(0.10 * var(--hiA))) 55%, rgba(var(--hi), calc(0.13 * var(--hiA))) 100%);
+    -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
+  .glass::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+    background: conic-gradient(from 0deg,
+      rgba(var(--hi), calc(.37 * var(--hiA))) 0deg, rgba(var(--hi), calc(.37 * var(--hiA))) calc(var(--c,72deg) + 0.5deg),
+      rgba(var(--hi), calc(.03 * var(--hiA))) calc(var(--c,72deg) + 6deg), rgba(var(--hi), calc(.03 * var(--hiA))) calc(var(--c,72deg) + 11deg),
+      rgba(var(--hi), calc(.28 * var(--hiA))) 90deg, rgba(var(--hi), calc(.30 * var(--hiA))) calc(180deg - var(--c,72deg) - 12deg),
+      rgba(var(--hi), calc(.50 * var(--hiA))) calc(180deg - var(--c,72deg) - 7deg), rgba(var(--hi), calc(.50 * var(--hiA))) calc(180deg - var(--c,72deg) - 2deg),
+      rgba(var(--hi), calc(.25 * var(--hiA))) calc(180deg - var(--c,72deg) + 3deg), rgba(var(--hi), calc(.25 * var(--hiA))) calc(180deg + var(--c,72deg) - 3deg),
+      rgba(var(--hi), calc(.03 * var(--hiA))) calc(180deg + var(--c,72deg) + 5deg), rgba(var(--hi), calc(.03 * var(--hiA))) calc(180deg + var(--c,72deg) + 11deg),
+      rgba(var(--hi), calc(.42 * var(--hiA))) 270deg,
+      rgba(var(--hi), calc(.75 * var(--hiA))) calc(360deg - var(--c,72deg) - 10deg), rgba(var(--hi), calc(.75 * var(--hiA))) calc(360deg - var(--c,72deg) - 5deg),
+      rgba(var(--hi), calc(.37 * var(--hiA))) calc(360deg - var(--c,72deg) - 0.5deg), rgba(var(--hi), calc(.37 * var(--hiA))) 360deg);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+  .glass::after { content: ""; position: absolute; inset: 1px; border-radius: inherit; pointer-events: none;
+    box-shadow: inset -1px -1.5px 2px rgba(var(--hi), calc(0.07 * var(--hiA))); }
+
+  /* chips (the strengths): fill is 5% white in the new frame */
+  .chip { height: 46px; padding: 12px 16px; border-radius: 50px; display: flex; align-items: center; justify-content: center;
+          font-family: 'Satoshi', sans-serif; font-size: 16px; line-height: 22px; letter-spacing: 0.32px; color: var(--ink); white-space: pre;
+          background: linear-gradient(135deg, rgba(var(--hi), calc(0.04 * var(--hiA))), rgba(var(--hi), calc(0.065 * var(--hiA))));
+          opacity: 0; transform: translateY(10px); filter: blur(4px);
+          transition: box-shadow .35s ease, transform .35s ease, background .35s ease; cursor: default; }
+  .chip.in { animation: chipIn 1.7s cubic-bezier(.25,.6,.3,1) forwards; }
+  .chip.ready { opacity: 1; transform: none; filter: none; }
+  @keyframes chipIn { from { opacity: 0; transform: translateY(12px); filter: blur(6px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
+  /* light from the top-right → shadow falls down-left; a second, softer, larger shadow behind it */
+  .chip.ready:hover { transform: translate(1px, -2px); background: linear-gradient(135deg, rgba(var(--hi), calc(0.09 * var(--hiA))), rgba(var(--hi), calc(0.13 * var(--hiA))));
+    box-shadow: -4px 6px 10px rgba(0,0,0, calc(0.55 * var(--shA))), -12px 18px 32px rgba(0,0,0, calc(0.35 * var(--shA))), inset -1px 1px 0 rgba(var(--hi), calc(0.22 * var(--hiA))); }
+  .chip .arrow { position: absolute; left: 30px; top: 18px; width: 18.45px; height: 9px; }
+  /* two faint grey dots sitting behind the "0 → 1 Builder" chip in Figma */
+  .dot { width: 16px; height: 16px; border-radius: 50%; background: rgba(91,91,91,.3); opacity: 0; }
+
+  /* logo band: full width, drifting slowly to the left forever; the edges are darkened and softly blurred */
+  .band { left: 0; top: 1337.74px; width: 1440px; height: 76px; overflow: hidden; }
+  .bandTrack { display: flex; width: max-content; height: 100%; animation: bandRun 60s linear infinite; will-change: transform; }
+  .bandSet { display: flex; align-items: center; gap: 54px; padding-right: 54px; height: 100%; }
+  .bandSet img { display: block; flex: none; }
+  @keyframes bandRun { to { transform: translateX(-50%); } }
+  .bandEdge { position: absolute; top: 0; bottom: 0; width: 240px; pointer-events: none;
+    -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
+  .bandEdge.left  { left: 0;  background: linear-gradient(to right, rgb(var(--bgrgb)) 0%, rgba(var(--bgrgb), .8) 35%, rgba(var(--bgrgb), 0) 100%);
+    -webkit-mask: linear-gradient(to right, #000 30%, transparent); mask: linear-gradient(to right, #000 30%, transparent); }
+  .bandEdge.right { right: 0; background: linear-gradient(to left, rgb(var(--bgrgb)) 0%, rgba(var(--bgrgb), .8) 35%, rgba(var(--bgrgb), 0) 100%);
+    -webkit-mask: linear-gradient(to left, #000 30%, transparent); mask: linear-gradient(to left, #000 30%, transparent); }
+  @media (prefers-reduced-motion: reduce) { .bandTrack { animation: none; } }
+  /* "6 sectors. 2+ years. 5 enterprise clients." — numbers in Bricolage, words in Satoshi */
+  .stats { left: 120px; top: 1227px; width: 1201px; margin: 0; text-align: center; white-space: pre; font-family: 'Satoshi', sans-serif; font-weight: 400;
+           font-size: 52px; line-height: 86px; letter-spacing: 1.04px; color: var(--hook); }
+  .stats b { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500; font-size: 64px; letter-spacing: 1.28px; }
+  .stats i { font-style: normal; font-weight: 500; font-size: 64px; letter-spacing: 1.28px; }   /* the spaces are Satoshi Medium in Figma */
+  .stats i.s { font-size: 52px; letter-spacing: 1.04px; }
+  .selected { left: 120px; top: 1521px; width: 1198px; margin: 0; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500;
+              font-size: 44px; line-height: 1.35; letter-spacing: .88px; color: var(--sel); }
+  /* placeholders for the six case studies and the footer, as in Figma */
+  .card { width: 566px; height: 657px; background: #d9d9d9; }
+  .recs { left: 120px; top: 3939px; width: 1200px; margin: 0; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500;
+          font-size: 44px; line-height: 1.35; letter-spacing: .88px; color: var(--sel); }
+  .recBlock { left: 120px; top: 4048px; width: 1200px; height: 503px; background: #d9d9d9; }   /* placeholder, as in Figma */
+  :root { --exHead: #f2f2f2; --exBody: rgba(217,217,217,.85); --exDate: #787878; --rule: linear-gradient(90deg, #1a1a1a, #343434 51%, #1a1a1a);
+          --foot: #111111; --footInk: #747474; --footIcon: #454545; --footFine: #323131; }
+  :root[data-theme="light"] { --exHead: #0d1515; --exBody: rgba(13,21,21,.85); --exDate: #6f7777; --rule: linear-gradient(90deg, #e3e6e6, #c6cbcb 51%, #e3e6e6);
+          --foot: #e9ecec; --footInk: #6b7272; --footIcon: #9aa1a1; --footFine: #a7adad; }
+  /* prev / next: the same blue glass pills as "Get In Touch" */
+  .pager { left: 120px; top: 3226.71px; width: 1201px; display: flex; justify-content: space-between; }
+  .pager a { height: 56.28px; padding: 14px 20px; border-radius: 50px; display: flex; align-items: center; text-decoration: none; color: var(--ink);
+             font-family: 'Satoshi', sans-serif; font-weight: 400; font-size: 16px; line-height: 22px; letter-spacing: .32px; background: rgba(114,159,195,0.4); transition: background .3s ease; }
+  .pager a b { font-weight: 500; }
+  .pager a:hover { background: rgba(114,159,195,0.52); }
+  .pager a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  :root[data-theme="light"] .pager a { background: rgba(79,127,168,0.4); }
+  .pager svg { width: 28.28px; height: 20px; display: block; flex: none; overflow: visible; }   /* Figma: 28.28px between padding and text */
+  /* footer (Figma "Frame 117") */
+  .foot { left: 0; top: 3442.99px; width: 1440px; height: 295px; background: var(--foot); }
+  .foot .reach { position: absolute; left: 0; width: 1440px; top: 57px; margin: 0; text-align: center; font-family: 'Satoshi', sans-serif; font-weight: 500;
+                 font-size: 18px; line-height: 24px; letter-spacing: .36px; color: var(--footInk); }
+  .foot .icons { position: absolute; left: 634.15px; top: 103px; width: 171.7px; height: 35.35px; display: block; }
+  .foot .icons a { fill: var(--footIcon); transition: fill .25s ease; }
+  .foot .icons a:hover { fill: var(--footInk); }
+  .foot .fine { position: absolute; left: 0; width: 1440px; top: 212.35px; margin: 0; display: flex; justify-content: center; align-items: center; gap: 8px;
+                font-family: 'Satoshi', sans-serif; font-weight: 500; font-size: 14px; line-height: 19px; letter-spacing: .28px; color: var(--footFine); }
+  .foot .fine svg { width: 16px; height: 16px; display: block; fill: var(--footFine); }
+
+  .hook { left: 141.2px; top: 1137px; width: 1165.6px; margin: 0; font-family: 'Satoshi', sans-serif; font-weight: 500; font-size: 64px;
+          line-height: 1.35; letter-spacing: 1.28px; color: var(--hook); }
+
+  /* everything starts hidden; the script reveals it */
+  .pre { opacity: 0; }
+</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="knightLight" color-interpolation-filters="sRGB"><feComponentTransfer>
+<feFuncR type="table" tableValues="0.0000 0.0530 0.1060 0.1591 0.2121 0.2651 0.3181 0.3711 0.4247 0.4622 0.4780 0.5114 0.5443 0.5737 0.6027 0.6299 0.6540 0.6762 0.6973 0.7180 0.7368 0.7540 0.7705 0.7847 0.8000 0.8114 0.8225 0.8383 0.8462 0.8599 0.8660 0.8788 0.8827 0.8971 0.8987 0.9091 0.9192 0.9236 0.9329 0.9387 0.9465 0.9490 0.9569 0.9609 0.9661 0.9727 0.9767 0.9806 0.9843 0.9847 0.9885 0.9895 0.9926 0.9961 0.9964 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000"/>
+<feFuncG type="table" tableValues="0.0000 0.0493 0.0986 0.1479 0.1972 0.2465 0.2958 0.3451 0.3945 0.4498 0.4853 0.5113 0.5430 0.5743 0.6045 0.6313 0.6564 0.6796 0.7014 0.7212 0.7400 0.7579 0.7739 0.7885 0.8040 0.8162 0.8303 0.8422 0.8501 0.8608 0.8721 0.8828 0.8927 0.8957 0.9096 0.9138 0.9222 0.9274 0.9348 0.9421 0.9484 0.9541 0.9607 0.9608 0.9687 0.9728 0.9766 0.9805 0.9845 0.9846 0.9884 0.9885 0.9924 0.9931 0.9963 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000"/>
+<feFuncB type="table" tableValues="0.0000 0.0483 0.0965 0.1448 0.1930 0.2414 0.2897 0.3379 0.3862 0.4345 0.4745 0.5183 0.5444 0.5761 0.6058 0.6346 0.6603 0.6844 0.7075 0.7280 0.7469 0.7663 0.7819 0.7976 0.8134 0.8241 0.8389 0.8487 0.8620 0.8718 0.8855 0.8911 0.8975 0.9096 0.9135 0.9239 0.9266 0.9369 0.9422 0.9487 0.9522 0.9607 0.9661 0.9687 0.9726 0.9765 0.9805 0.9819 0.9845 0.9882 0.9885 0.9924 0.9925 0.9963 0.9963 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000"/>
+</feComponentTransfer></filter></svg>
+<div id="shell"><div class="stage" id="stage">
+<script>(() => { const s = innerWidth / 1440, st = document.getElementById('stage'); st.style.transform = `scale(${s})`; document.getElementById('shell').style.height = 5022 * s + 'px'; })();</script>
+
+  <div class="hero abs pre" id="hero"><p>Hello, I’m Ap    rva B S</p></div>
+  <div class="inf abs pre" id="inf"><img class="forDark" src="inf-t@4x.png" alt=""><img class="forLight" src="inf-light@4x.png" alt=""></div>
+  <div class="sub abs pre" id="sub"><p><span class="rot" aria-label="Critical Thinker, Behavior-Led, Engineer-Mind, Strategic Designer"><span class="rotList" id="rotList" aria-hidden="true"><b>Critical Thinker</b><b>Behavior-Led</b><b>Engineer-Mind</b><b>Strategic Designer</b><b>Critical Thinker</b></span></span> previously at</p><span class="logos"><img class="forDark" src="logos2-dark@4x.png" alt="Deloitte & Jar"><img class="forLight" src="logos2-light@4x.png" alt="Deloitte & Jar"></span></div>
+  <p class="tag abs pre" id="tag">Knights see the invisible, at every move. Click below to discover how.</p>
+
+  <div class="abs pre" id="boardWrap" style="left:0;top:0;width:1440px;height:1240px;pointer-events:none">
+    <img class="board dark abs" src="board2-export.png" alt="" fetchpriority="high">
+    <img class="board light abs" src="board3-light.png" alt="">
+    <div class="fadeTop abs"></div>
+  </div>
+
+  <div class="rig abs" id="rig"><div class="inner"><canvas id="turnCanvas" width="648" height="1374"></canvas><div class="still" id="still"><img class="forDark" src="knight-fig-src.png" alt="Glass knight chess piece"><img class="forLight" src="knight-light-src.png" alt="Glass knight chess piece"></div></div></div>
+  <video id="turn" src="turn-v12.mp4" muted playsinline preload="auto"></video>
+
+  <button class="themeBtn glass abs" id="themeBtn" style="--c:0.00deg" type="button" aria-label="Switch to light theme">
+    <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
+    <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M20.2 14.6A8.4 8.4 0 0 1 9.4 3.8a8.4 8.4 0 1 0 10.8 10.8Z"/></svg>
+  </button>
+  <a class="logo abs" id="logo" href="home.html"><img src="logo-t@4x.png" alt="Logo — home"></a>
+  <nav class="nav abs" id="nav">
+    <a style="--c:33.41deg" href="home.html" class="glass current" aria-current="page">Home</a><a style="--c:34.25deg" href="about.html" class="glass">About</a><a style="--c:54.13deg" href="playground.html" class="glass">Playground</a>
+    <a style="--c:65.47deg" href="#" class="glass cta">Get In Touch
+      <svg viewBox="0 0 16 16"><path d="M0 8C0 10.1217 0.842855 12.1566 2.34315 13.6569C3.84344 15.1571 5.87827 16 8 16C10.1217 16 12.1566 15.1571 13.6569 13.6569C15.1571 12.1566 16 10.1217 16 8C16 5.87827 15.1571 3.84344 13.6569 2.34315C12.1566 0.842855 10.1217 0 8 0C5.87827 0 3.84344 0.842855 2.34315 2.34315C0.842855 3.84344 0 5.87827 0 8ZM5.904 10.803C5.85788 10.8508 5.8027 10.8888 5.7417 10.9151C5.6807 10.9413 5.61509 10.955 5.5487 10.9556C5.48231 10.9562 5.41647 10.9436 5.35502 10.9184C5.29357 10.8933 5.23775 10.8561 5.1908 10.8092C5.14386 10.7623 5.10673 10.7064 5.08159 10.645C5.05645 10.5835 5.0438 10.5177 5.04437 10.4513C5.04495 10.3849 5.05874 10.3193 5.08495 10.2583C5.11115 10.1973 5.14924 10.1421 5.197 10.096L9.293 6H6.525C6.39239 6 6.26521 5.94732 6.17145 5.85355C6.07768 5.75979 6.025 5.63261 6.025 5.5C6.025 5.36739 6.07768 5.24021 6.17145 5.14645C6.26521 5.05268 6.39239 5 6.525 5H10.5C10.6326 5 10.7598 5.05268 10.8536 5.14645C10.9473 5.24021 11 5.36739 11 5.5V9.475C11 9.60761 10.9473 9.73479 10.8536 9.82855C10.7598 9.92232 10.6326 9.975 10.5 9.975C10.3674 9.975 10.2402 9.92232 10.1464 9.82855C10.0527 9.73479 10 9.60761 10 9.475V6.707L5.904 10.803Z" fill="currentColor"/></svg>
+    </a>
+  </nav>
+
+  <!-- the strengths, listed left → right (the order they appear) -->
+  <div class="chip glass abs" style="left:426px;top:769px;width:118px">Data Driven</div>
+  <div class="chip glass abs" style="left:447px;top:660px;width:131px">Design Sense</div>
+  <div class="chip glass abs" style="left:641px;top:581px;width:154px">Product Strategy</div>
+  <div class="chip glass abs" style="left:848px;top:660px;width:129px">0     1 Builder<svg class="arrow" viewBox="0 0 18.45 9"><path d="M0 5.4H13.05V9L18.45 4.5L13.05 0V3.6H0V5.4Z" fill="currentColor" fill-opacity="0.8"/></svg></div>
+  <div class="chip glass abs" style="left:888px;top:769px;width:111px">AI Forward</div>
+
+  <div class="fadeBottom abs pre" id="fadeBottom"></div>
+  <!-- running band of logos, in the order of the Figma row -->
+  <div class="band abs" role="region" aria-label="Where I have worked">
+    <div class="bandTrack"><div class="bandSet"><img class="forDark" src="band2/tata.png" alt="Tata Motors Finance" style="width:183.75px;height:35.5px"><img class="forLight" src="band2-light/tata.png" alt="" style="width:183.75px;height:35.5px"><img class="forDark" src="band2/agco.png" alt="AGCO" style="width:134px;height:50.25px"><img class="forLight" src="band2-light/agco.png" alt="" style="width:134px;height:50.25px"><img class="forDark" src="band2/everest.png" alt="everest" style="width:136px;height:48.75px"><img class="forLight" src="band2-light/everest.png" alt="" style="width:136px;height:48.75px"><img class="forDark" src="band2/techm.png" alt="Tech Mahindra" style="width:145px;height:37px"><img class="forLight" src="band2-light/techm.png" alt="" style="width:145px;height:37px"><img class="forDark" src="band2/google.png" alt="Google" style="width:141.5px;height:45px"><img class="forLight" src="band2-light/google.png" alt="" style="width:141.5px;height:45px"><img class="forDark" src="band2/emblem.png" alt="The New India Assurance" style="width:61.5px;height:61.5px"><img class="forLight" src="band2-light/emblem.png" alt="" style="width:61.5px;height:61.5px"></div><div class="bandSet" aria-hidden="true"><img class="forDark" src="band2/tata.png" alt="" style="width:183.75px;height:35.5px"><img class="forLight" src="band2-light/tata.png" alt="" style="width:183.75px;height:35.5px"><img class="forDark" src="band2/agco.png" alt="" style="width:134px;height:50.25px"><img class="forLight" src="band2-light/agco.png" alt="" style="width:134px;height:50.25px"><img class="forDark" src="band2/everest.png" alt="" style="width:136px;height:48.75px"><img class="forLight" src="band2-light/everest.png" alt="" style="width:136px;height:48.75px"><img class="forDark" src="band2/techm.png" alt="" style="width:145px;height:37px"><img class="forLight" src="band2-light/techm.png" alt="" style="width:145px;height:37px"><img class="forDark" src="band2/google.png" alt="" style="width:141.5px;height:45px"><img class="forLight" src="band2-light/google.png" alt="" style="width:141.5px;height:45px"><img class="forDark" src="band2/emblem.png" alt="" style="width:61.5px;height:61.5px"><img class="forLight" src="band2-light/emblem.png" alt="" style="width:61.5px;height:61.5px"></div></div>
+    <div class="bandEdge left"></div><div class="bandEdge right"></div>
+  </div>
+  <p class="stats abs"><b>6</b><i> </i>sectors.<i>  </i><b>2+</b><i> </i>years.<i class="s">  </i><b>5</b><i> </i>enterprise clients.</p>
+  <h2 class="selected abs">Selected Work</h2>
+  <div class="card abs" style="left:120px;top:1630px"></div><div class="card abs" style="left:753px;top:1629.7px"></div>
+  <div class="card abs" style="left:122px;top:2351px"></div><div class="card abs" style="left:753px;top:2350.7px"></div>
+  <div class="card abs" style="left:122px;top:3072px"></div><div class="card abs" style="left:753px;top:3071.7px"></div>
+  <nav class="pager abs" aria-label="Pages" style="top:3768.67px;justify-content:flex-end">
+    <a href="playground.html">Next:&nbsp;<b>Playground</b><svg viewBox="0 0 28.28 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.14 14.71 4.71-4.71-4.71-4.71"/></svg></a>
+  </nav>
+  <h2 class="recs abs">Recommendations</h2>
+  <div class="recBlock abs"></div>
+    <footer class="foot abs" style="left:-2px;top:4711px">
+      <p class="reach">Reach out to me via</p>
+      <svg class="icons" viewBox="634.15 103 171.7 35.35" role="group" aria-label="Contact links">
+        <a href="https://www.linkedin.com/in/apoorva-bs" target="_blank" rel="noopener" aria-label="LinkedIn"><path d="M664.569 133.12H659.279V124.918C659.279 122.962 659.244 120.444 656.528 120.444C653.773 120.444 653.351 122.575 653.351 124.775V133.12H648.061V116.252H653.14V118.557H653.211C653.719 117.696 654.453 116.989 655.336 116.509C656.218 116.029 657.215 115.795 658.221 115.832C663.583 115.832 664.571 119.324 664.571 123.867L664.569 133.12ZM642.092 113.946C641.485 113.946 640.891 113.768 640.387 113.434C639.882 113.1 639.488 112.625 639.256 112.07C639.023 111.515 638.962 110.903 639.081 110.314C639.199 109.724 639.491 109.182 639.921 108.757C640.35 108.332 640.897 108.042 641.492 107.925C642.088 107.808 642.705 107.868 643.266 108.098C643.827 108.328 644.306 108.717 644.644 109.217C644.981 109.717 645.161 110.304 645.162 110.906C645.162 111.305 645.082 111.7 644.928 112.069C644.774 112.438 644.548 112.773 644.263 113.055C643.978 113.337 643.639 113.561 643.267 113.714C642.895 113.867 642.495 113.946 642.092 113.946ZM644.737 133.12H639.442V116.252H644.737V133.12ZM667.207 103.002H636.783C636.093 102.995 635.428 103.259 634.934 103.737C634.44 104.214 634.157 104.867 634.149 105.55V135.799C634.157 136.483 634.439 137.136 634.933 137.614C635.427 138.092 636.093 138.357 636.783 138.35H667.207C667.899 138.358 668.566 138.094 669.062 137.616C669.558 137.138 669.842 136.484 669.852 135.799V105.548C669.842 104.863 669.558 104.21 669.062 103.732C668.566 103.254 667.898 102.991 667.207 103"/><rect x="634" y="103" width="36" height="35.4" fill="transparent"/></a>
+        <a href="https://github.com/apoorva-sdm" target="_blank" rel="noopener" aria-label="GitHub"><path d="M716.074 128.471C711.434 127.913 708.164 124.598 708.164 120.307C708.164 118.562 708.797 116.678 709.852 115.422C709.395 114.27 709.465 111.828 709.992 110.816C711.398 110.642 713.297 111.374 714.422 112.386C715.758 111.968 717.164 111.758 718.887 111.758C720.609 111.758 722.016 111.968 723.281 112.351C724.371 111.374 726.305 110.642 727.711 110.816C728.203 111.758 728.273 114.201 727.816 115.387C728.941 116.713 729.539 118.492 729.539 120.307C729.539 124.598 726.27 127.843 721.559 128.436C722.754 129.204 723.562 130.879 723.562 132.798V136.427C723.562 137.473 724.441 138.067 725.496 137.648C731.859 135.24 736.852 128.925 736.852 121.109C736.852 111.235 728.766 103.175 718.816 103.175C708.867 103.175 700.852 111.235 700.852 121.109C700.852 128.855 705.809 135.275 712.488 137.683C713.437 138.032 714.352 137.404 714.352 136.462V133.67C713.859 133.88 713.227 134.019 712.664 134.019C710.344 134.019 708.973 132.763 707.988 130.425C707.602 129.483 707.18 128.925 706.371 128.82C705.949 128.785 705.809 128.611 705.809 128.402C705.809 127.983 706.512 127.669 707.215 127.669C708.234 127.669 709.113 128.297 710.027 129.588C710.73 130.6 711.469 131.053 712.348 131.053C713.227 131.053 713.789 130.739 714.598 129.937C715.195 129.344 715.652 128.82 716.074 128.471Z"/><rect x="700.8" y="103" width="36" height="35.4" fill="transparent"/></a>
+        <a href="mailto:apoorva_bs@nid.edu" aria-label="Email"><path d="M767.871 110.742C767.991 109.226 768.666 107.811 769.763 106.779C770.86 105.748 772.297 105.175 773.789 105.175H799.914C801.419 105.175 802.869 105.758 803.968 106.806C805.068 107.854 805.737 109.289 805.838 110.821L786.853 121.014L767.871 110.742ZM767.852 113.474V130.12C767.852 131.726 768.477 133.266 769.591 134.401C770.704 135.537 772.214 136.175 773.789 136.175H799.914C801.489 136.175 802.999 135.537 804.113 134.401C805.226 133.266 805.852 131.726 805.852 130.12V113.551L787.404 123.455C787.233 123.547 787.043 123.595 786.849 123.594C786.656 123.594 786.466 123.546 786.295 123.453L767.852 113.474Z"/><rect x="767.8" y="103" width="38.1" height="35.4" fill="transparent"/></a>
+      </svg>
+      <p class="fine"><svg viewBox="583 214.85 14 14" aria-hidden="true"><path d="M590 214.85C586.134 214.85 583 217.984 583 221.85C583 225.715 586.134 228.85 590 228.85C593.866 228.85 597 225.715 597 221.85C597 217.984 593.866 214.85 590 214.85ZM590 227.662C586.791 227.662 584.188 225.059 584.188 221.85C584.188 218.64 586.791 216.037 590 216.037C593.209 216.037 595.812 218.64 595.812 221.85C595.812 225.059 593.209 227.662 590 227.662ZM590.087 219.339C590.916 219.339 591.478 219.867 591.541 220.642C591.545 220.708 591.6 220.758 591.666 220.758H592.552C592.592 220.758 592.625 220.725 592.625 220.684C592.625 219.33 591.556 218.381 590.083 218.381C588.366 218.381 587.375 219.54 587.375 221.456V222.273C587.375 224.175 588.366 225.319 590.083 225.319C591.552 225.319 592.625 224.4 592.625 223.109C592.625 223.069 592.592 223.036 592.552 223.036H591.664C591.598 223.036 591.545 223.086 591.539 223.15C591.473 223.87 590.912 224.365 590.086 224.365C589.066 224.365 588.491 223.617 588.491 222.278V221.456C588.492 220.097 589.069 219.339 590.087 219.339Z"/></svg>2026 Apoorva B S. All rights reserved.</p>
+    </footer>
+
+</div></div>
+
+<!-- only used when the page is opened straight from a folder: browsers block drawing a separate video file there -->
+<script>if (location.protocol === 'file:') document.write('<script src="turn-v12.js"><\/script>');</script>
+<script>
+// opened from a folder: play the packed copy of the video (it counts as part of the page, so it can be drawn)
+if (location.protocol === 'file:' && window.TURN_VIDEO) {
+  const bin = atob(window.TURN_VIDEO), bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  document.getElementById('turn').src = URL.createObjectURL(new Blob([bytes], { type: 'video/mp4' }));
+  delete window.TURN_VIDEO;
+}
+</script>
+<script>
+// fit the 1440-wide frame to the window width (preview convenience only)
+const stage = document.getElementById('stage'), shell = document.getElementById('shell');
+function fit() { const s = innerWidth / 1440; stage.style.transform = `scale(${s})`; shell.style.height = 5022 * s + 'px'; }
+fit(); addEventListener('resize', fit);
+// glass rim: angle where each pill's rounded ends begin
+document.querySelectorAll('.glass').forEach(el => { if (el.style.getPropertyValue('--c')) return; const w = el.offsetWidth, h = el.offsetHeight;
+  el.style.setProperty('--c', (Math.atan2(w / 2 - h / 2, h / 2) * 180 / Math.PI).toFixed(2) + 'deg'); });
+
+const $ = id => document.getElementById(id);
+const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const still = $('still'), rig = $('rig'), video = $('turn'), cv = $('turnCanvas');
+const clamp = x => Math.min(1, Math.max(0, x));
+const E = { out: t => 1 - Math.pow(1 - clamp(t), 3), inOut: t => { t = clamp(t); return t * t * t * (t * (6 * t - 15) + 10); } };
+const wait = ms => new Promise(r => setTimeout(r, ms));
+function tween(ms, fn, ease = E.out) { return new Promise(r => { const t0 = performance.now();
+  const step = now => { const p = clamp((now - t0) / ms); fn(ease(p)); p < 1 ? requestAnimationFrame(step) : r(); }; requestAnimationFrame(step); }); }
+// soft entrance: fade + small rise + unblur, all on the GPU-friendly properties
+function reveal(el, ms, rise = 14, blur = 8) { el.style.willChange = 'opacity, transform, filter';
+  const keep = el.dataset.themed !== undefined ? ' var(--logoF)' : '';     // elements that also carry a theme filter keep it
+  return tween(ms, p => { el.style.opacity = p; el.style.transform = `translateY(${rise * (1 - p)}px)`; el.style.filter = p < 1 ? `blur(${blur * (1 - p)}px)${keep}` : ''; })
+    .then(() => { el.style.willChange = ''; }); }
+
+// ---- the turn video, drawn with real transparency: left half = colour, right half = see-through mask
+const gl = cv.getContext('webgl', { premultipliedAlpha: true, alpha: true });
+if (gl) {
+const sh = (t, s) => { const o = gl.createShader(t); gl.shaderSource(o, s); gl.compileShader(o); return o; };
+const prog = gl.createProgram();
+gl.attachShader(prog, sh(gl.VERTEX_SHADER, 'attribute vec2 p; varying vec2 uv; void main(){ uv = vec2(p.x*.5+.5, .5-p.y*.5); gl_Position = vec4(p,0.,1.); }'));
+gl.attachShader(prog, sh(gl.FRAGMENT_SHADER, 'precision mediump float; uniform sampler2D t; varying vec2 uv; void main(){ vec3 c = texture2D(t, vec2(uv.x*.5, uv.y)).rgb; float a = texture2D(t, vec2(.5+uv.x*.5, uv.y)).r; gl_FragColor = vec4(min(c, vec3(a)), a); }'));
+gl.linkProgram(prog); gl.useProgram(prog);
+gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
+const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+}
+function draw() { if (!gl) return false; if (video.readyState < 2) return true; try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, video); gl.viewport(0, 0, cv.width, cv.height); gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); return true; } catch (e) { return false; } }
+
+// knight's entrance, modelled on the product-reveal reference: it appears as a big close-up tilted ~48°, the camera pulls back fast,
+// it swings a little past upright while spinning, floats, then straightens and glides down onto the board.
+// Everything is worked out from the video's own clock, so the tilt/size/float and the turning frames never drift apart.
+// smooth curve through key points (no overshoot, no sudden changes of speed)
+function curve(pts) {
+  const n = pts.length, xs = pts.map(q => q[0]), ys = pts.map(q => q[1]), d = [], m = new Array(n);
+  for (let i = 0; i < n - 1; i++) d.push((ys[i + 1] - ys[i]) / (xs[i + 1] - xs[i]));
+  m[0] = 0; m[n - 1] = 0;
+  for (let i = 1; i < n - 1; i++) m[i] = d[i - 1] * d[i] <= 0 ? 0 : 3 * (xs[i + 1] - xs[i - 1]) / ((2 * xs[i + 1] - xs[i] - xs[i - 1]) / d[i - 1] + (xs[i + 1] + xs[i] - 2 * xs[i - 1]) / d[i]);
+  return x => { x = clamp(x); let i = 0; while (i < n - 2 && x > xs[i + 1]) i++;
+    const h = xs[i + 1] - xs[i], t = (x - xs[i]) / h, t2 = t * t, t3 = t2 * t;
+    return (2*t3 - 3*t2 + 1) * ys[i] + (t3 - 2*t2 + t) * h * m[i] + (-2*t3 + 3*t2) * ys[i + 1] + (t3 - t2) * h * m[i + 1]; };
+}
+const ROLL  = curve([[0, -26], [0.18, -6], [0.36, 7], [0.58, 3], [0.82, 0], [1, 0]]);      // degrees of tilt
+const SCALE = curve([[0, 1.5], [0.18, 1.2], [0.4, 1.03], [0.6, 1], [1, 1]]);             // camera pull-back
+const LIFTY = curve([[0, -20], [0.32, -52], [0.55, -46], [0.88, 0], [1, 0]]);              // float, then the descent onto the board
+const DRIFT = curve([[0, 18], [0.35, -3], [0.65, 0], [1, 0]]);                              // a touch of sideways drift
+let noVideo = false;
+function pose(p) {
+  rig.style.opacity = E.inOut(p / 0.38);                     // slow fade in as it comes into the frame…
+  const blur = 10 * (1 - E.out(p / 0.42));                   // …out of a soft blur
+  rig.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : 'none';
+  still.style.opacity = noVideo ? 1 : E.inOut((p - 0.76) / 0.24);   // long, soft blend into your exact image          // hand over to the exact image once it has landed
+  rig.style.transform = `translate3d(${DRIFT(p).toFixed(3)}px, ${LIFTY(p).toFixed(3)}px, 0) rotate(${ROLL(p).toFixed(3)}deg) scale(${SCALE(p).toFixed(4)})`;
+}
+let turning = false, knightLanded = false;
+function playTurn() {
+  turning = true; knightLanded = false;
+  cv.style.visibility = 'visible'; rig.style.opacity = 0; still.style.opacity = 0;
+  return new Promise(done => {
+    const dur = video.duration || 5; let finished = false, started = false, fallen = false;
+    const finish = () => { if (finished) return; finished = true; pose(1); cv.style.visibility = 'hidden'; turning = false; knightLanded = true; done(); };
+    // if the video can't be shown, the knight (your exact image) still makes the same entrance, just without the 3D turn
+    const fallback = () => { if (fallen || finished) return; fallen = true; noVideo = true; video.pause(); cv.style.visibility = 'hidden';
+      tween(dur * 1000, p => pose(p), t => t).then(finish); };
+    const show = t => { if (finished || fallen) return; if (!draw()) return fallback(); if (t > 0) started = true; pose(clamp(t / dur)); };
+    const onFrame = (now, meta) => { show(meta.mediaTime); if (!video.ended && !fallen && !finished) video.requestVideoFrameCallback(onFrame); };
+    const tick = () => { show(video.currentTime); if (!video.ended && !fallen && !finished) requestAnimationFrame(tick); };
+    video.addEventListener('ended', () => { if (!fallen) { draw(); finish(); } }, { once: true });
+    if (!gl) return fallback();
+    video.currentTime = 0;
+    video.requestVideoFrameCallback ? video.requestVideoFrameCallback(onFrame) : requestAnimationFrame(tick);
+    const pr = video.play(); if (pr) pr.catch(fallback);
+    setTimeout(() => { if (!started) fallback(); }, 1000);   // video didn't start moving within a second
+  });
+}
+
+// the phrase window is as wide as the widest phrase; shift it left by the extra width so
+// "Critical Thinker" and "with 2+ years at…" stay exactly at their Figma positions
+// the phrase window is exactly as wide as the phrase showing, so the whole line stays centred
+let phraseWidths = [];
+window.FONTS.then(() => { const list = $('rotList'), rot = list.parentElement;
+  phraseWidths = [...list.children].map(b => b.offsetWidth);
+  rot.style.transition = 'none'; rot.style.width = phraseWidths[0] + 'px'; rot.offsetWidth; rot.style.transition = '';
+  // land "Critical Thinker" exactly on Figma's x = 374.7 (the line is centred, this only corrects rounding)
+  const k = innerWidth / 1440, x = list.children[0].getBoundingClientRect().left / k;
+  document.documentElement.style.setProperty('--subShift', (2 * (374.7 - x)).toFixed(2) + 'px'); });
+
+// ---- the "Critical Thinker" line: one phrase every 2.4s, gently sliding up
+function carousel() {
+  const list = $('rotList'), n = list.children.length - 1, step = 43.2; let i = 0;
+  const next = () => {
+    i++; list.classList.add('moving'); list.style.transform = `translateY(${-i * step}px)`;
+    if (phraseWidths[i]) list.parentElement.style.width = phraseWidths[i] + 'px';   // the line re-centres as the phrase changes
+    if (i === n) list.addEventListener('transitionend', () => {        // landed on the repeated first phrase: reset invisibly
+      list.classList.remove('moving'); list.style.transform = 'translateY(0)'; i = 0; }, { once: true });
+    setTimeout(next, 2400);
+  };
+  next();
+}
+
+// ---- theme switch: dark (the design) ⇄ light, remembered for next time, with a soft crossfade
+const themeBtn = $('themeBtn');
+function currentTheme() { return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'; }
+function labelTheme() { themeBtn.setAttribute('aria-label', currentTheme() === 'light' ? 'Switch to dark theme' : 'Switch to light theme'); }
+labelTheme();
+themeBtn.addEventListener('click', () => {
+  const next = currentTheme() === 'light' ? 'dark' : 'light';
+  const apply = () => { document.documentElement.dataset.theme = next; labelTheme(); };
+  try { localStorage.setItem('theme', next); } catch (e) {}
+  if (document.startViewTransition && !reduced) document.startViewTransition(apply); else apply();
+  // the knight makes its entrance again in the new theme (only once it has landed; mid-turn it simply carries on)
+  if (knightLanded && !turning && !reduced) playTurn();
+});
+
+// ---- logo band: start with NID just inside the visible area (past the soft left edge), then drift left forever
+function startBand() {
+  const track = document.querySelector('.bandTrack'), set = track.querySelector('.bandSet'), W = set.offsetWidth, start = 250;
+  const secs = parseFloat(getComputedStyle(track).animationDuration) || 60;
+  track.style.animationDelay = `${-(1 - start / W) * secs}s`;     // jump into the loop where NID sits at x = 250
+}
+Promise.all([...document.querySelectorAll('.bandSet img')].map(i => i.decode().catch(() => {}))).then(startBand);
+
+// ---- 1. on load: nav and the three lines of text
+const loaded = Promise.all([
+  window.FONTS,
+  Promise.race([new Promise(r => video.readyState >= 4 ? r() : video.addEventListener('canplaythrough', r, { once: true })), wait(4000)]),   // never wait forever
+  ...[...document.images].map(i => i.decode().catch(() => {})),
+]);
+let introDone, revealed = false;
+async function intro() {
+  await loaded; await wait(150);
+  setTimeout(carousel, 2000);   // first phrase change 2s after the page appears
+  // the nav is simply there (the same on every page); only the content below it makes its entrance
+  await wait(350); reveal($('hero'), 2400, 16, 10); reveal($('inf'), 2400, 16, 10);
+  await wait(550); reveal($('sub'), 2300, 14, 8);
+  await wait(550); await reveal($('tag'), 2200, 10, 6);
+}
+// ---- 2. first scroll: board, the knight turning down onto it, then the strengths left → right
+async function scene() {
+  if (revealed) return; revealed = true;
+  await introDone;
+  $('fadeBottom').style.opacity = 1;
+  const turn = playTurn();
+  await wait(1300);
+  await Promise.race([reveal($('boardWrap'), 2600, 30, 0), turn]);
+  await turn;
+  await wait(250);
+  const chips = [...document.querySelectorAll('.chip')];
+  chips.forEach((c, i) => setTimeout(() => {
+    c.classList.add('in');
+    c.addEventListener('animationend', () => { c.classList.remove('in'); c.classList.add('ready'); }, { once: true });
+  }, i * 420));
+}
+// the first scroll plays the scene and glides the page so the whole scene is in view; scrolling is never blocked
+const keys = new Set(['ArrowDown', 'PageDown', ' ', 'Spacebar', 'End']);
+function frameScene() {
+  const k = innerWidth / 1440, top = 510 * k, bottom = 1060 * k;           // from the tagline to the bottom of the board
+  const target = Math.max(0, Math.min((top + bottom) / 2 - innerHeight / 2, top - 16));
+  if (target > scrollY + 4) scrollTo({ top: target, behavior: 'smooth' });
+}
+function trigger(e) { stopListening(); if (e && e.cancelable) e.preventDefault(); frameScene(); scene(); }
+const onWheel = e => { if (e.deltaY > 0) trigger(e); };
+const onTouch = () => trigger();
+const onKey = e => { if (keys.has(e.key)) trigger(e); };
+const onScroll = () => { if (scrollY > 2) trigger(); };                  // e.g. dragging the scrollbar
+function stopListening() { removeEventListener('wheel', onWheel); removeEventListener('touchmove', onTouch);
+  removeEventListener('keydown', onKey); removeEventListener('scroll', onScroll); }
+
+if (reduced) {   // people who ask their device for less motion get the finished page straight away
+  document.querySelectorAll('.pre').forEach(el => el.style.opacity = 1);
+  loaded.then(async () => { video.currentTime = video.duration; await new Promise(r => video.addEventListener('seeked', r, { once: true })); draw(); pose(1);
+    document.querySelectorAll('.chip').forEach(c => c.classList.add('ready')); });
+} else {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';   // always open at the top
+  scrollTo(0, 0);
+  addEventListener('wheel', onWheel, { passive: false }); addEventListener('touchmove', onTouch, { passive: true }); addEventListener('keydown', onKey); addEventListener('scroll', onScroll, { passive: true });
+  introDone = intro();
+}
+window.__scene = scene;   // for testing
+</script>
+</body></html>
