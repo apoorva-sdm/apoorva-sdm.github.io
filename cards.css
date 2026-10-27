@@ -1,0 +1,39 @@
+/* work / playground cards (Figma "Frame 1410113004" family), shared by Home and Playground.
+   Each card sets its own colours through the variables below; the pictures sit underneath as .art layers. */
+.pcard { width: 566px; height: 722px; border-radius: 24px; overflow: hidden; display: block; text-decoration: none; isolation: isolate;
+         --c1: #f2f2f2; --c2: #f2f2f2; --tagBg: rgba(27,23,34,.18); --tagInk: #cdcdcd; --tagBd: 0;
+         transition: transform .6s cubic-bezier(.2,.7,.2,1), box-shadow .6s ease; }
+a.pcard:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,.35); }
+a.pcard:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+.pcard .art { position: absolute; display: block; max-width: none; pointer-events: none; }
+.pcard p { margin: 0; }
+/* Figma "Glass" (4px) on the tags and panels: frosted fill with a thin bright rim */
+.pcard .brand, .pcard .tags span { border-radius: 50px; padding: 10px 20px; white-space: nowrap;
+         font-family: 'Satoshi', sans-serif; font-weight: 400; font-size: 16px; line-height: 1.35; letter-spacing: .32px;
+         -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+         box-shadow: inset 0 1px 0 rgba(255,255,255,.32), inset 0 -1px 0 rgba(255,255,255,.12); }
+.pcard .brand { position: absolute; top: 32px; background: var(--tagBg); color: var(--tagInk); }
+.pcard .panel { position: absolute; left: 0; top: 459px; width: 566px; height: 263px; padding: 20px 32px; border-radius: 24px;
+                display: flex; flex-direction: column; gap: 32px; background: rgba(255,255,255,.1);
+                -webkit-backdrop-filter: blur(var(--pb, 4px)); backdrop-filter: blur(var(--pb, 4px));   /* Figma's glass strength differs per card */
+                box-shadow: inset 0 1px 0 rgba(255,255,255,.55), inset 0 -1px 0 rgba(255,255,255,.22); }
+.pcard .t { padding: 10px; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500; font-size: 24px; line-height: 1.35; letter-spacing: .48px; color: var(--c1); }
+.pcard .s { padding: 10px; font-family: 'Satoshi', sans-serif; font-weight: 400; font-size: 18px; line-height: 1.35; letter-spacing: .36px; color: var(--c2); }
+.pcard .nw { white-space: nowrap; }
+/* tags fill the panel's width with even 13.5px gaps (as on the CX Navigator card); each tag grows a little to get there, text centred */
+.pcard .tags { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 13.5px; }
+.pcard .tags span { flex: 1 1 auto; text-align: center; background: var(--tagBg); color: var(--tagInk); border: var(--tagBd); }
+/* the darker paper / vibe-coding cards: shorter, fainter panel, regular-weight title */
+.pcard.dark { background: #161616; --c1: #e4e4e4; --c2: #e4e4e4; }
+.pcard.dark .panel { top: 510px; height: 212px; gap: 0; background: rgba(255,255,255,.04);
+                     box-shadow: inset 0 1px 0 rgba(255,255,255,.3), inset 0 -1px 0 rgba(255,255,255,.12); }
+.pcard.dark .t { font-weight: 400; }
+.pcard.dark .panel.mid { justify-content: center; }   /* the IEEE card centres its words; the others start at the top */
+/* light theme: the paper / vibe-coding tiles turn light as well (the coloured work cards keep their artwork) */
+:root[data-theme="light"] .pcard.dark { background: #e6eaea; --c1: #0d1515; --c2: #2a3232; --tagBg: rgba(1,7,7,.06); --tagInk: #3a4242; }
+:root[data-theme="light"] .pcard.dark .panel { background: rgba(1,7,7,.035);
+       box-shadow: inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(1,7,7,.06); }
+:root[data-theme="light"] .pcard.dark .brand { box-shadow: inset 0 1px 0 rgba(255,255,255,.8), inset 0 -1px 0 rgba(1,7,7,.08); }
+:root[data-theme="light"] a.pcard:hover { box-shadow: 0 18px 40px rgba(1,7,7,.14); }
+:root[data-theme="light"] .estima .e1 { color: #4a5252; }
+:root[data-theme="light"] .estima .e2 { color: #8a9292; }

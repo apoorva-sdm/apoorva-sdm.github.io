@@ -7,7 +7,10 @@
 window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satoshi', 'italic 400 16px Satoshi', '500 16px Satoshi', '700 16px Satoshi',
   '400 16px "Bricolage Grotesque"', '500 16px "Bricolage Grotesque"'].map(f => document.fonts.load(f).catch(() => {}))).then(() => document.fonts.ready) : Promise.resolve();
 </script>
-<title>Playground preview</title>
+<link rel="icon" type="image/png" sizes="256x256" href="favicon-256.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Playground | Apoorva B S</title>
 <script>try { const t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <style>
 
@@ -26,7 +29,6 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   * { box-sizing: border-box; font-synthesis: none; }
   html, body { margin: 0; background: var(--bg); overflow-x: hidden; }
   body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-  /* 1440 × 2000 Figma frame "Home 1", scaled to the window width for previewing */
   .stage { width: 1440px; height: 5022px; position: relative; overflow: hidden; background: var(--bg); transform-origin: top left; }
   .abs { position: absolute !important; }
 
@@ -75,15 +77,78 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
 
   :root[data-theme="light"] .glass { background: rgba(1,7,7,0.04); }
   :root[data-theme="light"] .glass::before { opacity: .25; }
-  /* Stand-in until the Playground page is built: your Figma frame "Home 4" (327:3939) as a picture, under the real nav */
-  .shot { left: 0; top: 0; width: 1440px; height: 2461px; display: block; }
-  .navCover { left: 0; top: 0; width: 1440px; height: 112px; background: var(--bg); }
+
+  /* footer (Figma "Frame 117", Let's connect version) */
+  :root { --foot: #111111; --footInk: #747474; --footIcon: #454545; --footFine: #323131; }
+  :root[data-theme="light"] { --foot: #e9ecec; --footInk: #6b7272; --footIcon: #9aa1a1; --footFine: #a7adad; }
+  .foot { left: 0; width: 1440px; height: 295px; background: var(--foot); }
+  .foot .reach { position: absolute; left: 0; width: 1440px; top: 57px; margin: 0; text-align: center; font-family: 'Satoshi', sans-serif; font-weight: 500;
+                 font-size: 16px; line-height: 21.6px; letter-spacing: .32px; color: var(--footInk); }
+  .foot .icons { position: absolute; left: 634.15px; top: 100.6px; width: 171.7px; height: 35.35px; display: block; }
+  .foot .icons a { fill: var(--footIcon); transition: fill .25s ease; }
+  .foot .icons a:hover { fill: var(--footInk); }
+  .foot .fine { position: absolute; left: 0; width: 1440px; top: 209.95px; margin: 0; display: flex; justify-content: center; align-items: center; gap: 8px;
+                font-family: 'Satoshi', sans-serif; font-weight: 500; font-size: 14px; line-height: 19px; letter-spacing: .28px; color: var(--footFine); }
+  .foot .fine svg { width: 16px; height: 16px; display: block; fill: var(--footFine); }
+  /* prev / next pills, as on About */
+  .pager { left: 120px; width: 1201px; display: flex; justify-content: space-between; }
+  .pager a { height: 56.28px; padding: 14px 20px; border-radius: 50px; display: flex; align-items: center; text-decoration: none; color: var(--ink);
+             font-family: 'Satoshi', sans-serif; font-weight: 400; font-size: 16px; line-height: 22px; letter-spacing: .32px; background: rgba(114,159,195,0.4); transition: background .3s ease; }
+  .pager a b { font-weight: 500; }
+  .pager a:hover { background: rgba(114,159,195,0.52); }
+  .pager a:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  :root[data-theme="light"] .pager a { background: rgba(79,127,168,0.4); }
+  .pager svg { width: 28.28px; height: 20px; display: block; flex: none; overflow: visible; }
+
+  .pgHead { left: 120px; width: 1200px; margin: 0; padding: 10px; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500;
+            font-size: 44px; line-height: 1.35; letter-spacing: .88px; color: var(--sel); }
+  /* the Estima tile is words only, in Jost */
+  .estima { position: absolute; left: 68px; top: 270px; width: 430px; display: flex; flex-direction: column; align-items: center; font-family: 'Jost', sans-serif; font-weight: 400; line-height: 1.35; }
+  .estima p { margin: 0; white-space: nowrap; }
+  .estima .e1 { padding: 4px 10px; font-size: 28px; letter-spacing: .56px; color: #bbb; }
+  .estima .e2 { padding: 10px; font-size: 22px; letter-spacing: .44px; color: #5e6366; }
+
 </style></head>
 <body>
-<div id="shell"><div class="stage" id="stage" style="height:2461px">
-<script>(() => { const s = innerWidth / 1440, st = document.getElementById('stage'); st.style.transform = `scale(${s})`; document.getElementById('shell').style.height = 2461 * s + 'px'; })();</script>
-  <img class="shot abs" src="playground-figma.png" alt="Playground page design (preview image)">
-  <div class="navCover abs"></div>
+<div id="shell"><div class="stage" id="stage" data-h="2613" style="height:2613px">
+<script>(() => { const s = innerWidth / 1440, st = document.getElementById('stage'); st.style.transform = `scale(${s})`; document.getElementById('shell').style.height = 2613 * s + 'px'; })();</script>
+  <link rel="stylesheet" href="cards.css">
+  <h2 class="pgHead abs" style="top:232px">Vibe-coding with Claude</h2>
+  <a href="https://apoorva-sdm.github.io/estima-rfp/" target="_blank" rel="noopener" class="pcard dark abs" style="left:120px;top:351.4px">
+    <div class="estima"><p class="e1">ESTIMA</p><p class="e2">For Intelligent Project Estimations</p></div>
+    <p class="brand" style="left:403px">Vibe-coding</p>
+    <div class="panel" style="padding:20px 24px"><div><p class="t">Proof - of - concept for a global tech and automotive giant</p><p class="s">Presented designed solution alongside Deloitte leadership to the client C-suite</p></div></div>
+  </a>
+  <a href="https://apoorva-sdm.github.io/india-travel-insurance-analysis/" target="_blank" rel="noopener" class="pcard dark abs" style="left:753px;top:351.4px">
+    <img class="art" src="work/globe.png" alt="" style="left:38px;top:70px;width:490.8px;height:512.4px;object-fit:cover">
+    <p class="brand" style="left:405px">Vibe-coding</p>
+    <div class="panel" style="padding:20px 32px"><div><p class="t">Service Audit for Travel Insurances in India</p><p class="s">Vibe-coded visualisation for understanding HDFC Ergo’s service</p></div></div>
+  </a>
+  <h2 class="pgHead abs" style="top:1193.4px">Research Papers</h2>
+  <a href="papers/IEEEpaper.pdf" target="_blank" rel="noopener" class="pcard dark abs" style="left:120px;top:1312.8px">
+    <img class="art" src="work/ieee.png" alt="IEEE Xplore Digital Library" style="left:71px;top:222px;width:427px;height:158px;object-fit:cover">
+    <p class="brand" style="left:379px">Research Paper</p>
+    <div class="panel mid" style="padding:20px 32px"><div><p class="t">Image Caption Generation in Kannada using Deep Learning Frameworks</p><p class="s">Published in IEEE Xplore and presented at IEEE ICAECIS 2023</p></div></div>
+  </a>
+  <a href="papers/white-paper.pdf" target="_blank" rel="noopener" class="pcard dark abs" style="left:753px;top:1312.8px">
+    <img class="art" src="work/scales.png" alt="" style="left:89px;top:97px;width:388px;height:362px;object-fit:cover;opacity:.5">
+    <p class="brand" style="left:403px">White Paper</p>
+    <div class="panel" style="padding:20px 24px"><div><p class="t">Situational witness behaviour through visual ethnography</p><p class="s">5-week study at the Family Court of Gandhinagar to understand changing witness behaviors during active cross-questioning</p></div></div>
+  </a>
+  <nav class="pager abs" aria-label="Pages" style="top:2074px">
+    <a href="about.html"><svg viewBox="0 0 28.28 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.14 5.29-4.71 4.71 4.71 4.71"/></svg>Prev:&nbsp;<b>About</b></a>
+    <a href="home.html">Next:&nbsp;<b>Home</b><svg viewBox="0 0 28.28 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.14 14.71 4.71-4.71-4.71-4.71"/></svg></a>
+  </nav>
+  
+  <footer class="foot abs" id="foot" style="top:2347px;height:266px">
+    <p class="reach">Let’s connect</p>
+    <svg class="icons" viewBox="634.15 103 171.7 35.35" role="group" aria-label="Contact links">
+      <a href="https://www.linkedin.com/in/apoorva-bs" target="_blank" rel="noopener" aria-label="LinkedIn"><path d="M664.569 133.12H659.279V124.918C659.279 122.962 659.244 120.444 656.528 120.444C653.773 120.444 653.351 122.575 653.351 124.775V133.12H648.061V116.252H653.14V118.557H653.211C653.719 117.696 654.453 116.989 655.336 116.509C656.218 116.029 657.215 115.795 658.221 115.832C663.583 115.832 664.571 119.324 664.571 123.867L664.569 133.12ZM642.092 113.946C641.485 113.946 640.891 113.768 640.387 113.434C639.882 113.1 639.488 112.625 639.256 112.07C639.023 111.515 638.962 110.903 639.081 110.314C639.199 109.724 639.491 109.182 639.921 108.757C640.35 108.332 640.897 108.042 641.492 107.925C642.088 107.808 642.705 107.868 643.266 108.098C643.827 108.328 644.306 108.717 644.644 109.217C644.981 109.717 645.161 110.304 645.162 110.906C645.162 111.305 645.082 111.7 644.928 112.069C644.774 112.438 644.548 112.773 644.263 113.055C643.978 113.337 643.639 113.561 643.267 113.714C642.895 113.867 642.495 113.946 642.092 113.946ZM644.737 133.12H639.442V116.252H644.737V133.12ZM667.207 103.002H636.783C636.093 102.995 635.428 103.259 634.934 103.737C634.44 104.214 634.157 104.867 634.149 105.55V135.799C634.157 136.483 634.439 137.136 634.933 137.614C635.427 138.092 636.093 138.357 636.783 138.35H667.207C667.899 138.358 668.566 138.094 669.062 137.616C669.558 137.138 669.842 136.484 669.852 135.799V105.548C669.842 104.863 669.558 104.21 669.062 103.732C668.566 103.254 667.898 102.991 667.207 103"/><rect x="634" y="103" width="36" height="35.4" fill="transparent"/></a>
+      <a href="https://github.com/apoorva-sdm" target="_blank" rel="noopener" aria-label="GitHub"><path d="M716.074 128.471C711.434 127.913 708.164 124.598 708.164 120.307C708.164 118.562 708.797 116.678 709.852 115.422C709.395 114.27 709.465 111.828 709.992 110.816C711.398 110.642 713.297 111.374 714.422 112.386C715.758 111.968 717.164 111.758 718.887 111.758C720.609 111.758 722.016 111.968 723.281 112.351C724.371 111.374 726.305 110.642 727.711 110.816C728.203 111.758 728.273 114.201 727.816 115.387C728.941 116.713 729.539 118.492 729.539 120.307C729.539 124.598 726.27 127.843 721.559 128.436C722.754 129.204 723.562 130.879 723.562 132.798V136.427C723.562 137.473 724.441 138.067 725.496 137.648C731.859 135.24 736.852 128.925 736.852 121.109C736.852 111.235 728.766 103.175 718.816 103.175C708.867 103.175 700.852 111.235 700.852 121.109C700.852 128.855 705.809 135.275 712.488 137.683C713.437 138.032 714.352 137.404 714.352 136.462V133.67C713.859 133.88 713.227 134.019 712.664 134.019C710.344 134.019 708.973 132.763 707.988 130.425C707.602 129.483 707.18 128.925 706.371 128.82C705.949 128.785 705.809 128.611 705.809 128.402C705.809 127.983 706.512 127.669 707.215 127.669C708.234 127.669 709.113 128.297 710.027 129.588C710.73 130.6 711.469 131.053 712.348 131.053C713.227 131.053 713.789 130.739 714.598 129.937C715.195 129.344 715.652 128.82 716.074 128.471Z"/><rect x="700.8" y="103" width="36" height="35.4" fill="transparent"/></a>
+      <a href="mailto:apoorva_bs@nid.edu" aria-label="Email"><path d="M767.871 110.742C767.991 109.226 768.666 107.811 769.763 106.779C770.86 105.748 772.297 105.175 773.789 105.175H799.914C801.419 105.175 802.869 105.758 803.968 106.806C805.068 107.854 805.737 109.289 805.838 110.821L786.853 121.014L767.871 110.742ZM767.852 113.474V130.12C767.852 131.726 768.477 133.266 769.591 134.401C770.704 135.537 772.214 136.175 773.789 136.175H799.914C801.489 136.175 802.999 135.537 804.113 134.401C805.226 133.266 805.852 131.726 805.852 130.12V113.551L787.404 123.455C787.233 123.547 787.043 123.595 786.849 123.594C786.656 123.594 786.466 123.546 786.295 123.453L767.852 113.474Z"/><rect x="767.8" y="103" width="38.1" height="35.4" fill="transparent"/></a>
+    </svg>
+    <p class="fine"><svg viewBox="583 214.85 14 14" aria-hidden="true"><path d="M590 214.85C586.134 214.85 583 217.984 583 221.85C583 225.715 586.134 228.85 590 228.85C593.866 228.85 597 225.715 597 221.85C597 217.984 593.866 214.85 590 214.85ZM590 227.662C586.791 227.662 584.188 225.059 584.188 221.85C584.188 218.64 586.791 216.037 590 216.037C593.209 216.037 595.812 218.64 595.812 221.85C595.812 225.059 593.209 227.662 590 227.662ZM590.087 219.339C590.916 219.339 591.478 219.867 591.541 220.642C591.545 220.708 591.6 220.758 591.666 220.758H592.552C592.592 220.758 592.625 220.725 592.625 220.684C592.625 219.33 591.556 218.381 590.083 218.381C588.366 218.381 587.375 219.54 587.375 221.456V222.273C587.375 224.175 588.366 225.319 590.083 225.319C591.552 225.319 592.625 224.4 592.625 223.109C592.625 223.069 592.592 223.036 592.552 223.036H591.664C591.598 223.036 591.545 223.086 591.539 223.15C591.473 223.87 590.912 224.365 590.086 224.365C589.066 224.365 588.491 223.617 588.491 222.278V221.456C588.492 220.097 589.069 219.339 590.087 219.339Z"/></svg>2026 Apoorva B S. All rights reserved.</p>
+  </footer>
   <button class="themeBtn glass abs" id="themeBtn" style="--c:0.00deg" type="button" aria-label="Switch to light theme">
     <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
     <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M20.2 14.6A8.4 8.4 0 0 1 9.4 3.8a8.4 8.4 0 1 0 10.8 10.8Z"/></svg>
@@ -95,10 +160,12 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
       <svg viewBox="0 0 16 16"><path d="M0 8C0 10.1217 0.842855 12.1566 2.34315 13.6569C3.84344 15.1571 5.87827 16 8 16C10.1217 16 12.1566 15.1571 13.6569 13.6569C15.1571 12.1566 16 10.1217 16 8C16 5.87827 15.1571 3.84344 13.6569 2.34315C12.1566 0.842855 10.1217 0 8 0C5.87827 0 3.84344 0.842855 2.34315 2.34315C0.842855 3.84344 0 5.87827 0 8ZM5.904 10.803C5.85788 10.8508 5.8027 10.8888 5.7417 10.9151C5.6807 10.9413 5.61509 10.955 5.5487 10.9556C5.48231 10.9562 5.41647 10.9436 5.35502 10.9184C5.29357 10.8933 5.23775 10.8561 5.1908 10.8092C5.14386 10.7623 5.10673 10.7064 5.08159 10.645C5.05645 10.5835 5.0438 10.5177 5.04437 10.4513C5.04495 10.3849 5.05874 10.3193 5.08495 10.2583C5.11115 10.1973 5.14924 10.1421 5.197 10.096L9.293 6H6.525C6.39239 6 6.26521 5.94732 6.17145 5.85355C6.07768 5.75979 6.025 5.63261 6.025 5.5C6.025 5.36739 6.07768 5.24021 6.17145 5.14645C6.26521 5.05268 6.39239 5 6.525 5H10.5C10.6326 5 10.7598 5.05268 10.8536 5.14645C10.9473 5.24021 11 5.36739 11 5.5V9.475C11 9.60761 10.9473 9.73479 10.8536 9.82855C10.7598 9.92232 10.6326 9.975 10.5 9.975C10.3674 9.975 10.2402 9.92232 10.1464 9.82855C10.0527 9.73479 10 9.60761 10 9.475V6.707L5.904 10.803Z" fill="currentColor"/></svg>
     </a>
   </nav>
+
 </div></div>
 <script>
 const stage = document.getElementById('stage'), shell = document.getElementById('shell');
-function fit() { const s = innerWidth / 1440; stage.style.transform = `scale(${s})`; shell.style.height = 2461 * s + 'px'; }
+let H = +stage.dataset.h;
+function fit() { const s = innerWidth / 1440; stage.style.transform = `scale(${s})`; shell.style.height = H * s + 'px'; }
 fit(); addEventListener('resize', fit);
 document.querySelectorAll('.glass').forEach(el => { if (el.style.getPropertyValue('--c')) return; const w = el.offsetWidth, h = el.offsetHeight;
   el.style.setProperty('--c', (Math.atan2(w / 2 - h / 2, h / 2) * 180 / Math.PI).toFixed(2) + 'deg'); });
@@ -111,4 +178,5 @@ themeBtn.addEventListener('click', () => { const next = cur() === 'light' ? 'dar
   try { localStorage.setItem('theme', next); } catch (e) {}
   document.startViewTransition ? document.startViewTransition(apply) : apply(); });
 </script>
+<script src="mailcopy.js"></script>
 </body></html>

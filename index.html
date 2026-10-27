@@ -2,12 +2,17 @@
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="fonts/fonts.css">
+<link rel="stylesheet" href="cards.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Open+Sans:wght@400&display=swap">
 <script>
 // start loading every face the page uses straight away, and let the page wait for exactly these before measuring anything
 window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satoshi', 'italic 400 16px Satoshi', '500 16px Satoshi', '700 16px Satoshi',
   '400 16px "Bricolage Grotesque"', '500 16px "Bricolage Grotesque"'].map(f => document.fonts.load(f).catch(() => {}))).then(() => document.fonts.ready) : Promise.resolve();
 </script>
-<title>Cover preview</title>
+<link rel="icon" type="image/png" sizes="256x256" href="favicon-256.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Apoorva B S | UX and Product Strategy</title>
 <!-- load the hero visuals first so nothing pops in -->
 <link rel="preload" as="image" href="board2-export.png" fetchpriority="high">
 <link rel="preload" as="image" href="knight-fig-src.png" fetchpriority="high">
@@ -30,7 +35,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   html, body { margin: 0; background: var(--bg); overflow-x: hidden; }
   body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   /* 1440 × 2000 Figma frame "Home 1", scaled to the window width for previewing */
-  .stage { width: 1440px; height: 5022px; position: relative; overflow: hidden; background: var(--bg); transform-origin: top left; }
+  .stage { width: 1440px; height: 6249px; position: relative; overflow: hidden; background: var(--bg); transform-origin: top left; }
   .abs { position: absolute !important; }
 
   /* nav */
@@ -63,6 +68,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .sub .logos img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
   .sub p { margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 400; font-size: 32px; line-height: 43.2px; color: var(--ink2); white-space: pre; }
   .sub p b { font-weight: 500; color: var(--blue); }
+  :root:not([data-theme="light"]) .rot b { background: linear-gradient(90deg, #729fc3 5.508%, #b9d9f2 93.22%); -webkit-background-clip: text; background-clip: text; color: transparent; }
   /* vertical carousel: a one-line window (as wide as "Critical Thinker", so the rest of the line never moves);
      words slide up from below with a soft spring. The first word is repeated at the end so the loop has no jump. */
   .rot { display: inline-block; height: 43.2px; transition: width 1.05s cubic-bezier(.42, 0, .18, 1);  overflow: hidden; vertical-align: top; }
@@ -86,16 +92,16 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   :root[data-theme="light"] .themeBtn .moon { opacity: 1; transform: none; }
   .themeBtn:hover { background: linear-gradient(135deg, rgba(var(--hi), calc(0.12 * var(--hiA))), rgba(var(--hi), calc(0.17 * var(--hiA)))); }
   .themeBtn:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
-  .board { left: 0; top: 774px; width: 1440px; height: 414px; display: block; }
+  .board { left: 0; top: 799px; width: 1440px; height: 414px; display: block; }
   /* Rectangle 4: background colour → transparent, blurred 8px — melts the board's top edge */
-  .fadeTop { left: -7px; top: 768px; width: 1441px; height: 95px; pointer-events: none; filter: blur(8px);
+  .fadeTop { left: -7px; top: 793px; width: 1441px; height: 95px; pointer-events: none; filter: blur(8px);
              background: linear-gradient(to bottom, rgb(var(--bgrgb)) 22.1%, rgba(var(--bgrgb), 0) 100%); }
   /* Rectangle 5: sits above the board AND the knight's foot, fading everything into the page below */
-  .fadeBottom { left: 0; top: 1023px; width: 1441px; height: 281px; pointer-events: none; filter: blur(8px);
+  .fadeBottom { left: 0; top: 1048px; width: 1441px; height: 281px; pointer-events: none; filter: blur(8px);
              background: linear-gradient(to bottom, rgba(var(--bgrgb), .4) 10.1%, rgb(var(--bgrgb)) 55.3%); }
 
   /* knight "final 1": 229.78 × 344.67 rotated 0.525°, inside a 232.93 × 346.76 box at (604, 620.00) — Figma reports the rotated corner at y 622.10 */
-  .rig { left: 599px; top: 662px; width: 232.93px; height: 346.76px; will-change: transform, opacity; opacity: 0; transform-origin: 50% 58%; }
+  .rig { left: 599px; top: 687px; width: 232.93px; height: 346.76px; will-change: transform, opacity; opacity: 0; transform-origin: 50% 58%; }
   .rig .inner { position: absolute; left: 1.575px; top: 1.045px; width: 229.78px; height: 344.67px; transform: rotate(-0.525deg); }
   /* the 3D turn, drawn with real transparency; placed on the knight's box inside the 1024×1536 source image */
   .rig canvas { position: absolute; left: 41.74px; top: 17.05px; width: 145.41px; height: 308.76px; display: block; }
@@ -109,11 +115,10 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   :root[data-theme="light"] .rig canvas { filter: url(#knightLight); }
   :root[data-theme="light"] .dot { display: none; }
   /* light mode glass, as in your Figma light frame: a soft 4% fill, barely-there rim */
-  :root[data-theme="light"] .glass, :root[data-theme="light"] .chip { background: rgba(1,7,7,0.04); }
+  :root[data-theme="light"] .glass { background: rgba(1,7,7,0.04); }
   :root[data-theme="light"] .glass::before { opacity: .25; }
   :root[data-theme="light"] .nav a.cta { background: rgba(79,127,168,0.4); }
   :root[data-theme="light"] .nav a.glass:hover, :root[data-theme="light"] .themeBtn:hover { background: rgba(1,7,7,0.07); }
-  :root[data-theme="light"] .chip.ready:hover { background: rgba(1,7,7,0.06); }
   #turn { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 
   /* Figma "Glass": frosted blur behind, faint fill, thin bright rim (top-left / bottom-right glints), faint inner glow */
@@ -136,48 +141,222 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .glass::after { content: ""; position: absolute; inset: 1px; border-radius: inherit; pointer-events: none;
     box-shadow: inset -1px -1.5px 2px rgba(var(--hi), calc(0.07 * var(--hiA))); }
 
-  /* chips (the strengths): fill is 5% white in the new frame */
-  .chip { height: 46px; padding: 12px 16px; border-radius: 50px; display: flex; align-items: center; justify-content: center;
-          font-family: 'Satoshi', sans-serif; font-size: 16px; line-height: 22px; letter-spacing: 0.32px; color: var(--ink); white-space: pre;
-          background: linear-gradient(135deg, rgba(var(--hi), calc(0.04 * var(--hiA))), rgba(var(--hi), calc(0.065 * var(--hiA))));
-          opacity: 0; transform: translateY(10px); filter: blur(4px);
-          transition: box-shadow .35s ease, transform .35s ease, background .35s ease; cursor: default; }
-  .chip.in { animation: chipIn 1.7s cubic-bezier(.25,.6,.3,1) forwards; }
-  .chip.ready { opacity: 1; transform: none; filter: none; }
-  @keyframes chipIn { from { opacity: 0; transform: translateY(12px); filter: blur(6px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
-  /* light from the top-right → shadow falls down-left; a second, softer, larger shadow behind it */
-  .chip.ready:hover { transform: translate(1px, -2px); background: linear-gradient(135deg, rgba(var(--hi), calc(0.09 * var(--hiA))), rgba(var(--hi), calc(0.13 * var(--hiA))));
-    box-shadow: -4px 6px 10px rgba(0,0,0, calc(0.55 * var(--shA))), -12px 18px 32px rgba(0,0,0, calc(0.35 * var(--shA))), inset -1px 1px 0 rgba(var(--hi), calc(0.22 * var(--hiA))); }
-  .chip .arrow { position: absolute; left: 30px; top: 18px; width: 18.45px; height: 9px; }
+  /* skills (Figma "Frame 1410113182–86"): a round icon, and beside it the name, which opens out on hover */
+  /* each icon stays on its spot of the semicircle and its name opens away from the knight: the left two open leftwards
+     (name before icon), the right two rightwards; Product Strategy's icon slides left as its name opens so the pair sits centred over the knight */
+  .skill { height: 48px; display: flex; align-items: center; gap: 0; opacity: 0; transform: translateY(10px); filter: blur(4px); cursor: default;
+           translate: var(--dx, 0px) var(--dy, 0px); transition: gap .8s cubic-bezier(.42,0,.18,1), translate .8s cubic-bezier(.42,0,.18,1); }
+  .skill.in { animation: chipIn 1.6s cubic-bezier(.22,.61,.24,1) forwards; }
+  .skill.ready { opacity: 1; transform: none; filter: none; animation: bob 4.6s ease-in-out var(--bd, 0s) infinite; }
+  .skill.ready:hover, .skill.ready.open { animation-play-state: paused; }
+  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+  @media (prefers-reduced-motion: reduce) { .skill.ready { animation: none; } }
+  @keyframes chipIn { from { opacity: 0; transform: translateY(16px) scale(.92); filter: blur(6px); } to { opacity: 1; transform: none; filter: blur(0); } }
+  /* the icon discs are clear glass, like the knight: a dark see-through body that frosts what's behind it, a sharp bright rim
+     catching light along the top, light pooling (refracted) in the lower half, a curved highlight streak and a small glint */
+  .skill .ic { position: relative; width: 48px; height: 48px; flex: none; border-radius: 50%; display: grid; place-items: center; color: #fff;
+               background:
+                 radial-gradient(120% 70% at 50% 108%, rgba(255,255,255,.22), rgba(255,255,255,.05) 45%, transparent 62%),
+                 radial-gradient(80% 60% at 28% 22%, rgba(255,255,255,.10), transparent 60%),
+                 rgba(255,255,255,.03);
+               box-shadow:
+                 inset 0 9px 10px -6px rgba(0,0,0,.7), inset 0 -6px 10px -6px rgba(255,255,255,.14),
+                 0 10px 22px rgba(0,0,0,.55), 0 2px 5px rgba(0,0,0,.5);
+               -webkit-backdrop-filter: blur(8px) saturate(160%) brightness(1.12); backdrop-filter: blur(8px) saturate(160%) brightness(1.12);
+               transition: box-shadow .5s ease, filter .5s ease; }
+  .skill .ic::after { content: ""; position: absolute; inset: 0; border-radius: 50%; padding: 1.2px; pointer-events: none;
+               background: conic-gradient(from 0deg, rgba(255,255,255,.45), rgba(255,255,255,.08) 70deg, rgba(255,255,255,.75) 140deg, rgba(255,255,255,.06) 215deg,
+                                          rgba(255,255,255,.95) 310deg, rgba(255,255,255,.45));
+               -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+  .skill .ic svg { display: block; position: relative; shape-rendering: geometricPrecision; }
+  .skill .ic svg path { fill-opacity: .8; }
+  .skill .lb { flex: none; max-width: 0; overflow: hidden; border-radius: 50px; opacity: 0; filter: blur(4px);
+               font-family: 'Satoshi', sans-serif; font-size: 16px; line-height: 1.35; letter-spacing: 0.32px; color: var(--ink); white-space: nowrap;
+               position: relative; background: linear-gradient(rgba(255,255,255,.06), rgba(255,255,255,.03));
+               box-shadow: inset 0 8px 10px -8px rgba(0,0,0,.6), 0 8px 18px rgba(0,0,0,.45);
+               -webkit-backdrop-filter: blur(8px) saturate(150%); backdrop-filter: blur(8px) saturate(150%);
+               transition: max-width .8s cubic-bezier(.42,0,.18,1), opacity .6s ease, filter .6s ease; }
+  .skill .lb::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+               background: linear-gradient(160deg, rgba(255,255,255,.55), rgba(255,255,255,.06) 40%, rgba(255,255,255,.04) 65%, rgba(255,255,255,.35)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+  .skill .lb span { display: block; width: max-content; padding: 12px 16px; }   /* keeps its natural width so it can be measured while folded */
+  .skill.ready:hover, .skill.ready.open { gap: 8px; }
+  .skill.ready:hover .ic, .skill.ready.open .ic { filter: brightness(1.18); }
+  .skill.ready:hover .lb, .skill.ready.open .lb { max-width: var(--lw, 220px); opacity: 1; filter: blur(0); }
+  /* light theme: the same glass on a pale page — clear body, crisp white rim, soft grey shadow */
+  :root[data-theme="light"] .skill .ic { color: #010707;
+               background: radial-gradient(120% 70% at 50% 108%, rgba(255,255,255,.95), rgba(255,255,255,.35) 45%, transparent 62%),
+                           radial-gradient(80% 60% at 28% 22%, rgba(255,255,255,.7), transparent 60%), rgba(1,7,7,.04);
+               box-shadow: inset 0 9px 10px -6px rgba(1,7,7,.12), 0 10px 22px rgba(1,7,7,.12), 0 2px 5px rgba(1,7,7,.1); }
+  :root[data-theme="light"] .skill .ic::after { background: conic-gradient(from 0deg, rgba(1,7,7,.16), rgba(1,7,7,.05) 70deg, #fff 140deg, rgba(1,7,7,.06) 215deg, #fff 310deg, rgba(1,7,7,.16)); }
+  :root[data-theme="light"] .skill .lb { background: linear-gradient(rgba(1,7,7,.04), rgba(1,7,7,.03)); box-shadow: 0 8px 18px rgba(1,7,7,.08); }
+  :root[data-theme="light"] .skill .lb::before { background: linear-gradient(160deg, #fff, rgba(1,7,7,.08) 40%, rgba(1,7,7,.06) 65%, #fff); }
+  .skill.lft { flex-direction: row-reverse; }
   /* two faint grey dots sitting behind the "0 → 1 Builder" chip in Figma */
   .dot { width: 16px; height: 16px; border-radius: 50%; background: rgba(91,91,91,.3); opacity: 0; }
 
-  /* logo band: full width, drifting slowly to the left forever; the edges are darkened and softly blurred */
-  .band { left: 0; top: 1337.74px; width: 1440px; height: 76px; overflow: hidden; }
-  .bandTrack { display: flex; width: max-content; height: 100%; animation: bandRun 60s linear infinite; will-change: transform; }
-  .bandSet { display: flex; align-items: center; gap: 54px; padding-right: 54px; height: 100%; }
-  .bandSet img { display: block; flex: none; }
-  @keyframes bandRun { to { transform: translateX(-50%); } }
-  .bandEdge { position: absolute; top: 0; bottom: 0; width: 240px; pointer-events: none;
-    -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px); }
-  .bandEdge.left  { left: 0;  background: linear-gradient(to right, rgb(var(--bgrgb)) 0%, rgba(var(--bgrgb), .8) 35%, rgba(var(--bgrgb), 0) 100%);
-    -webkit-mask: linear-gradient(to right, #000 30%, transparent); mask: linear-gradient(to right, #000 30%, transparent); }
-  .bandEdge.right { right: 0; background: linear-gradient(to left, rgb(var(--bgrgb)) 0%, rgba(var(--bgrgb), .8) 35%, rgba(var(--bgrgb), 0) 100%);
-    -webkit-mask: linear-gradient(to left, #000 30%, transparent); mask: linear-gradient(to left, #000 30%, transparent); }
-  @media (prefers-reduced-motion: reduce) { .bandTrack { animation: none; } }
+  /* logo row (Figma "Frame 91"): six logos spread across 1201px with 12px side padding */
+  /* logo row: the six logos glide slowly to the left in an endless loop (two copies back to back), spaced as in Figma (75px apart),
+     softly fading in and out at the edges; hovering pauses it */
+  .band { left: 120px; top: 1393px; width: 1201px; height: 61.48px; overflow: hidden;
+          -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+  .bandTrack { display: flex; align-items: center; height: 100%; width: max-content; animation: bandMove 46s linear infinite; will-change: transform; }
+  .bandTrack img { display: block; flex: none; margin-right: 75px; }
+  @keyframes bandMove { from { transform: translateX(12px); } to { transform: translateX(calc(-50% + 12px)); } }
+  .band:hover .bandTrack { animation-play-state: paused; }
+  @media (prefers-reduced-motion: reduce) { .bandTrack { animation: none; transform: translateX(12px); } }
   /* "6 sectors. 2+ years. 5 enterprise clients." — numbers in Bricolage, words in Satoshi */
-  .stats { left: 120px; top: 1227px; width: 1201px; margin: 0; text-align: center; white-space: pre; font-family: 'Satoshi', sans-serif; font-weight: 400;
-           font-size: 52px; line-height: 86px; letter-spacing: 1.04px; color: var(--hook); }
+  .stats { left: 120px; top: 1275px; width: 1201px; margin: 0; text-align: center; white-space: pre; font-family: 'Satoshi', sans-serif; font-weight: 400;
+           font-size: 48px; line-height: 86.4px; letter-spacing: .96px; color: var(--hook); }
   .stats b { font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500; font-size: 64px; letter-spacing: 1.28px; }
   .stats i { font-style: normal; font-weight: 500; font-size: 64px; letter-spacing: 1.28px; }   /* the spaces are Satoshi Medium in Figma */
   .stats i.s { font-size: 52px; letter-spacing: 1.04px; }
-  .selected { left: 120px; top: 1521px; width: 1198px; margin: 0; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500;
+  .selected { left: 120px; top: 1571px; width: 1198px; margin: 0; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500;
               font-size: 44px; line-height: 1.35; letter-spacing: .88px; color: var(--sel); }
   /* placeholders for the six case studies and the footer, as in Figma */
-  .card { width: 566px; height: 657px; background: #d9d9d9; }
-  .recs { left: 120px; top: 3939px; width: 1200px; margin: 0; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500;
+
+  .recs { left: 120px; top: 4190px; width: 1201px; margin: 0; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500;
           font-size: 44px; line-height: 1.35; letter-spacing: .88px; color: var(--sel); }
-  .recBlock { left: 120px; top: 4048px; width: 1200px; height: 503px; background: #d9d9d9; }   /* placeholder, as in Figma */
+  /* recommendation cards (Figma "Frame 135"): 10% glass, photo circle, name, role, quote — one at a time, drifting in like About's recognitions */
+  .rec { left: 302.5px; top: 4295px; width: 836px; height: 262px; margin: 0; padding: 40px; border-radius: 12px; display: flex; flex-direction: column; gap: 20px;
+         background: rgba(var(--hi), calc(.1 * var(--hiA))); -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); isolation: isolate;
+         font-family: 'Satoshi', sans-serif; opacity: 0; transform: translateX(var(--in, -56px)); filter: blur(6px); visibility: hidden; }
+  .rec::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+    background: linear-gradient(160deg, rgba(var(--hi), calc(.25 * var(--hiA))), rgba(var(--hi), calc(.1 * var(--hiA))) 50%, rgba(var(--hi), calc(.16 * var(--hiA))));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+  .rec.show  { visibility: visible; opacity: 1; transform: none; filter: blur(0);
+               transition: opacity 1.2s cubic-bezier(.33,0,.2,1), transform 1.5s cubic-bezier(.22,.61,.24,1), filter 1.2s ease, visibility 0s; }
+  .rec.leave { visibility: visible; opacity: 0; transform: translateX(var(--out, 56px)); filter: blur(6px);
+               transition: opacity .95s cubic-bezier(.5,0,.75,.5), transform 1.15s cubic-bezier(.55,0,.6,.6), filter .95s ease, visibility 0s; }
+  .rec .who { display: flex; gap: 20px; align-items: flex-start; }
+  .rec .pic { position: relative; width: 84px; height: 84px; border-radius: 500px; overflow: hidden; background: #f2f2f2; flex: none; }
+  .rec .pic img { position: absolute; left: 0; top: 0; width: 84px; height: 84px; object-fit: cover; display: block; max-width: none; }
+  .rec p { margin: 0; line-height: 1.35; }
+  .rec .n { padding: 10px; font-weight: 500; font-size: 24px; letter-spacing: .48px; color: var(--ink); white-space: nowrap; }
+  .rec .d { padding: 10px; font-weight: 300; font-size: 20px; letter-spacing: .4px; color: var(--hook); white-space: nowrap; }
+  .rec .q { font-weight: 400; font-size: 18px; letter-spacing: .36px; color: var(--ink); }
+  .arrow { top: 4406px; width: 40px; height: 40px; border-radius: 50%; border: 0; padding: 0; cursor: pointer; color: var(--ink);
+           display: grid; place-items: center; opacity: .4; transition: background .3s ease, transform .3s ease, opacity .3s ease; }
+  .arrow:hover, .arrow:focus-visible { opacity: .85; }
+  .arrow svg { width: 16px; height: 16px; display: block; }
+  .arrow.prev { left: 234.5px; } .arrow.next { left: 1166.5px; }
+  .arrow:hover { background: linear-gradient(135deg, rgba(var(--hi), calc(0.14 * var(--hiA))), rgba(var(--hi), calc(0.19 * var(--hiA)))); }
+  .arrow.prev:hover { transform: translateX(-2px); } .arrow.next:hover { transform: translateX(2px); }
+  .arrow:focus-visible, .recDots button:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  /* dots under the card, as on About: the long one is the recommendation showing */
+  .recDots { left: 0; width: 1440px; top: 4585px; display: flex; justify-content: center; gap: 10px; }
+  .recDots button { width: 6px; height: 6px; padding: 0; border: 0; border-radius: 3px; cursor: pointer; background: rgba(var(--hi), calc(.28 * var(--hiA)));
+                    transition: width .6s cubic-bezier(.4,0,.2,1), background .6s ease; }
+  .recDots button[aria-current="true"] { width: 22px; background: rgba(var(--hi), calc(.9 * var(--hiA))); }
+  :root[data-theme="light"] .recDots button[aria-current="true"] { background: #010707; }
+  /* ---- Selected Work thumbnail animations (driven by thumbs.js; looping ones only run while the card is in view) ---- */
+  /* TMFL: a phone prototype stepping through the flow */
+  .phone { width: 312px; padding: 10px; border-radius: 46px; background: #0d0d10;
+           box-shadow: inset 0 0 0 1.5px #3b3b40, inset 0 0 0 3px #1b1b1f, 0 30px 60px rgba(50,0,70,.28), 0 8px 18px rgba(0,0,0,.25); }
+  .phone { transform-origin: 0 0; will-change: transform; }
+  .phScreen { position: relative; width: 292px; height: 660px; border-radius: 36px; overflow: hidden; background: #fafafa; }
+  /* screens stack; the next one is pushed in from the right like a real app (thumbs.js) */
+  .phSlide { position: absolute; inset: 0; overflow: hidden; background: #fafafa; transform: translateX(100%); will-change: transform; }
+  .phSlide.on { transform: none; }
+  .phScroll { will-change: transform; } .phScroll > img { display: block; }
+  /* the status bar and purple app bar stay put while the queue scrolls under them */
+  .phHead { position: absolute; left: 0; top: 0; width: 293px; height: 69px; overflow: hidden; } .phHead > img { display: block; }
+  /* screens are slightly overscanned (293px) so no sliver of background shows at the edges */
+  .phInner { position: absolute; left: 0; top: 0; width: 374px; height: 800px; transform: scale(.78342); transform-origin: 0 0; }
+  .phInner.fl { width: 360px; transform: scale(.81389); }
+  .phInner > img, .phInner .phScroll > img { position: absolute; left: 0; top: 0; display: block; }
+  .phInner .phScroll { position: absolute; inset: 0; }
+  .otp { clip-path: inset(410px 374px 342px 18px); }
+  .tap { position: absolute; left: 0; top: 0; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; z-index: 5; pointer-events: none; opacity: 0;
+         background: rgba(35,0,76,.16); box-shadow: 0 0 0 2px rgba(35,0,76,.3); }
+  .phBlack { position: absolute; inset: 0; background: #0d0d10; opacity: 0; z-index: 6; pointer-events: none; }
+  .phCam { position: absolute; left: 50%; top: 18px; width: 9px; height: 9px; margin-left: -4.5px; border-radius: 50%; background: #0b0b0d; box-shadow: 0 0 0 1.5px #1e1e22; }
+  .kycDim { position: absolute; inset: 0 0 -300px; background: rgba(0,0,0,.4); opacity: 0; transition: opacity .5s ease; }
+  .kycModal { position: absolute; left: 15.5px; top: 200px;   /* the true centre of the screen; the screen scrolls up to show it (thumbs.js) */ width: 343px; height: 400px; border-radius: 12px; background: #fff; overflow: hidden;
+              box-shadow: 0 20px 24px -4px rgba(16,24,40,.1), 0 8px 8px -4px rgba(16,24,40,.04); font-family: 'Inter', sans-serif;
+              opacity: 0; transform: translateY(18px) scale(.94); transition: opacity .5s ease, transform .6s cubic-bezier(.2,.8,.2,1.15); }
+  .popOn .kycDim { opacity: 1; } .popOn .kycModal { opacity: 1; transform: none; }
+  .kycModal p { margin: 0; padding: 0 16px; white-space: normal; letter-spacing: 0; }
+  .kycModal .mt { padding-top: 20px; font-weight: 600; font-size: 18px; line-height: 28px; color: #101828; }
+  .kycModal .ms { margin-top: 4px; font-weight: 400; font-size: 14px; line-height: 20px; color: #475467; }
+  .kycModal .fp { position: absolute; left: 118.4px; top: 130px; width: 106.167px; height: 140px; }
+  .kycModal .mx { position: absolute; left: 296.5px; top: 11px; padding: 7.5px; border-radius: 6px; background: #8a1695; display: flex; }
+  .kycModal .mx img { width: 18px; height: 18px; display: block; }
+  .kycModal .mb { position: absolute; left: 16px; right: 16px; top: 331px; padding: 10px 18px; border-radius: 8px; background: #8a1695; color: #fff;
+                  text-align: center; font-weight: 600; font-size: 16px; line-height: 24px; box-shadow: 0 1px 2px rgba(16,24,40,.05); }
+  /* Everest and CX Navigator: a laptop the camera glides into */
+  .laptop { left: 0; top: 0; transform-origin: 0 0; will-change: transform; }
+  .laptop .lid { position: relative; padding: 14px; border-radius: 20px 20px 8px 8px; background: #0e0e10;
+                 box-shadow: inset 0 0 0 1px #3a3a3e, 0 26px 50px rgba(0,0,0,.35); }
+  .laptop .lid > img { display: block; border-radius: 3px; }
+  .evScreen { position: relative; width: 756px; height: 491px; overflow: hidden; border-radius: 3px; } .evScreen > img { display: block; }
+  /* the agents panel below the welcome bar (Figma: x 70, y 70 → 483.5) scrolls on its own */
+  .evContent { position: absolute; left: 70px; top: 70px; width: 656px; height: 413.5px; overflow: hidden; background: #fefefe; border-bottom-right-radius: 12px; }
+  .evContent > img { position: absolute; left: -70px; top: -70px; width: 756px; height: 491px; display: block; will-change: transform; }
+  .laptop .lid::before { content: ""; position: absolute; left: 50%; top: 5px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #26262a; }
+  .laptop .base { position: relative; margin: 0 -40px; height: 18px; border-radius: 2px 2px 16px 16px;
+                  background: linear-gradient(#e2e3e5, #b4b6ba 45%, #7d8085); box-shadow: 0 10px 22px rgba(0,0,0,.3); }
+  .laptop .base::before { content: ""; position: absolute; left: 50%; top: 0; width: 120px; height: 6px; margin-left: -60px; border-radius: 0 0 8px 8px; background: rgba(0,0,0,.18); }
+  .cxNum { position: absolute; left: 256px; top: 195.5px; width: 42.5px; height: 48px; display: grid; place-items: center;
+           font-family: 'Open Sans', sans-serif; font-weight: 400; font-size: 28px; color: #000; font-variant-numeric: tabular-nums; }
+  .cxTag { position: absolute; left: 0; top: 0; width: 42.5px; height: 17px; margin: -8.5px 0 0 -21.25px; border-radius: 50px; display: grid; place-items: center;
+           font-family: 'Open Sans', sans-serif; font-size: 5px; color: #000; white-space: nowrap; border: .3px solid #fff;
+           background: linear-gradient(rgba(250,249,249,.6), rgba(242,255,239,.6)); -webkit-backdrop-filter: blur(1px); backdrop-filter: blur(1px); }
+  /* Jar: a 3D coin rises, spins twice and drops back (thickness from a stack of rim discs) */
+  .coinWrap { perspective: 700px; }
+  .coinMove { position: absolute; inset: 0; transform: translateY(340px); opacity: 0; animation: coinMove 5.2s infinite; }
+  .coinGlow { position: absolute; inset: -34px; border-radius: 50%; background: radial-gradient(circle, rgba(249,194,60,.42), rgba(249,194,60,.12) 42%, rgba(249,194,60,0) 64%); }
+  .coin3d { position: absolute; inset: 0; transform-style: preserve-3d; animation: coinSpin 5.2s infinite; }
+  .coin3d img { position: absolute; left: 0; top: 0; width: 120px; height: 120px; display: block; backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+  .coin3d .cf { transform: translateZ(6.5px); } .coin3d .cb { transform: rotateY(180deg) translateZ(6.5px); }
+  .coin3d i { position: absolute; left: 7.5px; top: 7.5px; width: 105px; height: 105px; border-radius: 50%;
+              background: linear-gradient(90deg, #a8651a, #e3a136 40%, #f7cc5a 52%, #c9821f 70%, #a8651a); }
+  @keyframes coinMove {
+    0%   { transform: translateY(340px); opacity: 0; animation-timing-function: cubic-bezier(.2,.7,.25,1); }
+    22%  { transform: translateY(0); opacity: 1; animation-timing-function: ease-in-out; }
+    58%  { transform: translateY(0); opacity: 1; animation-timing-function: cubic-bezier(.3,0,.5,1); }
+    64%  { transform: translateY(-10px); opacity: 1; animation-timing-function: cubic-bezier(.55,0,.75,.4); }
+    82%, 100% { transform: translateY(340px); opacity: 0; } }
+  @keyframes coinSpin {
+    0%   { transform: rotateY(0deg); animation-timing-function: cubic-bezier(.2,.7,.25,1); }
+    22%  { transform: rotateY(300deg); animation-timing-function: cubic-bezier(.4,0,.4,1); }
+    58%, 100% { transform: rotateY(720deg); } }
+  /* Float: the glowing lights drift slowly */
+  .sparks { left: 0; top: 0; width: 566px; height: 722px; }
+  .spark { position: absolute; border-radius: 50%; filter: blur(3.5px); animation: drift var(--t) ease-in-out var(--d) infinite; }
+  .spark.sa { background: radial-gradient(circle, rgba(255,246,226,.95) 0 14%, rgba(249,221,118,.5) 32%, rgba(249,221,118,0) 70%); }
+  .spark.sb { background: radial-gradient(circle, rgba(255,238,226,.95) 0 14%, rgba(237,165,94,.5) 32%, rgba(237,165,94,0) 70%); }
+  .spark.sc { background: radial-gradient(circle, rgba(255,232,228,.95) 0 14%, rgba(234,145,108,.5) 32%, rgba(234,145,108,0) 70%); }
+  @keyframes drift { 0%, 100% { transform: translate(0, 0); opacity: .9; } 33% { transform: translate(var(--x1), var(--y1)); opacity: 1; }
+                     66% { transform: translate(var(--x2), var(--y2)); opacity: .7; } }
+  /* Event Tourism: a white streak traces the lion's profile, fades at the end, and comes round again */
+  .streak { left: 0; top: 0; width: 566px; height: 722px; overflow: visible; }
+  .streak path { fill: none; stroke: #fff; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 140 1200; stroke-dashoffset: 140;
+                 animation: streak 4.6s cubic-bezier(.45,.05,.4,1) infinite; }
+  .streak .glow { stroke-width: 12; filter: blur(4px); }
+  .streak .core { stroke-width: 3.2; filter: drop-shadow(0 0 3px rgba(255,255,255,.95)) drop-shadow(0 0 8px rgba(255,255,255,.7)); }
+  @keyframes streak { 0% { stroke-dashoffset: 140; opacity: 0; } 8% { opacity: 1; } 72% { stroke-dashoffset: -860; opacity: 1; }
+                      86% { stroke-dashoffset: -860; opacity: 0; } 100% { stroke-dashoffset: -860; opacity: 0; } }
+  .streak .glow { animation-name: streakGlow; }
+  @keyframes streakGlow { 0% { stroke-dashoffset: 140; opacity: 0; } 8% { opacity: .85; } 72% { stroke-dashoffset: -860; opacity: .85; }
+                          86% { stroke-dashoffset: -860; opacity: 0; } 100% { stroke-dashoffset: -860; opacity: 0; } }
+  @media (prefers-reduced-motion: reduce) { .coinMove, .coin3d { animation: none; transform: none; opacity: 1; } .spark, .streak path { animation: none; } .streak { display: none; } }
+  /* Selected Work: hovering one card softly drains the colour from the other five */
+  .pcard.w { cursor: default; transition: transform .6s cubic-bezier(.2,.7,.2,1), box-shadow .6s ease, filter .7s ease; }
+  .pcard.w:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,.35); }
+  :root[data-theme="light"] .pcard.w:hover { box-shadow: 0 18px 40px rgba(1,7,7,.14); }
+  #stage:has(.pcard.w:hover) .pcard.w:not(:hover) { filter: grayscale(1) brightness(.45); }
+  /* Playground teaser (Figma "Frame 1410113176") */
+  .pgTitle { left: 263.72px; top: 4811px; width: 892px; margin: 0; text-align: center; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 500;
+             font-size: 44px; line-height: 1.35; letter-spacing: .88px; color: var(--sel); }
+  .more { left: 1165.72px; top: 4818.36px; height: 44.28px; padding: 8px 20px; border-radius: 50px; display: flex; align-items: center; text-decoration: none;
+          font-family: 'Satoshi', sans-serif; font-weight: 400; font-size: 16px; line-height: 1.35; letter-spacing: .32px; color: var(--ink);
+          background: rgba(114,159,195,0.4); transition: background .3s ease; }
+  .more:hover { background: rgba(114,159,195,0.52); }
+  .more:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  :root[data-theme="light"] .more { background: rgba(79,127,168,0.4); }
+  .more svg { width: 28.28px; height: 28.28px; display: block; flex: none; transition: transform .3s ease; }
+  .more:hover svg { transform: translateX(2px); }
   :root { --exHead: #f2f2f2; --exBody: rgba(217,217,217,.85); --exDate: #787878; --rule: linear-gradient(90deg, #1a1a1a, #343434 51%, #1a1a1a);
           --foot: #111111; --footInk: #747474; --footIcon: #454545; --footFine: #323131; }
   :root[data-theme="light"] { --exHead: #0d1515; --exBody: rgba(13,21,21,.85); --exDate: #6f7777; --rule: linear-gradient(90deg, #e3e6e6, #c6cbcb 51%, #e3e6e6);
@@ -194,11 +373,11 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   /* footer (Figma "Frame 117") */
   .foot { left: 0; top: 3442.99px; width: 1440px; height: 295px; background: var(--foot); }
   .foot .reach { position: absolute; left: 0; width: 1440px; top: 57px; margin: 0; text-align: center; font-family: 'Satoshi', sans-serif; font-weight: 500;
-                 font-size: 18px; line-height: 24px; letter-spacing: .36px; color: var(--footInk); }
-  .foot .icons { position: absolute; left: 634.15px; top: 103px; width: 171.7px; height: 35.35px; display: block; }
+                 font-size: 16px; line-height: 21.6px; letter-spacing: .32px; color: var(--footInk); }
+  .foot .icons { position: absolute; left: 634.15px; top: 100.6px; width: 171.7px; height: 35.35px; display: block; }
   .foot .icons a { fill: var(--footIcon); transition: fill .25s ease; }
   .foot .icons a:hover { fill: var(--footInk); }
-  .foot .fine { position: absolute; left: 0; width: 1440px; top: 212.35px; margin: 0; display: flex; justify-content: center; align-items: center; gap: 8px;
+  .foot .fine { position: absolute; left: 0; width: 1440px; top: 209.95px; margin: 0; display: flex; justify-content: center; align-items: center; gap: 8px;
                 font-family: 'Satoshi', sans-serif; font-weight: 500; font-size: 14px; line-height: 19px; letter-spacing: .28px; color: var(--footFine); }
   .foot .fine svg { width: 16px; height: 16px; display: block; fill: var(--footFine); }
 
@@ -215,14 +394,14 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
 <feFuncB type="table" tableValues="0.0000 0.0483 0.0965 0.1448 0.1930 0.2414 0.2897 0.3379 0.3862 0.4345 0.4745 0.5183 0.5444 0.5761 0.6058 0.6346 0.6603 0.6844 0.7075 0.7280 0.7469 0.7663 0.7819 0.7976 0.8134 0.8241 0.8389 0.8487 0.8620 0.8718 0.8855 0.8911 0.8975 0.9096 0.9135 0.9239 0.9266 0.9369 0.9422 0.9487 0.9522 0.9607 0.9661 0.9687 0.9726 0.9765 0.9805 0.9819 0.9845 0.9882 0.9885 0.9924 0.9925 0.9963 0.9963 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000"/>
 </feComponentTransfer></filter></svg>
 <div id="shell"><div class="stage" id="stage">
-<script>(() => { const s = innerWidth / 1440, st = document.getElementById('stage'); st.style.transform = `scale(${s})`; document.getElementById('shell').style.height = 5022 * s + 'px'; })();</script>
+<script>(() => { const s = innerWidth / 1440, st = document.getElementById('stage'); st.style.transform = `scale(${s})`; document.getElementById('shell').style.height = 6249 * s + 'px'; })();</script>
 
   <div class="hero abs pre" id="hero"><p>Hello, I’m Ap    rva B S</p></div>
   <div class="inf abs pre" id="inf"><img class="forDark" src="inf-t@4x.png" alt=""><img class="forLight" src="inf-light@4x.png" alt=""></div>
   <div class="sub abs pre" id="sub"><p><span class="rot" aria-label="Critical Thinker, Behavior-Led, Engineer-Mind, Strategic Designer"><span class="rotList" id="rotList" aria-hidden="true"><b>Critical Thinker</b><b>Behavior-Led</b><b>Engineer-Mind</b><b>Strategic Designer</b><b>Critical Thinker</b></span></span> previously at</p><span class="logos"><img class="forDark" src="logos2-dark@4x.png" alt="Deloitte & Jar"><img class="forLight" src="logos2-light@4x.png" alt="Deloitte & Jar"></span></div>
   <p class="tag abs pre" id="tag">Knights see the invisible, at every move. Click below to discover how.</p>
 
-  <div class="abs pre" id="boardWrap" style="left:0;top:0;width:1440px;height:1240px;pointer-events:none">
+  <div class="abs pre" id="boardWrap" style="left:0;top:0;width:1440px;height:1265px;pointer-events:none">
     <img class="board dark abs" src="board2-export.png" alt="" fetchpriority="high">
     <img class="board light abs" src="board3-light.png" alt="">
     <div class="fadeTop abs"></div>
@@ -244,30 +423,91 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   </nav>
 
   <!-- the strengths, listed left → right (the order they appear) -->
-  <div class="chip glass abs" style="left:426px;top:769px;width:118px">Data Driven</div>
-  <div class="chip glass abs" style="left:447px;top:660px;width:131px">Design Sense</div>
-  <div class="chip glass abs" style="left:641px;top:581px;width:154px">Product Strategy</div>
-  <div class="chip glass abs" style="left:848px;top:660px;width:129px">0     1 Builder<svg class="arrow" viewBox="0 0 18.45 9"><path d="M0 5.4H13.05V9L18.45 4.5L13.05 0V3.6H0V5.4Z" fill="currentColor" fill-opacity="0.8"/></svg></div>
-  <div class="chip glass abs" style="left:888px;top:769px;width:111px">AI Forward</div>
+  <div class="skill lft abs" style="left:536px;top:823px" tabindex="0" aria-label="Data Driven"><span class="ic"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M18 12C18 11.6464 18.1405 11.3072 18.3905 11.0572C18.6406 10.8071 18.9797 10.6667 19.3333 10.6667H24C24.3536 10.6667 24.6928 10.8071 24.9428 11.0572C25.1929 11.3072 25.3333 11.6464 25.3333 12V16.6667C25.3333 17.0203 25.1929 17.3594 24.9428 17.6095C24.6928 17.8595 24.3536 18 24 18C23.6464 18 23.3072 17.8595 23.0572 17.6095C22.8071 17.3594 22.6667 17.0203 22.6667 16.6667V15.2187L16.9427 20.9427C16.6926 21.1926 16.3536 21.333 16 21.333C15.6464 21.333 15.3074 21.1926 15.0573 20.9427L12 17.8853L8.94267 20.9427C8.6912 21.1855 8.35439 21.3199 8.0048 21.3169C7.6552 21.3139 7.32079 21.1736 7.07358 20.9264C6.82636 20.6792 6.68614 20.3448 6.6831 19.9952C6.68006 19.6456 6.81446 19.3088 7.05733 19.0573L11.0573 15.0573C11.3074 14.8074 11.6464 14.667 12 14.667C12.3536 14.667 12.6926 14.8074 12.9427 15.0573L16 18.1147L20.7813 13.3333H19.3333C18.9797 13.3333 18.6406 13.1929 18.3905 12.9428C18.1405 12.6928 18 12.3536 18 12Z" fill="currentColor" fill-opacity="0.4"/></svg></span><span class="lb"><span>Data Driven</span></span></div>
+  <div class="skill lft abs" style="left:535px;top:690px" tabindex="0" aria-label="Design Sense"><span class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M4.125 19.25C4.125 19.25 2.75 19.25 2.75 17.875C2.75 16.5 4.125 12.375 11 12.375C17.875 12.375 19.25 16.5 19.25 17.875C19.25 19.25 17.875 19.25 17.875 19.25H4.125ZM11 11C12.094 11 13.1432 10.5654 13.9168 9.79182C14.6904 9.01823 15.125 7.96902 15.125 6.875C15.125 5.78098 14.6904 4.73177 13.9168 3.95818C13.1432 3.1846 12.094 2.75 11 2.75C9.90598 2.75 8.85677 3.1846 8.08318 3.95818C7.3096 4.73177 6.875 5.78098 6.875 6.875C6.875 7.96902 7.3096 9.01823 8.08318 9.79182C8.85677 10.5654 9.90598 11 11 11Z" fill="currentColor" fill-opacity="0.4"/></svg></span><span class="lb"><span>Design Sense</span></span></div>
+  <div class="skill mid abs" style="left:691px;top:623px" tabindex="0" aria-label="Product Strategy"><span class="ic"><svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M13.482 18.75H10.7031C10.5166 18.75 10.3378 18.6759 10.2059 18.5441C10.0741 18.4122 10 18.2334 10 18.0469V16.9645C10.0005 16.7982 9.96717 16.6336 9.90195 16.4807C9.83674 16.3277 9.74104 16.1897 9.6207 16.075C9.3168 15.7785 8.87539 15.6141 8.41406 15.6254C7.57969 15.6449 6.875 16.3793 6.875 17.2293V18.0469C6.875 18.2334 6.80092 18.4122 6.66906 18.5441C6.5372 18.6759 6.35836 18.75 6.17188 18.75H3.42266C3.13734 18.75 2.85482 18.6938 2.59122 18.5846C2.32762 18.4754 2.08811 18.3154 1.88636 18.1136C1.4789 17.7062 1.25 17.1536 1.25 16.5773V13.8281C1.25 13.6416 1.32408 13.4628 1.45594 13.3309C1.5878 13.1991 1.76664 13.125 1.95312 13.125H3.03555C3.39336 13.125 3.74141 12.9719 4.01562 12.6953C4.16818 12.5415 4.28883 12.3591 4.37062 12.1585C4.4524 11.9579 4.49372 11.7432 4.49219 11.5266C4.48047 10.6988 3.79922 10 3.0043 10H1.95312C1.76664 10 1.5878 9.92592 1.45594 9.79406C1.32408 9.6622 1.25 9.48335 1.25 9.29687V6.54766C1.25 6.26234 1.3062 5.97982 1.41538 5.71622C1.52457 5.45262 1.68461 5.21311 1.88636 5.01136C2.29381 4.6039 2.84643 4.375 3.42266 4.375H5.58047C5.66335 4.375 5.74283 4.34208 5.80144 4.28347C5.86004 4.22487 5.89297 4.14538 5.89297 4.0625V3.80937C5.89297 3.46944 5.96068 3.13291 6.09214 2.81943C6.2236 2.50594 6.41619 2.22178 6.65866 1.98353C6.90113 1.74528 7.18862 1.55771 7.50437 1.43177C7.82011 1.30583 8.15777 1.24403 8.49766 1.25C9.88398 1.27422 11.0117 2.43672 11.0117 3.84102V4.0625C11.0117 4.14538 11.0446 4.22487 11.1032 4.28347C11.1619 4.34208 11.2413 4.375 11.3242 4.375H13.482C13.7635 4.375 14.0421 4.43043 14.3021 4.53812C14.5621 4.64582 14.7983 4.80367 14.9973 5.00266C15.1963 5.20165 15.3542 5.43789 15.4619 5.69789C15.5696 5.95789 15.625 6.23655 15.625 6.51797V8.67578C15.625 8.75866 15.6579 8.83815 15.7165 8.89675C15.7751 8.95536 15.8546 8.98828 15.9375 8.98828H16.1586C17.5875 8.98828 18.75 10.1211 18.75 11.5133C18.75 12.9434 17.602 14.107 16.1906 14.107H15.9375C15.8546 14.107 15.7751 14.14 15.7165 14.1986C15.6579 14.2572 15.625 14.3367 15.625 14.4195V16.607C15.625 16.8884 15.5696 17.1671 15.4619 17.4271C15.3542 17.6871 15.1963 17.9233 14.9973 18.1223C14.7983 18.3213 14.5621 18.4792 14.3021 18.5869C14.0421 18.6946 13.7635 18.75 13.482 18.75Z" fill="currentColor" fill-opacity="0.3"/></svg></span><span class="lb"><span>Product Strategy</span></span></div>
+  <div class="skill abs" style="left:847px;top:690px" tabindex="0" aria-label="Value Creation"><span class="ic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21.78 6.78C21.8848 6.67511 21.9561 6.54153 21.985 6.39614C22.0138 6.25074 21.999 6.10004 21.9423 5.96308C21.8856 5.82611 21.7895 5.70903 21.6663 5.62661C21.5431 5.54419 21.3982 5.50013 21.25 5.5H18.5V2.75C18.4999 2.60176 18.4558 2.45688 18.3734 2.33367C18.291 2.21045 18.1739 2.11442 18.0369 2.05771C17.9 2.001 17.7493 1.98615 17.6039 2.01503C17.4585 2.04392 17.3249 2.11524 17.22 2.22L14.72 4.72C14.5793 4.86052 14.5002 5.05115 14.5 5.25V8.086L12.518 10.068C12.2217 9.98916 11.9112 9.97941 11.6105 10.0395C11.3098 10.0996 11.027 10.2279 10.7837 10.4145C10.5404 10.6012 10.3433 10.8412 10.2074 11.1161C10.0715 11.391 10.0006 11.6934 10 12C10.0001 12.2846 10.061 12.5659 10.1786 12.8252C10.2961 13.0844 10.4677 13.3155 10.6817 13.5031C10.8958 13.6907 11.1474 13.8305 11.4198 13.9131C11.6922 13.9956 11.979 14.0191 12.2612 13.982C12.5434 13.9448 12.8144 13.8478 13.0561 13.6975C13.2978 13.5472 13.5047 13.347 13.6628 13.1104C13.821 12.8737 13.9268 12.6061 13.9732 12.3253C14.0196 12.0444 14.0056 11.757 13.932 11.482L15.914 9.5H18.75C18.9488 9.49982 19.1395 9.42069 19.28 9.28L21.78 6.78ZM12 2C13.1677 1.99889 14.3265 2.2023 15.424 2.601L14.012 4.013C13.9493 4.07567 13.8923 4.14233 13.841 4.213C12.147 3.81292 10.3687 3.97625 8.7759 4.67822C7.18311 5.38018 5.86271 6.58249 5.01502 8.10274C4.16732 9.62299 3.83858 11.3782 4.07865 13.1022C4.31873 14.8262 5.11453 16.4249 6.34534 17.6557C7.57614 18.8865 9.17479 19.6823 10.8988 19.9223C12.6228 20.1624 14.378 19.8337 15.8983 18.986C17.4185 18.1383 18.6208 16.8179 19.3228 15.2251C20.0248 13.6323 20.1881 11.854 19.788 10.16C19.858 10.108 19.9247 10.0507 19.988 9.988L21.398 8.576C21.797 9.67343 22.0008 10.8323 22 12C22 17.523 17.523 22 12 22C6.477 22 2 17.523 2 12C2 6.477 6.477 2 12 2ZM12 6C12.5193 6.00133 13.0193 6.06467 13.5 6.19V7.672L13.086 8.086L13.037 8.136C12.4443 7.97793 11.8232 7.95813 11.2216 8.07812C10.62 8.19811 10.054 8.45469 9.56731 8.82806C9.0806 9.20143 8.68615 9.68162 8.41441 10.2316C8.14266 10.7815 8.00088 11.3866 8 12C8.0004 12.5692 8.12229 13.1318 8.35751 13.6501C8.59273 14.1685 8.93587 14.6306 9.364 15.0057C9.79213 15.3808 10.2954 15.6603 10.8401 15.8253C11.3849 15.9904 11.9586 16.0373 12.5229 15.9628C13.0873 15.8884 13.6292 15.6944 14.1126 15.3938C14.5959 15.0932 15.0095 14.6928 15.3258 14.2196C15.642 13.7463 15.8537 13.211 15.9465 12.6494C16.0393 12.0878 16.0112 11.5129 15.864 10.963L15.914 10.914L16.328 10.5H17.811C18.1238 11.7115 18.05 12.9905 17.6 14.1581C17.1499 15.3256 16.3461 16.3232 15.3011 17.0113C14.256 17.6994 13.0219 18.0435 11.7716 17.9956C10.5213 17.9476 9.3172 17.51 8.32789 16.7439C7.33859 15.9778 6.61355 14.9215 6.25423 13.723C5.89492 12.5244 5.91931 11.2435 6.32399 10.0595C6.72866 8.87549 7.49338 7.84761 8.51114 7.11971C9.52889 6.39182 10.7487 6.00032 12 6Z" fill="currentColor" fill-opacity="0.3"/></svg></span><span class="lb"><span>Value Creation</span></span></div>
+  <div class="skill abs" style="left:857px;top:823px" tabindex="0" aria-label="AI Forward"><span class="ic"><svg width="22" height="22" viewBox="0 0 22 22" fill="none" aria-hidden="true"><path d="M8.50781 1.375C9.17813 1.375 9.80031 1.58331 10.3125 1.93738V6.1875H8.81788C8.6563 5.72835 8.33743 5.34119 7.91776 5.09461C7.49808 4.84803 7.00468 4.75793 6.52494 4.84027C6.0452 4.92262 5.61009 5.17209 5.29666 5.54451C4.98323 5.91692 4.81172 6.38825 4.8125 6.875C4.8136 7.3607 4.98608 7.83044 5.29956 8.20144C5.61303 8.57245 6.04738 8.82092 6.52608 8.90309C7.00479 8.98525 7.49713 8.89584 7.91638 8.6506C8.33562 8.40536 8.65487 8.02004 8.81788 7.5625H10.3125V19.9368C9.71827 20.3847 8.99409 20.6263 8.25 20.625H8.03687C7.30434 20.6249 6.59098 20.3908 6.00082 19.9569C5.41066 19.5229 4.97457 18.9118 4.75613 18.2126L4.63994 17.8386C3.73526 17.7139 2.90627 17.266 2.30613 16.5776C1.70599 15.8893 1.37525 15.007 1.375 14.0937V13.75C1.37383 12.7346 1.74909 11.7548 2.42825 11H5.15625C5.42975 11 5.69206 11.1086 5.88545 11.302C6.07885 11.4954 6.1875 11.7577 6.1875 12.0312V12.4946C5.72835 12.6562 5.34119 12.9751 5.09461 13.3947C4.84803 13.8144 4.75793 14.3078 4.84027 14.7876C4.92262 15.2673 5.17209 15.7024 5.54451 16.0158C5.91692 16.3293 6.38825 16.5008 6.875 16.5C7.3607 16.4989 7.83044 16.3264 8.20144 16.0129C8.57245 15.6995 8.82092 15.2651 8.90309 14.7864C8.98525 14.3077 8.89584 13.8154 8.6506 13.3961C8.40536 12.9769 8.02003 12.6576 7.5625 12.4946V12.0312C7.5625 11.3931 7.30898 10.781 6.85773 10.3298C6.40647 9.87852 5.79443 9.625 5.15625 9.625H2.75275C2.30416 9.03103 2.06179 8.30683 2.0625 7.5625C2.06263 6.67554 2.40559 5.82296 3.01969 5.18298C3.63379 4.543 4.47149 4.16516 5.35769 4.12844C5.46068 3.366 5.83668 2.66678 6.41595 2.16046C6.99522 1.65413 7.73845 1.37506 8.50781 1.375ZM13.4922 1.375C14.2615 1.37506 15.0048 1.65413 15.5841 2.16046C16.1633 2.66678 16.5393 3.366 16.6423 4.12844C17.3401 4.15771 18.0125 4.39884 18.5698 4.81974C19.1272 5.24064 19.5431 5.82132 19.7622 6.48449C19.9813 7.14765 19.9932 7.86182 19.7963 8.53192C19.5995 9.20202 19.2031 9.79625 18.6601 10.2355C19.2606 10.6046 19.7565 11.1215 20.1005 11.7367C20.4445 12.352 20.6251 13.0451 20.625 13.75V14.0937C20.6248 15.007 20.294 15.8893 19.6939 16.5776C19.0937 17.266 18.2647 17.7139 17.3601 17.8386L17.2439 18.2126C17.0254 18.9118 16.5893 19.5229 15.9992 19.9569C15.409 20.3908 14.6957 20.6249 13.9631 20.625H13.75C13.0059 20.6263 12.2817 20.3847 11.6875 19.9368V15.125H13.4063C14.0444 15.125 14.6565 14.8715 15.1077 14.4202C15.559 13.969 15.8125 13.3569 15.8125 12.7187V12.2547C16.2712 12.0928 16.6578 11.7738 16.904 11.3543C17.1502 10.9348 17.2401 10.4418 17.1578 9.96238C17.0755 9.48299 16.8263 9.04815 16.4543 8.73477C16.0823 8.4214 15.6114 8.24968 15.125 8.25C14.6386 8.24968 14.1677 8.4214 13.7957 8.73477C13.4237 9.04815 13.1745 9.48299 13.0922 9.96238C13.0099 10.4418 13.0998 10.9348 13.346 11.3543C13.5922 11.7738 13.9788 12.0928 14.4375 12.2547V12.7187C14.4375 12.9923 14.3288 13.2546 14.1355 13.448C13.9421 13.6413 13.6798 13.75 13.4063 13.75H11.6875V1.93738C12.2177 1.57031 12.8474 1.37409 13.4922 1.375ZM6.875 13.75C7.05734 13.75 7.2322 13.8224 7.36114 13.9514C7.49007 14.0803 7.5625 14.2552 7.5625 14.4375C7.5625 14.6198 7.49007 14.7947 7.36114 14.9236C7.2322 15.0526 7.05734 15.125 6.875 15.125C6.69266 15.125 6.5178 15.0526 6.38886 14.9236C6.25993 14.7947 6.1875 14.6198 6.1875 14.4375C6.1875 14.2552 6.25993 14.0803 6.38886 13.9514C6.5178 13.8224 6.69266 13.75 6.875 13.75ZM15.125 9.625C15.3073 9.625 15.4822 9.69743 15.6111 9.82636C15.7401 9.9553 15.8125 10.1302 15.8125 10.3125C15.8125 10.4948 15.7401 10.6697 15.6111 10.7986C15.4822 10.9276 15.3073 11 15.125 11C14.9427 11 14.7678 10.9276 14.6389 10.7986C14.5099 10.6697 14.4375 10.4948 14.4375 10.3125C14.4375 10.1302 14.5099 9.9553 14.6389 9.82636C14.7678 9.69743 14.9427 9.625 15.125 9.625ZM6.875 6.1875C7.05734 6.1875 7.2322 6.25993 7.36114 6.38886C7.49007 6.5178 7.5625 6.69266 7.5625 6.875C7.5625 7.05734 7.49007 7.2322 7.36114 7.36114C7.2322 7.49007 7.05734 7.5625 6.875 7.5625C6.69266 7.5625 6.5178 7.49007 6.38886 7.36114C6.25993 7.2322 6.1875 7.05734 6.1875 6.875C6.1875 6.69266 6.25993 6.5178 6.38886 6.38886C6.5178 6.25993 6.69266 6.1875 6.875 6.1875Z" fill="currentColor" fill-opacity="0.3"/></svg></span><span class="lb"><span>AI Forward</span></span></div>
 
   <div class="fadeBottom abs pre" id="fadeBottom"></div>
-  <!-- running band of logos, in the order of the Figma row -->
-  <div class="band abs" role="region" aria-label="Where I have worked">
-    <div class="bandTrack"><div class="bandSet"><img class="forDark" src="band2/tata.png" alt="Tata Motors Finance" style="width:183.75px;height:35.5px"><img class="forLight" src="band2-light/tata.png" alt="" style="width:183.75px;height:35.5px"><img class="forDark" src="band2/agco.png" alt="AGCO" style="width:134px;height:50.25px"><img class="forLight" src="band2-light/agco.png" alt="" style="width:134px;height:50.25px"><img class="forDark" src="band2/everest.png" alt="everest" style="width:136px;height:48.75px"><img class="forLight" src="band2-light/everest.png" alt="" style="width:136px;height:48.75px"><img class="forDark" src="band2/techm.png" alt="Tech Mahindra" style="width:145px;height:37px"><img class="forLight" src="band2-light/techm.png" alt="" style="width:145px;height:37px"><img class="forDark" src="band2/google.png" alt="Google" style="width:141.5px;height:45px"><img class="forLight" src="band2-light/google.png" alt="" style="width:141.5px;height:45px"><img class="forDark" src="band2/emblem.png" alt="The New India Assurance" style="width:61.5px;height:61.5px"><img class="forLight" src="band2-light/emblem.png" alt="" style="width:61.5px;height:61.5px"></div><div class="bandSet" aria-hidden="true"><img class="forDark" src="band2/tata.png" alt="" style="width:183.75px;height:35.5px"><img class="forLight" src="band2-light/tata.png" alt="" style="width:183.75px;height:35.5px"><img class="forDark" src="band2/agco.png" alt="" style="width:134px;height:50.25px"><img class="forLight" src="band2-light/agco.png" alt="" style="width:134px;height:50.25px"><img class="forDark" src="band2/everest.png" alt="" style="width:136px;height:48.75px"><img class="forLight" src="band2-light/everest.png" alt="" style="width:136px;height:48.75px"><img class="forDark" src="band2/techm.png" alt="" style="width:145px;height:37px"><img class="forLight" src="band2-light/techm.png" alt="" style="width:145px;height:37px"><img class="forDark" src="band2/google.png" alt="" style="width:141.5px;height:45px"><img class="forLight" src="band2-light/google.png" alt="" style="width:141.5px;height:45px"><img class="forDark" src="band2/emblem.png" alt="" style="width:61.5px;height:61.5px"><img class="forLight" src="band2-light/emblem.png" alt="" style="width:61.5px;height:61.5px"></div></div>
-    <div class="bandEdge left"></div><div class="bandEdge right"></div>
-  </div>
+  <!-- logos, in the order of the Figma row -->
+  <div class="band abs" role="region" aria-label="Where I have worked"><div class="bandTrack"><img class="forDark" src="band2/tata.png" alt="Tata Motors Finance" style="width:183.75px;height:35.5px"><img class="forLight" src="band2-light/tata.png" alt="" style="width:183.75px;height:35.5px"><img class="forDark" src="band2/agco.png" alt="AGCO" style="width:134px;height:50.25px"><img class="forLight" src="band2-light/agco.png" alt="" style="width:134px;height:50.25px"><img class="forDark" src="band2/everest.png" alt="everest" style="width:136px;height:48.75px"><img class="forLight" src="band2-light/everest.png" alt="" style="width:136px;height:48.75px"><img class="forDark" src="band2/techm.png" alt="Tech Mahindra" style="width:145px;height:37px"><img class="forLight" src="band2-light/techm.png" alt="" style="width:145px;height:37px"><img class="forDark" src="band2/google.png" alt="Google" style="width:141.5px;height:45px"><img class="forLight" src="band2-light/google.png" alt="" style="width:141.5px;height:45px"><img class="forDark" src="band2/emblem.png" alt="The New India Assurance" style="width:61.5px;height:61.5px"><img class="forLight" src="band2-light/emblem.png" alt="" style="width:61.5px;height:61.5px"><span style="display:contents" aria-hidden="true"><img class="forDark" src="band2/tata.png" alt="" style="width:183.75px;height:35.5px"><img class="forLight" src="band2-light/tata.png" alt="" style="width:183.75px;height:35.5px"><img class="forDark" src="band2/agco.png" alt="" style="width:134px;height:50.25px"><img class="forLight" src="band2-light/agco.png" alt="" style="width:134px;height:50.25px"><img class="forDark" src="band2/everest.png" alt="" style="width:136px;height:48.75px"><img class="forLight" src="band2-light/everest.png" alt="" style="width:136px;height:48.75px"><img class="forDark" src="band2/techm.png" alt="" style="width:145px;height:37px"><img class="forLight" src="band2-light/techm.png" alt="" style="width:145px;height:37px"><img class="forDark" src="band2/google.png" alt="" style="width:141.5px;height:45px"><img class="forLight" src="band2-light/google.png" alt="" style="width:141.5px;height:45px"><img class="forDark" src="band2/emblem.png" alt="" style="width:61.5px;height:61.5px"><img class="forLight" src="band2-light/emblem.png" alt="" style="width:61.5px;height:61.5px"></span></div></div>
   <p class="stats abs"><b>6</b><i> </i>sectors.<i>  </i><b>2+</b><i> </i>years.<i class="s">  </i><b>5</b><i> </i>enterprise clients.</p>
   <h2 class="selected abs">Selected Work</h2>
-  <div class="card abs" style="left:120px;top:1630px"></div><div class="card abs" style="left:753px;top:1629.7px"></div>
-  <div class="card abs" style="left:122px;top:2351px"></div><div class="card abs" style="left:753px;top:2350.7px"></div>
-  <div class="card abs" style="left:122px;top:3072px"></div><div class="card abs" style="left:753px;top:3071.7px"></div>
-  <nav class="pager abs" aria-label="Pages" style="top:3768.67px;justify-content:flex-end">
-    <a href="playground.html">Next:&nbsp;<b>Playground</b><svg viewBox="0 0 28.28 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.14 14.71 4.71-4.71-4.71-4.71"/></svg></a>
-  </nav>
+  <div class="pcard w abs" style="left:120px;top:1676px;background:#c6c6c6;--c1:#010707;--c2:#000;--tagBg:#dfcfe3;--tagInk:#010707;--tagBd:1px solid #d8c4da;--pb:32px">
+    <img class="art" src="work/tmfl-img66.jpg" alt="" style="left:0;top:0;width:566px;height:1006px;object-fit:cover;opacity:.6">
+    <div class="phone art" id="tmPhone" style="left:124px;top:90px" aria-hidden="true"><div class="phScreen">
+      <div class="phSlide on"><div class="phScroll"><img src="work/tmfl/home-tall.jpg" alt="" style="width:293px"></div><div class="phHead"><img src="work/tmfl/home-tall.jpg" alt="" style="width:293px"></div></div>
+      <div class="phSlide"><div class="phInner"><div class="phScroll"><img src="work/tmfl/qsa-empty.jpg" alt="" style="width:374px;height:800px"><img class="otp" src="work/tmfl/qsa.jpg" alt="" style="width:374px;height:800px"></div><div class="phHead" style="width:374px;height:85px"><img src="work/tmfl/qsa.jpg" alt="" style="width:374px"></div></div></div>
+      <div class="phSlide"><div class="phInner"><div class="phScroll"><img src="work/tmfl/kyc.jpg" alt="" style="width:374px;height:800px"><div class="kycDim"></div>
+        <div class="kycModal"><p class="mt">Biometric KYC</p><p class="ms">Biometric KYC Successful! Please click on Next to view captured details.</p>
+          <img class="fp" src="work/kyc-fingerprint.svg" alt=""><span class="mx"><img src="work/kyc-close.svg" alt=""></span><span class="mb">Next</span></div></div></div></div>
+      <div class="phSlide"><div class="phInner fl"><div class="phScroll"><img src="work/tmfl/fleet.jpg" alt="" style="width:360px;height:800px"></div><div class="phHead" style="width:360px;height:85px"><img src="work/tmfl/fleet.jpg" alt="" style="width:360px"></div></div></div>
+      <span class="tap"></span><div class="phBlack"></div>
+    </div><span class="phCam"></span></div>
+    <p class="brand" style="left:352px;--tagBg:rgba(138,22,149,.12);--tagInk:#010707">Automotive FinTech</p>
+    <div class="panel"><div><p class="t">Fifth Element: Transforming multi stakeholder NBFC vehicle LOS</p><p class="s nw">Reduction in loan disbursal by 50% to 11 days</p></div>
+      <p class="tags"><span>Product Strategy</span><span>UI &amp; Experience Design</span><span>BPR</span></p></div>
+  </div>
+  <div class="pcard w abs" style="left:755px;top:1676px;--pb:32px;--c1:#010707;--c2:#000;--tagBg:rgba(255,255,255,.18);--tagInk:#010707">
+    <img class="art" src="work/everest-bg.jpg" alt="" style="left:-94px;top:-442px;width:697px;height:1240px;object-fit:cover">
+    <div class="laptop art" id="evLap" aria-hidden="true" style="transform:translate(55px,90px)"><div class="lid"><div class="evScreen"><img src="work/everest-screen.jpg" alt="" style="width:756px;height:491px"><div class="evContent"><img id="evScroll" src="work/everest-screen.jpg" alt=""></div></div></div></div>
+    <p class="brand" style="left:438px">AI SaaS</p>
+    <div class="panel"><div><p class="t nw">Shaping Everest’s Custom Agentic AI ERP</p><p class="s">Industry-specific AI Admin ERP winning billable project phase - 2</p></div>
+      <p class="tags"><span>AI Problem Solving</span><span>Product Startegy</span><span>UX Design</span></p></div>
+  </div>
+  <div class="pcard w abs" style="left:120px;top:2462px;background:linear-gradient(218.97deg, #c5b180 1.1%, #424141 77.8%);--pb:20px;--c1:#000;--c2:#000;--tagBg:rgba(255,255,255,.18);--tagInk:#010707">
+    <div class="laptop art" id="cxLap" aria-hidden="true"><div class="lid"><img src="work/cx-screen.jpg" alt="" style="width:720px;height:512px"><span class="cxNum" id="cxNum">72</span><span class="cxTag" id="cxTag">Potential Score</span></div><div class="base"></div></div>
+    <p class="brand" style="left:407px">CX Strategy</p>
+    <div class="panel" style="padding:24px 32px"><div><p class="t" style="padding:0 10px 10px">Reimagining customer strategy through CX Navigator</p><p class="s">Empowering CX teams with faster, simplified and data driven insights</p></div>
+      <p class="tags"><span>Interaction Design</span><span>Rapid Prototyping</span><span>WIreframing</span></p></div>
+  </div>
+  <div class="pcard w abs" style="left:755px;top:2462px;background:linear-gradient(to bottom, #1a1620, #291c38 54.87%);--c2:#d7d7d7;--tagBg:rgba(207,193,232,.1)">
+    <span class="art coinWrap" style="left:213px;top:117px;width:120px;height:120px" aria-hidden="true"><span class="coinMove"><span class="coinGlow"></span><span class="coin3d"><img class="cf" src="work/jar-coin.svg" alt=""><img class="cb" src="work/jar-coin.svg" alt=""><i style="transform:translateZ(-6px)"></i><i style="transform:translateZ(-5px)"></i><i style="transform:translateZ(-4px)"></i><i style="transform:translateZ(-3px)"></i><i style="transform:translateZ(-2px)"></i><i style="transform:translateZ(-1px)"></i><i style="transform:translateZ(0px)"></i><i style="transform:translateZ(1px)"></i><i style="transform:translateZ(2px)"></i><i style="transform:translateZ(3px)"></i><i style="transform:translateZ(4px)"></i><i style="transform:translateZ(5px)"></i><i style="transform:translateZ(6px)"></i></span></span></span>
+    <p class="brand" style="left:438px;--tagBg:rgba(27,23,34,.1)">FinTech</p>
+    <div class="panel" style="top:456px;padding:24px 32px"><div style="display:flex;flex-direction:column;gap:12px"><p class="t nw" style="padding:10px 0">Hypothesis-driven User Research at Jar</p><p class="s" style="padding:0">47% user mistook investment for savings, driving an insight-led onboarding redesign</p></div>
+      <p class="tags"><span>Data-driven Research</span><span>Product Strategy</span><span>VOC</span></p></div>
+  </div>
+  <div class="pcard w abs" style="left:120px;top:3248px;background:linear-gradient(180deg, #6178bc -56.65%, #3f4a6b 100%)">
+    <span class="art sparks" aria-hidden="true"><i class="spark sa" style="left:541.0px;top:32.0px;width:30px;height:30px;--x1:-22px;--y1:14px;--x2:10px;--y2:-12px;--t:13s;--d:-0.0s"></i><i class="spark sb" style="left:131.0px;top:132.0px;width:18px;height:18px;--x1:18px;--y1:10px;--x2:-10px;--y2:18px;--t:11s;--d:-1.7s"></i><i class="spark sc" style="left:401.0px;top:301.0px;width:34px;height:34px;--x1:-16px;--y1:-18px;--x2:14px;--y2:8px;--t:15s;--d:-3.4s"></i><i class="spark sa" style="left:340.0px;top:354.0px;width:18px;height:18px;--x1:14px;--y1:-12px;--x2:-18px;--y2:-6px;--t:9s;--d:-5.1s"></i><i class="spark sb" style="left:487.0px;top:354.0px;width:28px;height:28px;--x1:-12px;--y1:16px;--x2:16px;--y2:10px;--t:12s;--d:-6.8s"></i><i class="spark sc" style="left:23.0px;top:370.0px;width:30px;height:30px;--x1:20px;--y1:-14px;--x2:-8px;--y2:12px;--t:14s;--d:-8.5s"></i><i class="spark sa" style="left:176.0px;top:623.0px;width:28px;height:28px;--x1:-18px;--y1:-10px;--x2:12px;--y2:-16px;--t:10s;--d:-10.2s"></i><i class="spark sb" style="left:555.0px;top:367.0px;width:22px;height:22px;--x1:-20px;--y1:12px;--x2:-6px;--y2:-14px;--t:16s;--d:-11.9s"></i><i class="spark sc" style="left:262.0px;top:512.0px;width:16px;height:16px;--x1:16px;--y1:12px;--x2:-12px;--y2:8px;--t:11s;--d:-13.6s"></i><i class="spark sa" style="left:460.0px;top:590.0px;width:20px;height:20px;--x1:-14px;--y1:-16px;--x2:10px;--y2:14px;--t:13s;--d:-15.3s"></i></span>
+    <img class="art" src="work/float-logo-b.svg" alt="" style="left:173px;top:208px;width:46.161px;height:87.42px">
+    <img class="art" src="work/float-logo-a.svg" alt="" style="left:227.49px;top:219.36px;width:165.468px;height:77.876px">
+    <p class="brand" style="left:387px;top:26px">Value Creation</p>
+    <div class="panel"><div><p class="t nw">Building Float: From Zero to First Revenue</p><p class="s">₹1,560 in revenue and 85.7% return-intent rate in three MVP iterations</p></div>
+      <p class="tags"><span>Service Design</span><span>MVP</span><span>GTM</span><span>Business Design</span></p></div>
+  </div>
+  <div class="pcard w abs" style="left:755px;top:3248px;background:#cacaca;--c1:#000;--c2:#000;--tagBg:rgba(228,137,72,.2);--tagInk:#222">
+    <img class="art" src="work/event-bg.jpg" alt="" style="left:0;top:-277px;width:736px;height:1308px;object-fit:cover;opacity:.6">
+    <span class="art" style="left:85px;top:115px;width:353px;height:303px;overflow:hidden"><img src="work/event-lion.png" alt="" style="position:absolute;left:0;top:0;width:118.98%;height:138.61%;max-width:none"></span>
+    <svg class="art streak" viewBox="0 0 566 722" aria-hidden="true"><path class="glow" pathLength="1000" d="M218.7 159.1 C217.4 159.8 213.1 161.9 211.0 163.3 C208.9 164.7 207.4 166.1 206.1 167.5 C204.8 168.9 204.2 170.3 203.3 171.7 C202.4 173.1 201.2 174.5 200.5 175.9 C199.8 177.3 199.6 178.7 199.1 180.1 C198.6 181.5 198.0 182.9 197.7 184.3 C197.3 185.7 197.2 187.1 197.0 188.5 C196.8 189.9 196.5 191.3 196.3 192.7 C196.1 194.1 195.9 195.5 195.6 196.9 C195.2 198.3 195.1 199.7 194.2 201.1 C193.3 202.5 191.3 203.9 190.0 205.3 C188.7 206.7 187.6 208.1 186.5 209.5 C185.4 210.9 184.8 212.3 183.7 213.7 C182.6 215.1 181.5 216.5 180.2 217.9 C178.9 219.3 177.6 220.7 176.0 222.1 C174.4 223.5 172.4 224.9 170.4 226.3 C168.4 227.7 166.1 229.1 164.1 230.5 C162.1 231.9 160.4 233.3 158.5 234.7 C156.6 236.1 154.4 237.5 152.9 238.9 C151.4 240.3 150.5 241.7 149.4 243.1 C148.3 244.5 147.4 245.9 146.6 247.3 C145.8 248.7 145.1 250.1 144.5 251.5 C143.9 252.9 143.3 254.3 143.1 255.7 C142.9 257.1 143.1 258.5 143.1 259.9 C143.1 261.3 143.2 262.7 143.1 264.1 C143.0 265.5 143.0 266.9 142.4 268.3 C141.8 269.7 140.8 271.1 139.6 272.5 C138.4 273.9 136.9 275.3 135.4 276.7 C133.9 278.1 132.0 279.5 130.5 280.9 C129.0 282.3 127.7 283.7 126.3 285.1 C124.9 286.5 123.6 287.9 122.1 289.3 C120.6 290.7 118.7 292.1 117.2 293.5 C115.7 294.9 114.3 296.3 113.0 297.7 C111.7 299.1 110.4 300.5 109.5 301.9 C108.6 303.3 108.0 304.7 107.4 306.1 C106.8 307.5 106.0 308.9 106.0 310.3 C106.0 311.7 106.8 313.1 107.4 314.5 C108.0 315.9 108.5 317.3 109.5 318.7 C110.5 320.1 112.9 321.5 113.7 322.9 C114.5 324.3 114.1 325.7 114.4 327.1 C114.8 328.5 115.1 329.9 115.8 331.3 C116.5 332.7 117.3 334.1 118.6 335.5 C119.9 336.9 121.6 338.3 123.5 339.7 C125.4 341.1 128.3 342.5 129.8 343.9 C131.3 345.3 131.9 347.1 132.6 348.1 C133.3 349.2 133.3 349.5 134.0 350.2 C134.7 350.9 132.0 351.6 136.8 352.3 C141.6 353.0 158.6 353.7 162.7 354.4 C166.8 355.1 164.3 355.8 161.3 356.5 C158.3 357.2 147.3 357.9 144.5 358.6 C141.7 359.3 144.2 359.6 144.5 360.7 C144.8 361.8 145.9 363.5 146.6 364.9 C147.3 366.3 148.3 367.7 148.7 369.1 C149.0 370.5 148.5 371.9 148.7 373.3 C148.9 374.7 149.6 376.1 150.1 377.5 C150.6 378.9 150.7 380.3 151.5 381.7 C152.3 383.1 153.4 384.5 155.0 385.9 C156.6 387.3 159.2 389.2 161.3 390.1 C163.4 391.0 165.2 391.4 167.6 391.5 C170.0 391.6 173.2 391.5 176.0 390.8 C178.8 390.1 182.1 390.6 184.4 387.3 C186.7 384.0 187.9 375.6 190.0 371.2 C192.1 366.8 194.4 363.5 197.0 360.7 C199.6 357.9 203.5 353.3 205.4 354.4 C207.3 355.4 207.5 362.8 208.2 367.0 C208.9 371.2 209.1 375.4 209.6 379.6 C210.1 383.8 210.2 389.1 211.0 392.2 C211.8 395.3 213.1 396.4 214.5 398.5 C215.9 400.6 217.4 402.7 219.4 404.8 C221.4 406.9 225.2 410.1 226.4 411.1"/><path class="core" pathLength="1000" d="M218.7 159.1 C217.4 159.8 213.1 161.9 211.0 163.3 C208.9 164.7 207.4 166.1 206.1 167.5 C204.8 168.9 204.2 170.3 203.3 171.7 C202.4 173.1 201.2 174.5 200.5 175.9 C199.8 177.3 199.6 178.7 199.1 180.1 C198.6 181.5 198.0 182.9 197.7 184.3 C197.3 185.7 197.2 187.1 197.0 188.5 C196.8 189.9 196.5 191.3 196.3 192.7 C196.1 194.1 195.9 195.5 195.6 196.9 C195.2 198.3 195.1 199.7 194.2 201.1 C193.3 202.5 191.3 203.9 190.0 205.3 C188.7 206.7 187.6 208.1 186.5 209.5 C185.4 210.9 184.8 212.3 183.7 213.7 C182.6 215.1 181.5 216.5 180.2 217.9 C178.9 219.3 177.6 220.7 176.0 222.1 C174.4 223.5 172.4 224.9 170.4 226.3 C168.4 227.7 166.1 229.1 164.1 230.5 C162.1 231.9 160.4 233.3 158.5 234.7 C156.6 236.1 154.4 237.5 152.9 238.9 C151.4 240.3 150.5 241.7 149.4 243.1 C148.3 244.5 147.4 245.9 146.6 247.3 C145.8 248.7 145.1 250.1 144.5 251.5 C143.9 252.9 143.3 254.3 143.1 255.7 C142.9 257.1 143.1 258.5 143.1 259.9 C143.1 261.3 143.2 262.7 143.1 264.1 C143.0 265.5 143.0 266.9 142.4 268.3 C141.8 269.7 140.8 271.1 139.6 272.5 C138.4 273.9 136.9 275.3 135.4 276.7 C133.9 278.1 132.0 279.5 130.5 280.9 C129.0 282.3 127.7 283.7 126.3 285.1 C124.9 286.5 123.6 287.9 122.1 289.3 C120.6 290.7 118.7 292.1 117.2 293.5 C115.7 294.9 114.3 296.3 113.0 297.7 C111.7 299.1 110.4 300.5 109.5 301.9 C108.6 303.3 108.0 304.7 107.4 306.1 C106.8 307.5 106.0 308.9 106.0 310.3 C106.0 311.7 106.8 313.1 107.4 314.5 C108.0 315.9 108.5 317.3 109.5 318.7 C110.5 320.1 112.9 321.5 113.7 322.9 C114.5 324.3 114.1 325.7 114.4 327.1 C114.8 328.5 115.1 329.9 115.8 331.3 C116.5 332.7 117.3 334.1 118.6 335.5 C119.9 336.9 121.6 338.3 123.5 339.7 C125.4 341.1 128.3 342.5 129.8 343.9 C131.3 345.3 131.9 347.1 132.6 348.1 C133.3 349.2 133.3 349.5 134.0 350.2 C134.7 350.9 132.0 351.6 136.8 352.3 C141.6 353.0 158.6 353.7 162.7 354.4 C166.8 355.1 164.3 355.8 161.3 356.5 C158.3 357.2 147.3 357.9 144.5 358.6 C141.7 359.3 144.2 359.6 144.5 360.7 C144.8 361.8 145.9 363.5 146.6 364.9 C147.3 366.3 148.3 367.7 148.7 369.1 C149.0 370.5 148.5 371.9 148.7 373.3 C148.9 374.7 149.6 376.1 150.1 377.5 C150.6 378.9 150.7 380.3 151.5 381.7 C152.3 383.1 153.4 384.5 155.0 385.9 C156.6 387.3 159.2 389.2 161.3 390.1 C163.4 391.0 165.2 391.4 167.6 391.5 C170.0 391.6 173.2 391.5 176.0 390.8 C178.8 390.1 182.1 390.6 184.4 387.3 C186.7 384.0 187.9 375.6 190.0 371.2 C192.1 366.8 194.4 363.5 197.0 360.7 C199.6 357.9 203.5 353.3 205.4 354.4 C207.3 355.4 207.5 362.8 208.2 367.0 C208.9 371.2 209.1 375.4 209.6 379.6 C210.1 383.8 210.2 389.1 211.0 392.2 C211.8 395.3 213.1 396.4 214.5 398.5 C215.9 400.6 217.4 402.7 219.4 404.8 C221.4 406.9 225.2 410.1 226.4 411.1"/></svg>
+    <p class="brand" style="left:465px;top:26px">PSU</p>
+    <div class="panel" style="padding:24px 32px;background:rgba(228,137,72,.2)"><div style="width:511px"><p class="t nw" style="padding:0 10px 10px">Tracing cultural evolution in Gujarat</p><p class="s">6 signal buckets and 20 success dimensions from an exploratory research for event tourism at Gujarat</p></div>
+      <p class="tags"><span>UX Research</span><span>Design Research</span><span>Strategic Design</span></p></div>
+  </div>
   <h2 class="recs abs">Recommendations</h2>
-  <div class="recBlock abs"></div>
-    <footer class="foot abs" style="left:-2px;top:4711px">
-      <p class="reach">Reach out to me via</p>
+  <div id="recWrap" role="region" aria-roledescription="carousel" aria-label="Recommendations">
+    <figure class="rec abs" aria-roledescription="slide" aria-label="1 of 4"><div class="who"><div class="pic"><img src="work/rec-vijai.png" alt="Vijai Kumar" style=""></div><div><p class="n">Vijai Kumar</p><p class="d">Manager, Deloitte India</p></div></div><p class="q">“Apoorva demonstrated strong UX design skills, creativity, and the ability to come up with unique design ideas that received positive client appreciation.”</p></figure>
+    <figure class="rec abs" aria-roledescription="slide" aria-label="2 of 4"><div class="who"><div class="pic"><img src="work/rec-manjunath.png" alt="Manjunath Subramanyam" style="left:-5px;width:94px;height:94px"></div><div><p class="n">Manjunath Subramanyam</p><p class="d">UX Lead, AGCO</p></div></div><p class="q">“What stood out to me was Apoorva’s ability to understand complex requirements, translate them into intuitive user experiences, with impressive speed. She brings thoughtful problem-solving, attention to detail, and a strong sense of ownership to her work.”</p></figure>
+    <figure class="rec abs" aria-roledescription="slide" aria-label="3 of 4"><div class="who"><div class="pic"><img src="work/rec-manju.png" alt="Manju Rawat" style=""></div><div><p class="n">Manju Rawat</p><p class="d">User Research Lead, Jar</p></div></div><p class="q">“I was particularly impressed by Apoorva’s attention to detail and her empathetic approach to conducting user research studies. Her dedication and potential make her a valuable asset to any team seeking a motivated and skilled user research/product professional.”</p></figure>
+    <figure class="rec abs" aria-roledescription="slide" aria-label="4 of 4"><div class="who"><div class="pic"><img src="work/rec-srinivasa.png" alt="Srinivasa Katharguppe Subbaramaiah" style="width:93px;height:93px"></div><div><p class="n">Srinivasa Katharguppe Subbaramaiah</p><p class="d">Board Director &amp; Chief Scientist, SherpaVector</p></div></div><p class="q">“What stands out about Apoorva is that she is dependable, diligent, and takes ownership of her work. She took feedback well and was respectful.”</p></figure>
+    <button class="arrow prev glass abs" type="button" aria-label="Previous recommendation"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg></button>
+    <div class="recDots abs" role="group" aria-label="Choose a recommendation"><button type="button" aria-label="Recommendation 1" aria-current="true"></button><button type="button" aria-label="Recommendation 2" aria-current="false"></button><button type="button" aria-label="Recommendation 3" aria-current="false"></button><button type="button" aria-label="Recommendation 4" aria-current="false"></button></div>
+    <button class="arrow next glass abs" type="button" aria-label="Next recommendation"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg></button>
+  </div>
+  <h2 class="pgTitle abs">Playground</h2>
+  <a class="more abs" href="playground.html">View More<svg viewBox="0 0 28.28 28.28" fill="none" aria-hidden="true"><g transform="rotate(45 14.14 14.14) translate(4.14 4.14)"><path d="M13.3333 13.3333V6.66667H6.66667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
+  <a href="papers/IEEEpaper.pdf" target="_blank" rel="noopener" class="pcard dark abs" style="left:120px;top:4916px">
+    <img class="art" src="work/ieee.png" alt="IEEE Xplore Digital Library" style="left:71px;top:222px;width:427px;height:158px;object-fit:cover">
+    <p class="brand" style="left:379px">Research Paper</p>
+    <div class="panel mid"><div><p class="t">Image Caption Generation in Kannada using Deep Learning Frameworks</p><p class="s">Published in IEEE Xplore and presented at IEEE ICAECIS 2023</p></div></div>
+  </a>
+  <a href="https://apoorva-sdm.github.io/india-travel-insurance-analysis/" target="_blank" rel="noopener" class="pcard dark abs" style="left:755px;top:4916px">
+    <img class="art" src="work/globe.png" alt="" style="left:38px;top:70px;width:490.8px;height:512.4px;object-fit:cover">
+    <p class="brand" style="left:405px">Vibe-coding</p>
+    <div class="panel"><div><p class="t">Service Audit for Travel Insurances in India</p><p class="s">Vibe-coded visualisation for understanding HDFC Ergo’s service</p></div></div>
+  </a>
+    <footer class="foot abs" style="left:-2px;top:5983px;height:266px">
+      <p class="reach">Let’s connect</p>
       <svg class="icons" viewBox="634.15 103 171.7 35.35" role="group" aria-label="Contact links">
         <a href="https://www.linkedin.com/in/apoorva-bs" target="_blank" rel="noopener" aria-label="LinkedIn"><path d="M664.569 133.12H659.279V124.918C659.279 122.962 659.244 120.444 656.528 120.444C653.773 120.444 653.351 122.575 653.351 124.775V133.12H648.061V116.252H653.14V118.557H653.211C653.719 117.696 654.453 116.989 655.336 116.509C656.218 116.029 657.215 115.795 658.221 115.832C663.583 115.832 664.571 119.324 664.571 123.867L664.569 133.12ZM642.092 113.946C641.485 113.946 640.891 113.768 640.387 113.434C639.882 113.1 639.488 112.625 639.256 112.07C639.023 111.515 638.962 110.903 639.081 110.314C639.199 109.724 639.491 109.182 639.921 108.757C640.35 108.332 640.897 108.042 641.492 107.925C642.088 107.808 642.705 107.868 643.266 108.098C643.827 108.328 644.306 108.717 644.644 109.217C644.981 109.717 645.161 110.304 645.162 110.906C645.162 111.305 645.082 111.7 644.928 112.069C644.774 112.438 644.548 112.773 644.263 113.055C643.978 113.337 643.639 113.561 643.267 113.714C642.895 113.867 642.495 113.946 642.092 113.946ZM644.737 133.12H639.442V116.252H644.737V133.12ZM667.207 103.002H636.783C636.093 102.995 635.428 103.259 634.934 103.737C634.44 104.214 634.157 104.867 634.149 105.55V135.799C634.157 136.483 634.439 137.136 634.933 137.614C635.427 138.092 636.093 138.357 636.783 138.35H667.207C667.899 138.358 668.566 138.094 669.062 137.616C669.558 137.138 669.842 136.484 669.852 135.799V105.548C669.842 104.863 669.558 104.21 669.062 103.732C668.566 103.254 667.898 102.991 667.207 103"/><rect x="634" y="103" width="36" height="35.4" fill="transparent"/></a>
         <a href="https://github.com/apoorva-sdm" target="_blank" rel="noopener" aria-label="GitHub"><path d="M716.074 128.471C711.434 127.913 708.164 124.598 708.164 120.307C708.164 118.562 708.797 116.678 709.852 115.422C709.395 114.27 709.465 111.828 709.992 110.816C711.398 110.642 713.297 111.374 714.422 112.386C715.758 111.968 717.164 111.758 718.887 111.758C720.609 111.758 722.016 111.968 723.281 112.351C724.371 111.374 726.305 110.642 727.711 110.816C728.203 111.758 728.273 114.201 727.816 115.387C728.941 116.713 729.539 118.492 729.539 120.307C729.539 124.598 726.27 127.843 721.559 128.436C722.754 129.204 723.562 130.879 723.562 132.798V136.427C723.562 137.473 724.441 138.067 725.496 137.648C731.859 135.24 736.852 128.925 736.852 121.109C736.852 111.235 728.766 103.175 718.816 103.175C708.867 103.175 700.852 111.235 700.852 121.109C700.852 128.855 705.809 135.275 712.488 137.683C713.437 138.032 714.352 137.404 714.352 136.462V133.67C713.859 133.88 713.227 134.019 712.664 134.019C710.344 134.019 708.973 132.763 707.988 130.425C707.602 129.483 707.18 128.925 706.371 128.82C705.949 128.785 705.809 128.611 705.809 128.402C705.809 127.983 706.512 127.669 707.215 127.669C708.234 127.669 709.113 128.297 710.027 129.588C710.73 130.6 711.469 131.053 712.348 131.053C713.227 131.053 713.789 130.739 714.598 129.937C715.195 129.344 715.652 128.82 716.074 128.471Z"/><rect x="700.8" y="103" width="36" height="35.4" fill="transparent"/></a>
@@ -292,7 +532,7 @@ if (location.protocol === 'file:' && window.TURN_VIDEO) {
 <script>
 // fit the 1440-wide frame to the window width (preview convenience only)
 const stage = document.getElementById('stage'), shell = document.getElementById('shell');
-function fit() { const s = innerWidth / 1440; stage.style.transform = `scale(${s})`; shell.style.height = 5022 * s + 'px'; }
+function fit() { const s = innerWidth / 1440; stage.style.transform = `scale(${s})`; shell.style.height = 6249 * s + 'px'; }
 fit(); addEventListener('resize', fit);
 // glass rim: angle where each pill's rounded ends begin
 document.querySelectorAll('.glass').forEach(el => { if (el.style.getPropertyValue('--c')) return; const w = el.offsetWidth, h = el.offsetHeight;
@@ -352,16 +592,18 @@ function pose(p) {
   still.style.opacity = noVideo ? 1 : E.inOut((p - 0.76) / 0.24);   // long, soft blend into your exact image          // hand over to the exact image once it has landed
   rig.style.transform = `translate3d(${DRIFT(p).toFixed(3)}px, ${LIFTY(p).toFixed(3)}px, 0) rotate(${ROLL(p).toFixed(3)}deg) scale(${SCALE(p).toFixed(4)})`;
 }
+const TURN_S = 2.6;               // seconds for the knight's turn and landing
 let turning = false, knightLanded = false;
 function playTurn() {
   turning = true; knightLanded = false;
   cv.style.visibility = 'visible'; rig.style.opacity = 0; still.style.opacity = 0;
   return new Promise(done => {
     const dur = video.duration || 5; let finished = false, started = false, fallen = false;
+    video.playbackRate = dur / TURN_S;                       // the 5s turn plays in TURN_S seconds
     const finish = () => { if (finished) return; finished = true; pose(1); cv.style.visibility = 'hidden'; turning = false; knightLanded = true; done(); };
     // if the video can't be shown, the knight (your exact image) still makes the same entrance, just without the 3D turn
     const fallback = () => { if (fallen || finished) return; fallen = true; noVideo = true; video.pause(); cv.style.visibility = 'hidden';
-      tween(dur * 1000, p => pose(p), t => t).then(finish); };
+      tween(TURN_S * 1000, p => pose(p), t => t).then(finish); };
     const show = t => { if (finished || fallen) return; if (!draw()) return fallback(); if (t > 0) started = true; pose(clamp(t / dur)); };
     const onFrame = (now, meta) => { show(meta.mediaTime); if (!video.ended && !fallen && !finished) video.requestVideoFrameCallback(onFrame); };
     const tick = () => { show(video.currentTime); if (!video.ended && !fallen && !finished) requestAnimationFrame(tick); };
@@ -412,13 +654,6 @@ themeBtn.addEventListener('click', () => {
   if (knightLanded && !turning && !reduced) playTurn();
 });
 
-// ---- logo band: start with NID just inside the visible area (past the soft left edge), then drift left forever
-function startBand() {
-  const track = document.querySelector('.bandTrack'), set = track.querySelector('.bandSet'), W = set.offsetWidth, start = 250;
-  const secs = parseFloat(getComputedStyle(track).animationDuration) || 60;
-  track.style.animationDelay = `${-(1 - start / W) * secs}s`;     // jump into the loop where NID sits at x = 250
-}
-Promise.all([...document.querySelectorAll('.bandSet img')].map(i => i.decode().catch(() => {}))).then(startBand);
 
 // ---- 1. on load: nav and the three lines of text
 const loaded = Promise.all([
@@ -438,23 +673,21 @@ async function intro() {
 // ---- 2. first scroll: board, the knight turning down onto it, then the strengths left → right
 async function scene() {
   if (revealed) return; revealed = true;
-  await introDone;
+  await loaded;                                               // doesn't wait for the heading's fade to finish
   $('fadeBottom').style.opacity = 1;
-  const turn = playTurn();
-  await wait(1300);
-  await Promise.race([reveal($('boardWrap'), 2600, 30, 0), turn]);
-  await turn;
-  await wait(250);
-  const chips = [...document.querySelectorAll('.chip')];
-  chips.forEach((c, i) => setTimeout(() => {
+  playTurn();                                                 // 0 → 2.6s: the knight turns and lands
+  reveal($('boardWrap'), 2200, 30, 0);                        // 0 → 2.2s: the board comes up with it
+  // from 2.7s (just after the knight lands): the five skills rise in one at a time, left → right, ~0.55s apart
+  [...document.querySelectorAll('.skill')].forEach((c, i) => setTimeout(() => {
     c.classList.add('in');
     c.addEventListener('animationend', () => { c.classList.remove('in'); c.classList.add('ready'); }, { once: true });
-  }, i * 420));
+  }, 2700 + i * 550));
 }
 // the first scroll plays the scene and glides the page so the whole scene is in view; scrolling is never blocked
 const keys = new Set(['ArrowDown', 'PageDown', ' ', 'Spacebar', 'End']);
 function frameScene() {
-  const k = innerWidth / 1440, top = 510 * k, bottom = 1060 * k;           // from the tagline to the bottom of the board
+  if (window.__toFooter) return;                                         // heading to the footer (Get In Touch): don't pull back up
+  const k = innerWidth / 1440, top = 510 * k, bottom = 1085 * k;           // from the tagline to the bottom of the board
   const target = Math.max(0, Math.min((top + bottom) / 2 - innerHeight / 2, top - 16));
   if (target > scrollY + 4) scrollTo({ top: target, behavior: 'smooth' });
 }
@@ -469,13 +702,57 @@ function stopListening() { removeEventListener('wheel', onWheel); removeEventLis
 if (reduced) {   // people who ask their device for less motion get the finished page straight away
   document.querySelectorAll('.pre').forEach(el => el.style.opacity = 1);
   loaded.then(async () => { video.currentTime = video.duration; await new Promise(r => video.addEventListener('seeked', r, { once: true })); draw(); pose(1);
-    document.querySelectorAll('.chip').forEach(c => c.classList.add('ready')); });
+    document.querySelectorAll('.skill').forEach(c => c.classList.add('ready')); });
 } else {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';   // always open at the top
   scrollTo(0, 0);
   addEventListener('wheel', onWheel, { passive: false }); addEventListener('touchmove', onTouch, { passive: true }); addEventListener('keydown', onKey); addEventListener('scroll', onScroll, { passive: true });
   introDone = intro();
 }
+// ---- skills: opening one slides it so its name grows away from the knight (left ones leftwards, the top one from its centre)
+const skillEls = [...document.querySelectorAll('.skill')];
+skillEls.forEach((s, i) => s.style.setProperty('--bd', (i * 0.9).toFixed(1) + 's'));   // out of step, so they drift rather than march (each starts from rest)
+window.FONTS.then(() => skillEls.forEach(s => s.style.setProperty('--lw', s.querySelector('.lb span').offsetWidth + 'px')));
+function spread(i) {                    // i = the skill being opened, or -1 for none
+  skillEls.forEach((s, j) => {
+    const g = 8 + parseFloat(s.style.getPropertyValue('--lw') || 0);
+    s.style.setProperty('--dx', (j !== i ? 0 : s.classList.contains('lft') ? -g : s.classList.contains('mid') ? -g / 2 : 0) + 'px');
+    // while Product Strategy is open, the two skills beside it ease down to keep clear of its wider pill
+    s.style.setProperty('--dy', (i >= 0 && skillEls[i].classList.contains('mid') && (j === 1 || j === 3) ? 18 : 0) + 'px');
+  });
+}
+skillEls.forEach((s, i) => {
+  s.addEventListener('mouseenter', () => { if (s.classList.contains('ready')) spread(i); });
+  s.addEventListener('mouseleave', () => { if (!s.classList.contains('open')) spread(-1); });
+  // on touch screens there is no hover: a tap opens a skill's name (and closes the others)
+  s.addEventListener('click', () => { const was = s.classList.contains('open'); skillEls.forEach(o => o.classList.remove('open'));
+    if (!was && s.classList.contains('ready')) { s.classList.add('open'); spread(i); } else spread(-1); });
+});
+// ---- recommendations: one at a time. → the next one glides in from the left while the current one drifts off right; ← the mirror image.
+// Like About's recognitions, it starts turning on its own 4s after load and pauses while you hover or use it.
+const recCards = [...document.querySelectorAll('.rec')], recWrap = $('recWrap');
+let recNow = 0, recBusy = false, recTimer = null, recPaused = false, recAuto = false;
+function recShow(i, dir, delay = 520) { const c = recCards[i]; c.style.transition = 'none'; c.style.setProperty('--in', `${-56 * dir}px`); c.offsetWidth; c.style.transition = '';
+  c.setAttribute('aria-hidden', 'false'); setTimeout(() => c.classList.add('show'), delay); }
+function recHide(i, dir) { const c = recCards[i]; c.style.setProperty('--out', `${56 * dir}px`); c.classList.add('leave'); c.classList.remove('show'); c.setAttribute('aria-hidden', 'true');
+  setTimeout(() => { if (c.classList.contains('show')) return; c.style.transition = 'none'; c.classList.remove('leave'); c.offsetWidth; c.style.transition = ''; }, 1250); }
+function recGo(i, dir) { if (recBusy) return; recBusy = true; setTimeout(() => recBusy = false, 1300);
+  recHide(recNow, dir); recNow = (i + recCards.length) % recCards.length; recShow(recNow, dir); recDots(); recSchedule(); }
+const recDotBtns = [...document.querySelectorAll('.recDots button')];
+function recDots() { recDotBtns.forEach((d, k) => d.setAttribute('aria-current', k === recNow ? 'true' : 'false')); }
+recDotBtns.forEach((d, k) => d.addEventListener('click', () => { if (k !== recNow) recGo(k, k > recNow ? 1 : -1); }));
+function recSchedule() { clearTimeout(recTimer); if (recAuto && !recPaused && !document.hidden) recTimer = setTimeout(() => recGo(recNow + 1, 1), 3500); }
+recWrap.querySelector('.prev').addEventListener('click', () => recGo(recNow - 1, -1));
+recWrap.querySelector('.next').addEventListener('click', () => recGo(recNow + 1, 1));
+recWrap.addEventListener('keydown', e => { if (e.key === 'ArrowRight') recGo(recNow + 1, 1); if (e.key === 'ArrowLeft') recGo(recNow - 1, -1); });
+for (const [ev, p] of [['mouseenter', true], ['mouseleave', false], ['focusin', true], ['focusout', false]])
+  recWrap.addEventListener(ev, () => { recPaused = p; p ? clearTimeout(recTimer) : recSchedule(); });
+document.addEventListener('visibilitychange', recSchedule);
+recCards.forEach(c => c.setAttribute('aria-hidden', 'true'));
+recShow(0, 1, 0);
+loaded.then(() => setTimeout(() => { recAuto = !reduced; recSchedule(); }, 4000));
 window.__scene = scene;   // for testing
 </script>
+<script src="thumbs.js"></script>
+<script src="mailcopy.js"></script>
 </body></html>

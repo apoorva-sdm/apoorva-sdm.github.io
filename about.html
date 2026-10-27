@@ -7,7 +7,10 @@
 window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satoshi', 'italic 400 16px Satoshi', '500 16px Satoshi', '700 16px Satoshi',
   '400 16px "Bricolage Grotesque"', '500 16px "Bricolage Grotesque"'].map(f => document.fonts.load(f).catch(() => {}))).then(() => document.fonts.ready) : Promise.resolve();
 </script>
-<title>About preview</title>
+<link rel="icon" type="image/png" sizes="256x256" href="favicon-256.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>About | Apoorva B S</title>
 <link rel="preload" as="image" href="knight-fig-src.png">
 <script>try { const t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <style>
@@ -235,11 +238,11 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   /* footer (Figma "Frame 117") */
   .foot { left: 0; top: 3442.99px; width: 1440px; height: 295px; background: var(--foot); }
   .foot .reach { position: absolute; left: 0; width: 1440px; top: 57px; margin: 0; text-align: center; font-family: 'Satoshi', sans-serif; font-weight: 500;
-                 font-size: 18px; line-height: 24px; letter-spacing: .36px; color: var(--footInk); }
-  .foot .icons { position: absolute; left: 634.15px; top: 103px; width: 171.7px; height: 35.35px; display: block; }
+                 font-size: 16px; line-height: 21.6px; letter-spacing: .32px; color: var(--footInk); }
+  .foot .icons { position: absolute; left: 634.15px; top: 100.6px; width: 171.7px; height: 35.35px; display: block; }
   .foot .icons a { fill: var(--footIcon); transition: fill .25s ease; }
   .foot .icons a:hover { fill: var(--footInk); }
-  .foot .fine { position: absolute; left: 0; width: 1440px; top: 212.35px; margin: 0; display: flex; justify-content: center; align-items: center; gap: 8px;
+  .foot .fine { position: absolute; left: 0; width: 1440px; top: 209.95px; margin: 0; display: flex; justify-content: center; align-items: center; gap: 8px;
                 font-family: 'Satoshi', sans-serif; font-weight: 500; font-size: 14px; line-height: 19px; letter-spacing: .28px; color: var(--footFine); }
   .foot .fine svg { width: 16px; height: 16px; display: block; fill: var(--footFine); }
 
@@ -280,7 +283,7 @@ Outside work, I’m singing, dancing and reading.
 
 If that sounds like someone you’d like on your team, let’s talk.</p>
   <div class="btns abs" id="btns">
-    <a class="btn cv glass" href="cv/Apoorva-B-S-CV.pdf?v=2" target="_blank" rel="noopener">Download CV<svg viewBox="0 0 16 16" fill="none"><path transform="translate(1.25 2)" d="M7.41684 8.75V0.75M10.0835 6.08333L7.41684 8.75L4.75018 6.08333M0.750177 10.0833L1.16418 11.74C1.23628 12.0285 1.40273 12.2845 1.63706 12.4675C1.8714 12.6505 2.16018 12.75 2.45751 12.75H12.3755C12.6728 12.75 12.9616 12.6505 13.196 12.4675C13.4303 12.2845 13.5967 12.0285 13.6688 11.74L14.0835 10.0833" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a class="btn cv glass" href="cv/Apoorva-B-S-CV.pdf?v=3" target="_blank" rel="noopener">Download CV<svg viewBox="0 0 16 16" fill="none"><path transform="translate(1.25 2)" d="M7.41684 8.75V0.75M10.0835 6.08333L7.41684 8.75L4.75018 6.08333M0.750177 10.0833L1.16418 11.74C1.23628 12.0285 1.40273 12.2845 1.63706 12.4675C1.8714 12.6505 2.16018 12.75 2.45751 12.75H12.3755C12.6728 12.75 12.9616 12.6505 13.196 12.4675C13.4303 12.2845 13.5967 12.0285 13.6688 11.74L14.0835 10.0833" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
     <a class="btn lor glass" href="cv/LOR-Jar.pdf" target="_blank" rel="noopener">View LOR from Jar<svg viewBox="0 0 16 16"><path transform="translate(2.83 1.5)" fill-rule="evenodd" clip-rule="evenodd" d="M6.66667 0.166667C6.66667 0.122464 6.64911 0.0800716 6.61785 0.0488156C6.58659 0.0175595 6.5442 0 6.5 0H1.83333C1.3471 0 0.880787 0.193154 0.536971 0.536971C0.193154 0.880788 0 1.3471 0 1.83333V11.1667C0 11.6529 0.193154 12.1192 0.536971 12.463C0.880787 12.8068 1.3471 13 1.83333 13H8.5C8.98623 13 9.45255 12.8068 9.79636 12.463C10.1402 12.1192 10.3333 11.6529 10.3333 11.1667V4.598C10.3333 4.5538 10.3158 4.51141 10.2845 4.48015C10.2533 4.44889 10.2109 4.43133 10.1667 4.43133H7.16667C7.03406 4.43133 6.90688 4.37865 6.81311 4.28489C6.71934 4.19112 6.66667 4.06394 6.66667 3.93133V0.166667ZM7.16667 6.66667C7.29927 6.66667 7.42645 6.71935 7.52022 6.81311C7.61399 6.90688 7.66667 7.03406 7.66667 7.16667C7.66667 7.29928 7.61399 7.42645 7.52022 7.52022C7.42645 7.61399 7.29927 7.66667 7.16667 7.66667H3.16667C3.03406 7.66667 2.90688 7.61399 2.81311 7.52022C2.71935 7.42645 2.66667 7.29928 2.66667 7.16667C2.66667 7.03406 2.71935 6.90688 2.81311 6.81311C2.90688 6.71935 3.03406 6.66667 3.16667 6.66667H7.16667ZM7.16667 9.33333C7.29927 9.33333 7.42645 9.38601 7.52022 9.47978C7.61399 9.57355 7.66667 9.70073 7.66667 9.83333C7.66667 9.96594 7.61399 10.0931 7.52022 10.1869C7.42645 10.2807 7.29927 10.3333 7.16667 10.3333H3.16667C3.03406 10.3333 2.90688 10.2807 2.81311 10.1869C2.71935 10.0931 2.66667 9.96594 2.66667 9.83333C2.66667 9.70073 2.71935 9.57355 2.81311 9.47978C2.90688 9.38601 3.03406 9.33333 3.16667 9.33333H7.16667Z" fill="currentColor"/><path transform="translate(10.5 1.7)" d="M0 0.154448C0 0.031781 0.128667 -0.046219 0.224 0.0304477C0.304889 0.095781 0.376667 0.171781 0.439334 0.258448L2.448 3.05645C2.49333 3.12045 2.444 3.20311 2.36533 3.20311H0.166667C0.122464 3.20311 0.0800715 3.18555 0.0488154 3.1543C0.0175593 3.12304 0 3.08065 0 3.03645V0.154448Z" fill="currentColor"/></svg></a>
   </div>
 
@@ -346,7 +349,7 @@ If that sounds like someone you’d like on your team, let’s talk.</p>
       <a href="playground.html">Next:&nbsp;<b>Playground</b><svg viewBox="0 0 28.28 20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m14.14 14.71 4.71-4.71-4.71-4.71"/></svg></a>
     </nav>
     <footer class="foot abs">
-      <p class="reach">Reach out to me via</p>
+      <p class="reach">Let’s connect</p>
       <svg class="icons" viewBox="634.15 103 171.7 35.35" role="group" aria-label="Contact links">
         <a href="https://www.linkedin.com/in/apoorva-bs" target="_blank" rel="noopener" aria-label="LinkedIn"><path d="M664.569 133.12H659.279V124.918C659.279 122.962 659.244 120.444 656.528 120.444C653.773 120.444 653.351 122.575 653.351 124.775V133.12H648.061V116.252H653.14V118.557H653.211C653.719 117.696 654.453 116.989 655.336 116.509C656.218 116.029 657.215 115.795 658.221 115.832C663.583 115.832 664.571 119.324 664.571 123.867L664.569 133.12ZM642.092 113.946C641.485 113.946 640.891 113.768 640.387 113.434C639.882 113.1 639.488 112.625 639.256 112.07C639.023 111.515 638.962 110.903 639.081 110.314C639.199 109.724 639.491 109.182 639.921 108.757C640.35 108.332 640.897 108.042 641.492 107.925C642.088 107.808 642.705 107.868 643.266 108.098C643.827 108.328 644.306 108.717 644.644 109.217C644.981 109.717 645.161 110.304 645.162 110.906C645.162 111.305 645.082 111.7 644.928 112.069C644.774 112.438 644.548 112.773 644.263 113.055C643.978 113.337 643.639 113.561 643.267 113.714C642.895 113.867 642.495 113.946 642.092 113.946ZM644.737 133.12H639.442V116.252H644.737V133.12ZM667.207 103.002H636.783C636.093 102.995 635.428 103.259 634.934 103.737C634.44 104.214 634.157 104.867 634.149 105.55V135.799C634.157 136.483 634.439 137.136 634.933 137.614C635.427 138.092 636.093 138.357 636.783 138.35H667.207C667.899 138.358 668.566 138.094 669.062 137.616C669.558 137.138 669.842 136.484 669.852 135.799V105.548C669.842 104.863 669.558 104.21 669.062 103.732C668.566 103.254 667.898 102.991 667.207 103"/><rect x="634" y="103" width="36" height="35.4" fill="transparent"/></a>
         <a href="https://github.com/apoorva-sdm" target="_blank" rel="noopener" aria-label="GitHub"><path d="M716.074 128.471C711.434 127.913 708.164 124.598 708.164 120.307C708.164 118.562 708.797 116.678 709.852 115.422C709.395 114.27 709.465 111.828 709.992 110.816C711.398 110.642 713.297 111.374 714.422 112.386C715.758 111.968 717.164 111.758 718.887 111.758C720.609 111.758 722.016 111.968 723.281 112.351C724.371 111.374 726.305 110.642 727.711 110.816C728.203 111.758 728.273 114.201 727.816 115.387C728.941 116.713 729.539 118.492 729.539 120.307C729.539 124.598 726.27 127.843 721.559 128.436C722.754 129.204 723.562 130.879 723.562 132.798V136.427C723.562 137.473 724.441 138.067 725.496 137.648C731.859 135.24 736.852 128.925 736.852 121.109C736.852 111.235 728.766 103.175 718.816 103.175C708.867 103.175 700.852 111.235 700.852 121.109C700.852 128.855 705.809 135.275 712.488 137.683C713.437 138.032 714.352 137.404 714.352 136.462V133.67C713.859 133.88 713.227 134.019 712.664 134.019C710.344 134.019 708.973 132.763 707.988 130.425C707.602 129.483 707.18 128.925 706.371 128.82C705.949 128.785 705.809 128.611 705.809 128.402C705.809 127.983 706.512 127.669 707.215 127.669C708.234 127.669 709.113 128.297 710.027 129.588C710.73 130.6 711.469 131.053 712.348 131.053C713.227 131.053 713.789 130.739 714.598 129.937C715.195 129.344 715.652 128.82 716.074 128.471Z"/><rect x="700.8" y="103" width="36" height="35.4" fill="transparent"/></a>
@@ -534,13 +537,16 @@ function pose(p) {
   if (!noVideo) cv.style.opacity = 1 - sOp;                 // a true cross-fade into your image (the layers add up, see .inner)
   rig.style.transform = `translate3d(${DRIFT(p).toFixed(3)}px, ${LIFTY(p).toFixed(3)}px, 0) rotate(${ROLL(p).toFixed(3)}deg) scale(${SCALE(p).toFixed(4)})`;
 }
+// timings for the triple-diamond story: turn 2.4s, camera up 1.7s, eight L-moves (~1.2s each, ~10s of walking), hop out, camera down 1.7s ≈ 17s in all
+const KT = { turn: 2.4, clip: 1.3, pick: 140, hop: 230, set: 140, between: 250, pause: 150, fadeIn: 250, fadeOut: 150 };
 function playTurn() {
   cv.style.visibility = 'visible'; cv.style.opacity = 1; rig.style.opacity = 0; still.style.opacity = 0;
   return new Promise(done => {
     const dur = video.duration || 5; let finished = false, started = false, fallen = false;
+    video.playbackRate = dur / KT.turn;
     const finish = () => { if (finished) return; finished = true; pose(1); cv.style.visibility = 'hidden'; done(); };
     const fallback = () => { if (fallen || finished) return; fallen = true; noVideo = true; video.pause(); cv.style.visibility = 'hidden';
-      tween(dur * 1000, p => pose(p), t => t).then(finish); };
+      tween(KT.turn * 1000, p => pose(p), t => t).then(finish); };
     const show = t => { if (finished || fallen) return; if (!draw()) return fallback(); if (t > 0) started = true; pose(clamp(t / dur)); };
     const onFrame = (now, meta) => { show(meta.mediaTime); if (!video.ended && !fallen && !finished) video.requestVideoFrameCallback(onFrame); };
     const tick = () => { show(video.currentTime); if (!video.ended && !fallen && !finished) requestAnimationFrame(tick); };
@@ -597,15 +603,13 @@ const lerp = (a, b, t) => ({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t 
 async function hopThrough(pts, name) {
   light(null);
   const from = pts[0], to = pts[pts.length - 1];
-  await tween(420, e => place(from, e), E.sine);
-  await wait(60);
+  await tween(KT.pick, e => place(from, e), E.sine);
   for (let k = 1; k < pts.length; k++) {
-    const a = pts[k - 1], b = pts[k], dist = Math.hypot(b.x - a.x, b.y - a.y), ms = 430 + Math.min(160, dist * 0.6);
-    await tween(ms, (e, raw) => place(lerp(a, b, E.sine(raw)), 1, 4 * raw * (1 - raw)), t => t);
-    await wait(110);
+    const a = pts[k - 1], b = pts[k];
+    await tween(KT.hop, (e, raw) => place(lerp(a, b, E.sine(raw)), 1, 4 * raw * (1 - raw)), t => t);
   }
   if (name) light(name);
-  await tween(520, e => place(to, 1 - e), E.sine);
+  await tween(KT.set, e => place(to, 1 - e), E.sine);
 }
 // a knight's L: one step up or down, then two hops along. If the squares are (almost) level — only the very first move,
 // from the start spot to Discover — it still makes the L: a step down, two hops along, and settles into its square.
@@ -619,7 +623,7 @@ async function walk() {
   for (let i = 0; i < route.length; i++) {
     const to = spot(route[i]);
     await hopThrough(lMove(here, to), route[i]);
-    here = to; await wait(1300);
+    here = to; await wait(KT.between);
   }
   return here;
 }
@@ -630,25 +634,26 @@ function play(v) { return new Promise(done => {
   const onFrame = () => { clipPlayer.draw(v); if (!v.ended && !over) v.requestVideoFrameCallback(onFrame); };
   v.addEventListener('ended', end, { once: true });
   v.requestVideoFrameCallback ? v.requestVideoFrameCallback(onFrame) : (function tick() { clipPlayer.draw(v); if (!v.ended && !over) requestAnimationFrame(tick); })();
+  v.playbackRate = (v.duration || 2.5) / KT.clip;
   const pr = v.play(); if (pr) pr.catch(end);
-  setTimeout(end, (v.duration || 2) * 1000 + 1500); }); }
+  setTimeout(end, KT.clip * 1000 + 300); }); }   // never let a stalled clip hold up the story
 const clipsOk = () => clipPlayer.ok && CLIP.rise.readyState >= 2 && CLIP.lower.readyState >= 2;
 // the layers add up (see .rig), so these fades are true cross-fades between pictures of the same pose
 const fade = (out, inn, ms) => tween(ms, e => { out.style.opacity = 1 - e; inn.style.opacity = e; }, E.sine);
 async function toTop() {        // side view (your knight) → camera rises → top view picture
-  if (!clipsOk()) { await fade(still, topStill, 900); view = 'top'; return; }
+  if (!clipsOk()) { await fade(still, topStill, 600); view = 'top'; return; }
   await seek(CLIP.rise, 0); clipPlayer.draw(CLIP.rise);
-  await fade(still, panCv, 500);
+  await fade(still, panCv, KT.fadeIn);
   await play(CLIP.rise);
-  await fade(panCv, topStill, 300); view = 'top';
+  await fade(panCv, topStill, KT.fadeOut); view = 'top';
 }
 async function toSide() {       // top view → camera comes back down → your knight
-  if (!clipsOk()) { await fade(topStill, still, 900); view = 'side'; return; }
+  if (!clipsOk()) { await fade(topStill, still, 600); view = 'side'; return; }
   await seek(CLIP.lower, 0); clipPlayer.draw(CLIP.lower);
-  await fade(topStill, panCv, 300);
+  await fade(topStill, panCv, KT.fadeOut);
   view = 'side';
   await play(CLIP.lower);
-  await fade(panCv, still, 500);
+  await fade(panCv, still, KT.fadeIn);
 }
 const diamonds = $('diamonds'), iterateBtn = $('iterate');
 let knightBusy = true;
@@ -661,18 +666,18 @@ async function entrance() {     // the twist-and-land at the start spot, as on t
   await playTurn();
 }
 async function tour() {         // from the start spot (side view, resting): rise, walk, hop out, come down
-  await wait(450); await toTop();
-  await wait(600); const last = await walk();
-  await wait(500);
+  await wait(KT.pause); await toTop();
+  await wait(KT.pause); const last = await walk();
+  await wait(KT.pause);
   await hopThrough(lMove(last, EXIT));                                    // out of the diamonds, still seen from above
   light(null);
-  await wait(300); await toSide();
+  await wait(KT.pause); await toSide();
   ready(true);
 }
 async function firstRun() {
   ready(false);
   const turn = entrance();
-  untilTurn(0.62).then(() => reveal(diamonds, 2000, 14, 0));      // the diamond process appears as the knight comes in to land
+  untilTurn(0.55).then(() => reveal(diamonds, 1400, 14, 0));      // the diamond process appears as the knight comes in to land
   await turn;
   await tour();
 }
@@ -694,8 +699,8 @@ iterateBtn.addEventListener('click', async () => {
   ready(false);
   styleNow = (styleNow + 1) % STYLES.length;
   // the knight lifts away where it stands; the diamonds stay. Then it twists in at the start, just like the first time.
-  await tween(600, e => { place(EXIT, e * 0.6); rig.style.opacity = 1 - e; }, E.sine);
-  await wait(350);
+  await tween(300, e => { place(EXIT, e * 0.6); rig.style.opacity = 1 - e; }, E.sine);
+  await wait(80);
   await entrance();
   await tour();
 });
@@ -749,4 +754,5 @@ if (reduced) {
 }
 window.__journey = journey;
 </script>
+<script src="mailcopy.js"></script>
 </body></html>
