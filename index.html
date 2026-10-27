@@ -3,7 +3,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="cards.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Open+Sans:wght@400&display=swap">
+<!-- the page's own fonts start downloading at once; Inter / Open Sans (only inside two thumbnails) load without holding the page up -->
+<link rel="preload" as="font" type="font/woff2" href="fonts/satoshi-400.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/satoshi-500.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="fonts/bricolage-500-latin.woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Open+Sans:wght@400&display=swap" media="print" onload="this.media='all'">
 <script>
 // start loading every face the page uses straight away, and let the page wait for exactly these before measuring anything
 window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satoshi', 'italic 400 16px Satoshi', '500 16px Satoshi', '700 16px Satoshi',
@@ -14,9 +19,8 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Apoorva B S | UX and Product Strategy</title>
 <!-- load the hero visuals first so nothing pops in -->
-<link rel="preload" as="image" href="board2-export.png" fetchpriority="high">
-<link rel="preload" as="image" href="knight-fig-src.png" fetchpriority="high">
-<link rel="preload" as="image" href="knight-light-src.png">
+<link rel="preload" as="image" href="board2-export.webp" fetchpriority="high">
+<link rel="preload" as="image" href="knight-fig-src.webp" fetchpriority="high">
 <script>try { const t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <style>
   /* two themes: dark (the Figma design) and light. Everything colour-related reads these. */
@@ -413,13 +417,13 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   <p class="tag abs pre" id="tag">Knights see the invisible, at every move. Click below to discover how.</p>
 
   <div class="abs pre" id="boardWrap" style="left:0;top:0;width:1440px;height:1265px;pointer-events:none">
-    <img class="board dark abs" src="board2-export.png" alt="" fetchpriority="high">
-    <img class="board light abs" src="board3-light.png" alt="">
+    <img class="board dark abs" src="board2-export.webp" alt="" fetchpriority="high">
+    <img class="board light abs" src="board3-light.webp" alt="">
     <div class="fadeTop abs"></div>
   </div>
 
-  <div class="rig abs" id="rig"><div class="inner"><canvas id="turnCanvas" width="648" height="1374"></canvas><div class="still" id="still"><img class="forDark" src="knight-fig-src.png" alt="Glass knight chess piece"><img class="forLight" src="knight-light-src.png" alt="Glass knight chess piece"></div></div></div>
-  <video id="turn" src="turn-v12.mp4" muted playsinline preload="auto"></video>
+  <div class="rig abs" id="rig"><div class="inner"><canvas id="turnCanvas" width="648" height="1374"></canvas><div class="still" id="still"><img class="forDark" src="knight-fig-src.webp" alt="Glass knight chess piece"><img class="forLight" src="knight-light-src.webp" alt="Glass knight chess piece"></div></div></div>
+  <video id="turn" src="turn-v13.mp4" muted playsinline preload="none"></video>
 
   <button class="themeBtn glass abs" id="themeBtn" style="--c:0.00deg" type="button" aria-label="Switch to light theme">
     <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
@@ -447,14 +451,14 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   <p class="stats abs"><b>2+</b><i> </i>years.<i>  </i><b>6</b><i> </i>sectors.<i class="s">  </i><b>5</b><i> </i>enterprise clients.</p>
   <h2 class="selected abs">Selected Work</h2>
   <div class="pcard w abs" style="left:120px;top:1676px;background:#c6c6c6;--c1:#010707;--c2:#000;--tagBg:#dfcfe3;--tagInk:#010707;--tagBd:1px solid #d8c4da;--pb:32px">
-    <img class="art" src="work/tmfl-img66.jpg" alt="" style="left:0;top:0;width:566px;height:1006px;object-fit:cover;opacity:.6">
+    <img loading="lazy" decoding="async" class="art" src="work/tmfl-img66.webp" alt="" style="left:0;top:0;width:566px;height:1006px;object-fit:cover;opacity:.6">
     <div class="phone art" id="tmPhone" style="left:124px;top:90px" aria-hidden="true"><div class="phScreen">
-      <div class="phSlide on"><div class="phScroll"><img src="work/tmfl/home-tall.jpg" alt="" style="width:293px"></div><div class="phHead"><img src="work/tmfl/home-tall.jpg" alt="" style="width:293px"></div></div>
-      <div class="phSlide"><div class="phInner"><div class="phScroll"><img src="work/tmfl/qsa-empty.jpg" alt="" style="width:374px;height:800px"><img class="otp" src="work/tmfl/qsa.jpg" alt="" style="width:374px;height:800px"></div><div class="phHead" style="width:374px;height:85px"><img src="work/tmfl/qsa.jpg" alt="" style="width:374px"></div></div></div>
-      <div class="phSlide"><div class="phInner"><div class="phScroll"><img src="work/tmfl/kyc.jpg" alt="" style="width:374px;height:800px"><div class="kycDim"></div>
+      <div class="phSlide on"><div class="phScroll"><img fetchpriority="low" src="work/tmfl/home-tall.webp" alt="" style="width:293px"></div><div class="phHead"><img fetchpriority="low" src="work/tmfl/home-tall.webp" alt="" style="width:293px"></div></div>
+      <div class="phSlide"><div class="phInner"><div class="phScroll"><img fetchpriority="low" src="work/tmfl/qsa-empty.webp" alt="" style="width:374px;height:800px"><img fetchpriority="low" class="otp" src="work/tmfl/qsa.webp" alt="" style="width:374px;height:800px"></div><div class="phHead" style="width:374px;height:85px"><img fetchpriority="low" src="work/tmfl/qsa.webp" alt="" style="width:374px"></div></div></div>
+      <div class="phSlide"><div class="phInner"><div class="phScroll"><img fetchpriority="low" src="work/tmfl/kyc.webp" alt="" style="width:374px;height:800px"><div class="kycDim"></div>
         <div class="kycModal"><p class="mt">Biometric KYC</p><p class="ms">Biometric KYC Successful! Please click on Next to view captured details.</p>
-          <img class="fp" src="work/kyc-fingerprint.svg" alt=""><span class="mx"><img src="work/kyc-close.svg" alt=""></span><span class="mb">Next</span></div></div></div></div>
-      <div class="phSlide"><div class="phInner fl"><div class="phScroll"><img src="work/tmfl/fleet.jpg" alt="" style="width:360px;height:800px"></div><div class="phHead" style="width:360px;height:85px"><img src="work/tmfl/fleet.jpg" alt="" style="width:360px"></div></div></div>
+          <img fetchpriority="low" class="fp" src="work/kyc-fingerprint.svg" alt=""><span class="mx"><img fetchpriority="low" src="work/kyc-close.svg" alt=""></span><span class="mb">Next</span></div></div></div></div>
+      <div class="phSlide"><div class="phInner fl"><div class="phScroll"><img fetchpriority="low" src="work/tmfl/fleet.webp" alt="" style="width:360px;height:800px"></div><div class="phHead" style="width:360px;height:85px"><img fetchpriority="low" src="work/tmfl/fleet.webp" alt="" style="width:360px"></div></div></div>
       <span class="tap"></span><div class="phBlack"></div>
     </div><span class="phCam"></span></div>
     <p class="brand" style="left:352px;--tagBg:rgba(138,22,149,.12);--tagInk:#010707">Automotive FinTech</p>
@@ -462,35 +466,35 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
       <p class="tags"><span>Product Strategy</span><span>UI &amp; Experience Design</span><span>BPR</span></p></div>
   </div>
   <div class="pcard w abs" style="left:755px;top:1676px;--pb:32px;--c1:#010707;--c2:#000;--tagBg:rgba(255,255,255,.18);--tagInk:#010707">
-    <img class="art" src="work/everest-bg.jpg" alt="" style="left:-94px;top:-442px;width:697px;height:1240px;object-fit:cover">
-    <div class="laptop art" id="evLap" aria-hidden="true" style="transform:translate(55px,90px)"><div class="lid"><div class="evScreen"><img src="work/everest-screen.jpg" alt="" style="width:756px;height:491px"><div class="evContent"><img id="evScroll" src="work/everest-screen.jpg" alt=""></div></div></div></div>
+    <img loading="lazy" decoding="async" class="art" src="work/everest-bg.webp" alt="" style="left:-94px;top:-442px;width:697px;height:1240px;object-fit:cover">
+    <div class="laptop art" id="evLap" aria-hidden="true" style="transform:translate(55px,90px)"><div class="lid"><div class="evScreen"><img loading="lazy" decoding="async" src="work/everest-screen.webp" alt="" style="width:756px;height:491px"><div class="evContent"><img loading="lazy" decoding="async" id="evScroll" src="work/everest-screen.webp" alt=""></div></div></div></div>
     <p class="brand" style="left:438px">AI SaaS</p>
     <div class="panel"><div><p class="t nw">Shaping Everest’s Custom Agentic AI ERP</p><p class="s">Industry-specific AI Admin ERP winning billable project phase - 2</p></div>
       <p class="tags"><span>AI Problem Solving</span><span>Product Startegy</span><span>UX Design</span></p></div>
   </div>
   <div class="pcard w abs" style="left:120px;top:2462px;background:linear-gradient(218.97deg, #c5b180 1.1%, #424141 77.8%);--pb:20px;--c1:#000;--c2:#000;--tagBg:rgba(255,255,255,.18);--tagInk:#010707">
-    <div class="laptop art" id="cxLap" aria-hidden="true"><div class="lid"><img src="work/cx-screen.jpg" alt="" style="width:720px;height:512px"><span class="cxNum" id="cxNum">72</span><span class="cxTag" id="cxTag">Potential Score</span></div><div class="base"></div></div>
+    <div class="laptop art" id="cxLap" aria-hidden="true"><div class="lid"><img loading="lazy" decoding="async" src="work/cx-screen.webp" alt="" style="width:720px;height:512px"><span class="cxNum" id="cxNum">72</span><span class="cxTag" id="cxTag">Potential Score</span></div><div class="base"></div></div>
     <p class="brand" style="left:407px">CX Strategy</p>
     <div class="panel" style="padding:24px 32px"><div><p class="t" style="padding:0 10px 10px">Reimagining customer strategy through CX Navigator</p><p class="s">Empowering CX teams with faster, simplified and data driven insights</p></div>
       <p class="tags"><span>Interaction Design</span><span>Rapid Prototyping</span><span>WIreframing</span></p></div>
   </div>
   <div class="pcard w abs" style="left:755px;top:2462px;background:linear-gradient(to bottom, #1a1620, #291c38 54.87%);--c2:#d7d7d7;--tagBg:rgba(207,193,232,.1)">
-    <span class="art coinWrap" style="left:213px;top:117px;width:120px;height:120px" aria-hidden="true"><span class="coinMove"><span class="coinGlow"></span><span class="coin3d"><img class="cf" src="work/jar-coin.svg" alt=""><img class="cb" src="work/jar-coin.svg" alt=""><i style="transform:translateZ(-6px)"></i><i style="transform:translateZ(-5px)"></i><i style="transform:translateZ(-4px)"></i><i style="transform:translateZ(-3px)"></i><i style="transform:translateZ(-2px)"></i><i style="transform:translateZ(-1px)"></i><i style="transform:translateZ(0px)"></i><i style="transform:translateZ(1px)"></i><i style="transform:translateZ(2px)"></i><i style="transform:translateZ(3px)"></i><i style="transform:translateZ(4px)"></i><i style="transform:translateZ(5px)"></i><i style="transform:translateZ(6px)"></i></span></span></span>
+    <span class="art coinWrap" style="left:213px;top:117px;width:120px;height:120px" aria-hidden="true"><span class="coinMove"><span class="coinGlow"></span><span class="coin3d"><img loading="lazy" decoding="async" class="cf" src="work/jar-coin.svg" alt=""><img loading="lazy" decoding="async" class="cb" src="work/jar-coin.svg" alt=""><i style="transform:translateZ(-6px)"></i><i style="transform:translateZ(-5px)"></i><i style="transform:translateZ(-4px)"></i><i style="transform:translateZ(-3px)"></i><i style="transform:translateZ(-2px)"></i><i style="transform:translateZ(-1px)"></i><i style="transform:translateZ(0px)"></i><i style="transform:translateZ(1px)"></i><i style="transform:translateZ(2px)"></i><i style="transform:translateZ(3px)"></i><i style="transform:translateZ(4px)"></i><i style="transform:translateZ(5px)"></i><i style="transform:translateZ(6px)"></i></span></span></span>
     <p class="brand" style="left:438px;--tagBg:rgba(27,23,34,.1)">FinTech</p>
     <div class="panel" style="top:456px;padding:24px 32px"><div style="display:flex;flex-direction:column;gap:12px"><p class="t nw" style="padding:10px 0">Hypothesis-driven User Research at Jar</p><p class="s" style="padding:0">47% user mistook investment for savings, driving an insight-led onboarding redesign</p></div>
       <p class="tags"><span>Data-driven Research</span><span>Usability Testing</span><span>VOC</span></p></div>
   </div>
   <div class="pcard w abs" style="left:120px;top:3248px;background:linear-gradient(180deg, #6178bc -56.65%, #3f4a6b 100%)">
     <span class="art sparks" aria-hidden="true"><i class="spark sa" style="left:541.0px;top:32.0px;width:30px;height:30px;--x1:-22px;--y1:14px;--x2:10px;--y2:-12px;--t:13s;--d:-0.0s"></i><i class="spark sb" style="left:131.0px;top:132.0px;width:18px;height:18px;--x1:18px;--y1:10px;--x2:-10px;--y2:18px;--t:11s;--d:-1.7s"></i><i class="spark sc" style="left:401.0px;top:301.0px;width:34px;height:34px;--x1:-16px;--y1:-18px;--x2:14px;--y2:8px;--t:15s;--d:-3.4s"></i><i class="spark sa" style="left:340.0px;top:354.0px;width:18px;height:18px;--x1:14px;--y1:-12px;--x2:-18px;--y2:-6px;--t:9s;--d:-5.1s"></i><i class="spark sb" style="left:487.0px;top:354.0px;width:28px;height:28px;--x1:-12px;--y1:16px;--x2:16px;--y2:10px;--t:12s;--d:-6.8s"></i><i class="spark sc" style="left:23.0px;top:370.0px;width:30px;height:30px;--x1:20px;--y1:-14px;--x2:-8px;--y2:12px;--t:14s;--d:-8.5s"></i><i class="spark sa" style="left:176.0px;top:623.0px;width:28px;height:28px;--x1:-18px;--y1:-10px;--x2:12px;--y2:-16px;--t:10s;--d:-10.2s"></i><i class="spark sb" style="left:555.0px;top:367.0px;width:22px;height:22px;--x1:-20px;--y1:12px;--x2:-6px;--y2:-14px;--t:16s;--d:-11.9s"></i><i class="spark sc" style="left:262.0px;top:512.0px;width:16px;height:16px;--x1:16px;--y1:12px;--x2:-12px;--y2:8px;--t:11s;--d:-13.6s"></i><i class="spark sa" style="left:460.0px;top:590.0px;width:20px;height:20px;--x1:-14px;--y1:-16px;--x2:10px;--y2:14px;--t:13s;--d:-15.3s"></i></span>
-    <img class="art" src="work/float-logo-b.svg" alt="" style="left:173px;top:208px;width:46.161px;height:87.42px">
-    <img class="art" src="work/float-logo-a.svg" alt="" style="left:227.49px;top:219.36px;width:165.468px;height:77.876px">
+    <img loading="lazy" decoding="async" class="art" src="work/float-logo-b.svg" alt="" style="left:173px;top:208px;width:46.161px;height:87.42px">
+    <img loading="lazy" decoding="async" class="art" src="work/float-logo-a.svg" alt="" style="left:227.49px;top:219.36px;width:165.468px;height:77.876px">
     <p class="brand" style="left:387px;top:26px">Value Creation</p>
     <div class="panel"><div><p class="t nw">Building Float: From Zero to First Revenue</p><p class="s">₹1,560 in revenue and 85.7% return-intent rate in three MVP iterations</p></div>
       <p class="tags"><span>Service Design</span><span>MVP</span><span>GTM</span><span>Business Design</span></p></div>
   </div>
   <div class="pcard w abs" style="left:755px;top:3248px;background:#cacaca;--c1:#000;--c2:#000;--tagBg:rgba(228,137,72,.2);--tagInk:#222">
-    <img class="art" src="work/event-bg.jpg" alt="" style="left:0;top:-277px;width:736px;height:1308px;object-fit:cover;opacity:.6">
-    <span class="art" style="left:85px;top:115px;width:353px;height:303px;overflow:hidden"><img src="work/event-lion.png" alt="" style="position:absolute;left:0;top:0;width:118.98%;height:138.61%;max-width:none"></span>
+    <img loading="lazy" decoding="async" class="art" src="work/event-bg.jpg" alt="" style="left:0;top:-277px;width:736px;height:1308px;object-fit:cover;opacity:.6">
+    <span class="art" style="left:85px;top:115px;width:353px;height:303px;overflow:hidden"><img loading="lazy" decoding="async" src="work/event-lion.webp" alt="" style="position:absolute;left:0;top:0;width:118.98%;height:138.61%;max-width:none"></span>
     <svg class="art streak" viewBox="0 0 566 722" aria-hidden="true"><path class="glow" pathLength="1000" d="M218.7 159.1 C217.4 159.8 213.1 161.9 211.0 163.3 C208.9 164.7 207.4 166.1 206.1 167.5 C204.8 168.9 204.2 170.3 203.3 171.7 C202.4 173.1 201.2 174.5 200.5 175.9 C199.8 177.3 199.6 178.7 199.1 180.1 C198.6 181.5 198.0 182.9 197.7 184.3 C197.3 185.7 197.2 187.1 197.0 188.5 C196.8 189.9 196.5 191.3 196.3 192.7 C196.1 194.1 195.9 195.5 195.6 196.9 C195.2 198.3 195.1 199.7 194.2 201.1 C193.3 202.5 191.3 203.9 190.0 205.3 C188.7 206.7 187.6 208.1 186.5 209.5 C185.4 210.9 184.8 212.3 183.7 213.7 C182.6 215.1 181.5 216.5 180.2 217.9 C178.9 219.3 177.6 220.7 176.0 222.1 C174.4 223.5 172.4 224.9 170.4 226.3 C168.4 227.7 166.1 229.1 164.1 230.5 C162.1 231.9 160.4 233.3 158.5 234.7 C156.6 236.1 154.4 237.5 152.9 238.9 C151.4 240.3 150.5 241.7 149.4 243.1 C148.3 244.5 147.4 245.9 146.6 247.3 C145.8 248.7 145.1 250.1 144.5 251.5 C143.9 252.9 143.3 254.3 143.1 255.7 C142.9 257.1 143.1 258.5 143.1 259.9 C143.1 261.3 143.2 262.7 143.1 264.1 C143.0 265.5 143.0 266.9 142.4 268.3 C141.8 269.7 140.8 271.1 139.6 272.5 C138.4 273.9 136.9 275.3 135.4 276.7 C133.9 278.1 132.0 279.5 130.5 280.9 C129.0 282.3 127.7 283.7 126.3 285.1 C124.9 286.5 123.6 287.9 122.1 289.3 C120.6 290.7 118.7 292.1 117.2 293.5 C115.7 294.9 114.3 296.3 113.0 297.7 C111.7 299.1 110.4 300.5 109.5 301.9 C108.6 303.3 108.0 304.7 107.4 306.1 C106.8 307.5 106.0 308.9 106.0 310.3 C106.0 311.7 106.8 313.1 107.4 314.5 C108.0 315.9 108.5 317.3 109.5 318.7 C110.5 320.1 112.9 321.5 113.7 322.9 C114.5 324.3 114.1 325.7 114.4 327.1 C114.8 328.5 115.1 329.9 115.8 331.3 C116.5 332.7 117.3 334.1 118.6 335.5 C119.9 336.9 121.6 338.3 123.5 339.7 C125.4 341.1 128.3 342.5 129.8 343.9 C131.3 345.3 131.9 347.1 132.6 348.1 C133.3 349.2 133.3 349.5 134.0 350.2 C134.7 350.9 132.0 351.6 136.8 352.3 C141.6 353.0 158.6 353.7 162.7 354.4 C166.8 355.1 164.3 355.8 161.3 356.5 C158.3 357.2 147.3 357.9 144.5 358.6 C141.7 359.3 144.2 359.6 144.5 360.7 C144.8 361.8 145.9 363.5 146.6 364.9 C147.3 366.3 148.3 367.7 148.7 369.1 C149.0 370.5 148.5 371.9 148.7 373.3 C148.9 374.7 149.6 376.1 150.1 377.5 C150.6 378.9 150.7 380.3 151.5 381.7 C152.3 383.1 153.4 384.5 155.0 385.9 C156.6 387.3 159.2 389.2 161.3 390.1 C163.4 391.0 165.2 391.4 167.6 391.5 C170.0 391.6 173.2 391.5 176.0 390.8 C178.8 390.1 182.1 390.6 184.4 387.3 C186.7 384.0 187.9 375.6 190.0 371.2 C192.1 366.8 194.4 363.5 197.0 360.7 C199.6 357.9 203.5 353.3 205.4 354.4 C207.3 355.4 207.5 362.8 208.2 367.0 C208.9 371.2 209.1 375.4 209.6 379.6 C210.1 383.8 210.2 389.1 211.0 392.2 C211.8 395.3 213.1 396.4 214.5 398.5 C215.9 400.6 217.4 402.7 219.4 404.8 C221.4 406.9 225.2 410.1 226.4 411.1"/><path class="core" pathLength="1000" d="M218.7 159.1 C217.4 159.8 213.1 161.9 211.0 163.3 C208.9 164.7 207.4 166.1 206.1 167.5 C204.8 168.9 204.2 170.3 203.3 171.7 C202.4 173.1 201.2 174.5 200.5 175.9 C199.8 177.3 199.6 178.7 199.1 180.1 C198.6 181.5 198.0 182.9 197.7 184.3 C197.3 185.7 197.2 187.1 197.0 188.5 C196.8 189.9 196.5 191.3 196.3 192.7 C196.1 194.1 195.9 195.5 195.6 196.9 C195.2 198.3 195.1 199.7 194.2 201.1 C193.3 202.5 191.3 203.9 190.0 205.3 C188.7 206.7 187.6 208.1 186.5 209.5 C185.4 210.9 184.8 212.3 183.7 213.7 C182.6 215.1 181.5 216.5 180.2 217.9 C178.9 219.3 177.6 220.7 176.0 222.1 C174.4 223.5 172.4 224.9 170.4 226.3 C168.4 227.7 166.1 229.1 164.1 230.5 C162.1 231.9 160.4 233.3 158.5 234.7 C156.6 236.1 154.4 237.5 152.9 238.9 C151.4 240.3 150.5 241.7 149.4 243.1 C148.3 244.5 147.4 245.9 146.6 247.3 C145.8 248.7 145.1 250.1 144.5 251.5 C143.9 252.9 143.3 254.3 143.1 255.7 C142.9 257.1 143.1 258.5 143.1 259.9 C143.1 261.3 143.2 262.7 143.1 264.1 C143.0 265.5 143.0 266.9 142.4 268.3 C141.8 269.7 140.8 271.1 139.6 272.5 C138.4 273.9 136.9 275.3 135.4 276.7 C133.9 278.1 132.0 279.5 130.5 280.9 C129.0 282.3 127.7 283.7 126.3 285.1 C124.9 286.5 123.6 287.9 122.1 289.3 C120.6 290.7 118.7 292.1 117.2 293.5 C115.7 294.9 114.3 296.3 113.0 297.7 C111.7 299.1 110.4 300.5 109.5 301.9 C108.6 303.3 108.0 304.7 107.4 306.1 C106.8 307.5 106.0 308.9 106.0 310.3 C106.0 311.7 106.8 313.1 107.4 314.5 C108.0 315.9 108.5 317.3 109.5 318.7 C110.5 320.1 112.9 321.5 113.7 322.9 C114.5 324.3 114.1 325.7 114.4 327.1 C114.8 328.5 115.1 329.9 115.8 331.3 C116.5 332.7 117.3 334.1 118.6 335.5 C119.9 336.9 121.6 338.3 123.5 339.7 C125.4 341.1 128.3 342.5 129.8 343.9 C131.3 345.3 131.9 347.1 132.6 348.1 C133.3 349.2 133.3 349.5 134.0 350.2 C134.7 350.9 132.0 351.6 136.8 352.3 C141.6 353.0 158.6 353.7 162.7 354.4 C166.8 355.1 164.3 355.8 161.3 356.5 C158.3 357.2 147.3 357.9 144.5 358.6 C141.7 359.3 144.2 359.6 144.5 360.7 C144.8 361.8 145.9 363.5 146.6 364.9 C147.3 366.3 148.3 367.7 148.7 369.1 C149.0 370.5 148.5 371.9 148.7 373.3 C148.9 374.7 149.6 376.1 150.1 377.5 C150.6 378.9 150.7 380.3 151.5 381.7 C152.3 383.1 153.4 384.5 155.0 385.9 C156.6 387.3 159.2 389.2 161.3 390.1 C163.4 391.0 165.2 391.4 167.6 391.5 C170.0 391.6 173.2 391.5 176.0 390.8 C178.8 390.1 182.1 390.6 184.4 387.3 C186.7 384.0 187.9 375.6 190.0 371.2 C192.1 366.8 194.4 363.5 197.0 360.7 C199.6 357.9 203.5 353.3 205.4 354.4 C207.3 355.4 207.5 362.8 208.2 367.0 C208.9 371.2 209.1 375.4 209.6 379.6 C210.1 383.8 210.2 389.1 211.0 392.2 C211.8 395.3 213.1 396.4 214.5 398.5 C215.9 400.6 217.4 402.7 219.4 404.8 C221.4 406.9 225.2 410.1 226.4 411.1"/></svg>
     <p class="brand" style="left:465px;top:26px">PSU</p>
     <div class="panel" style="padding:24px 32px;background:rgba(228,137,72,.2)"><div style="width:511px"><p class="t nw" style="padding:0 10px 10px">Tracing cultural evolution in Gujarat</p><p class="s">6 signal buckets and 20 success dimensions from an exploratory research for event tourism at Gujarat</p></div>
@@ -498,10 +502,10 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   </div>
   <h2 class="recs abs">Recommendations</h2>
   <div id="recWrap" role="region" aria-roledescription="carousel" aria-label="Recommendations">
-    <figure class="rec abs" aria-roledescription="slide" aria-label="1 of 4"><div class="who"><div class="pic"><img src="work/rec-vijai.png" alt="Vijai Kumar" style=""></div><div><p class="n">Vijai Kumar</p><p class="d">Manager, Deloitte India</p></div></div><p class="q">“Apoorva demonstrated strong UX design skills, creativity, and the ability to come up with unique design ideas that received positive client appreciation.”</p></figure>
-    <figure class="rec abs" aria-roledescription="slide" aria-label="2 of 4"><div class="who"><div class="pic"><img src="work/rec-manjunath.png" alt="Manjunath Subramanyam" style="left:-5px;width:94px;height:94px"></div><div><p class="n">Manjunath Subramanyam</p><p class="d">UX Lead, AGCO</p></div></div><p class="q">“What stood out to me was Apoorva’s ability to understand complex requirements, translate them into intuitive user experiences, with impressive speed. She brings thoughtful problem-solving, attention to detail, and a strong sense of ownership to her work.”</p></figure>
-    <figure class="rec abs" aria-roledescription="slide" aria-label="3 of 4"><div class="who"><div class="pic"><img src="work/rec-manju.png" alt="Manju Rawat" style=""></div><div><p class="n">Manju Rawat</p><p class="d">User Research Lead, Jar</p></div></div><p class="q">“I was particularly impressed by Apoorva’s attention to detail and her empathetic approach to conducting user research studies. Her dedication and potential make her a valuable asset to any team seeking a motivated and skilled user research/product professional.”</p></figure>
-    <figure class="rec abs" aria-roledescription="slide" aria-label="4 of 4"><div class="who"><div class="pic"><img src="work/rec-srinivasa.png" alt="Srinivasa Katharguppe Subbaramaiah" style="width:93px;height:93px"></div><div><p class="n">Srinivasa Katharguppe Subbaramaiah</p><p class="d">Board Director &amp; Chief Scientist, SherpaVector</p></div></div><p class="q">“What stands out about Apoorva is that she is dependable, diligent, and takes ownership of her work. She took feedback well and was respectful.”</p></figure>
+    <figure class="rec abs" aria-roledescription="slide" aria-label="1 of 4"><div class="who"><div class="pic"><img loading="lazy" decoding="async" src="work/rec-vijai.png" alt="Vijai Kumar" style=""></div><div><p class="n">Vijai Kumar</p><p class="d">Manager, Deloitte India</p></div></div><p class="q">“Apoorva demonstrated strong UX design skills, creativity, and the ability to come up with unique design ideas that received positive client appreciation.”</p></figure>
+    <figure class="rec abs" aria-roledescription="slide" aria-label="2 of 4"><div class="who"><div class="pic"><img loading="lazy" decoding="async" src="work/rec-manjunath.png" alt="Manjunath Subramanyam" style="left:-5px;width:94px;height:94px"></div><div><p class="n">Manjunath Subramanyam</p><p class="d">UX Lead, AGCO</p></div></div><p class="q">“What stood out to me was Apoorva’s ability to understand complex requirements, translate them into intuitive user experiences, with impressive speed. She brings thoughtful problem-solving, attention to detail, and a strong sense of ownership to her work.”</p></figure>
+    <figure class="rec abs" aria-roledescription="slide" aria-label="3 of 4"><div class="who"><div class="pic"><img loading="lazy" decoding="async" src="work/rec-manju.png" alt="Manju Rawat" style=""></div><div><p class="n">Manju Rawat</p><p class="d">User Research Lead, Jar</p></div></div><p class="q">“I was particularly impressed by Apoorva’s attention to detail and her empathetic approach to conducting user research studies. Her dedication and potential make her a valuable asset to any team seeking a motivated and skilled user research/product professional.”</p></figure>
+    <figure class="rec abs" aria-roledescription="slide" aria-label="4 of 4"><div class="who"><div class="pic"><img loading="lazy" decoding="async" src="work/rec-srinivasa.png" alt="Srinivasa Katharguppe Subbaramaiah" style="width:93px;height:93px"></div><div><p class="n">Srinivasa Katharguppe Subbaramaiah</p><p class="d">Board Director &amp; Chief Scientist, SherpaVector</p></div></div><p class="q">“What stands out about Apoorva is that she is dependable, diligent, and takes ownership of her work. She took feedback well and was respectful.”</p></figure>
     <button class="arrow prev glass abs" type="button" aria-label="Previous recommendation"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg></button>
     <div class="recDots abs" role="group" aria-label="Choose a recommendation"><button type="button" aria-label="Recommendation 1" aria-current="true"></button><button type="button" aria-label="Recommendation 2" aria-current="false"></button><button type="button" aria-label="Recommendation 3" aria-current="false"></button><button type="button" aria-label="Recommendation 4" aria-current="false"></button></div>
     <button class="arrow next glass abs" type="button" aria-label="Next recommendation"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg></button>
@@ -509,12 +513,12 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   <h2 class="pgTitle abs">Playground</h2>
   <a class="more abs" href="playground.html">View More<svg viewBox="0 0 28.28 28.28" fill="none" aria-hidden="true"><g transform="rotate(45 14.14 14.14) translate(4.14 4.14)"><path d="M13.3333 13.3333V6.66667H6.66667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></g></svg></a>
   <a href="papers/IEEEpaper.pdf" target="_blank" rel="noopener" class="pcard dark abs" style="left:120px;top:4916px">
-    <img class="art" src="work/ieee.png" alt="IEEE Xplore Digital Library" style="left:71px;top:222px;width:427px;height:158px;object-fit:cover">
+    <img loading="lazy" decoding="async" class="art" src="work/ieee.png" alt="IEEE Xplore Digital Library" style="left:71px;top:222px;width:427px;height:158px;object-fit:cover">
     <p class="brand" style="left:379px">Research Paper</p>
     <div class="panel mid"><div><p class="t">Image Caption Generation in Kannada using Deep Learning Frameworks</p><p class="s">Published in IEEE Xplore and presented at IEEE ICAECIS 2023</p></div></div>
   </a>
   <a href="https://apoorva-sdm.github.io/india-travel-insurance-analysis/" target="_blank" rel="noopener" class="pcard dark abs" style="left:755px;top:4916px">
-    <img class="art" src="work/globe.png" alt="" style="left:38px;top:70px;width:490.8px;height:512.4px;object-fit:cover">
+    <img loading="lazy" decoding="async" class="art" src="work/globe.webp" alt="" style="left:38px;top:70px;width:490.8px;height:512.4px;object-fit:cover">
     <p class="brand" style="left:405px">Vibe-coding</p>
     <div class="panel"><div><p class="t">Service Audit for Travel Insurances in India</p><p class="s">Vibe-coded visualisation for understanding HDFC Ergo’s service</p></div></div>
   </a>
@@ -546,6 +550,9 @@ if (location.protocol === 'file:' && window.TURN_VIDEO) {
 const stage = document.getElementById('stage'), shell = document.getElementById('shell');
 function fit() { const s = innerWidth / 1440; stage.style.transform = `scale(${s})`; shell.style.height = 6249 * s + 'px'; }
 fit(); addEventListener('resize', fit);
+// Brave can miss a window's final size (full screen, a resize while the tab was hidden): check again on return and every so often
+let fitW = innerWidth; addEventListener('pageshow', fit); document.addEventListener('visibilitychange', fit);
+setInterval(() => { if (innerWidth !== fitW) { fitW = innerWidth; fit(); } }, 500);
 // glass rim: angle where each pill's rounded ends begin
 document.querySelectorAll('.glass').forEach(el => { if (el.style.getPropertyValue('--c')) return; const w = el.offsetWidth, h = el.offsetHeight;
   el.style.setProperty('--c', (Math.atan2(w / 2 - h / 2, h / 2) * 180 / Math.PI).toFixed(2) + 'deg'); });
@@ -617,12 +624,15 @@ function playTurn() {
     const fallback = () => { if (fallen || finished) return; fallen = true; noVideo = true; video.pause(); cv.style.visibility = 'hidden';
       tween(TURN_S * 1000, p => pose(p), t => t).then(finish); };
     const show = t => { if (finished || fallen) return; if (!draw()) return fallback(); if (t > 0) started = true; pose(clamp(t / dur)); };
-    const onFrame = (now, meta) => { show(meta.mediaTime); if (!video.ended && !fallen && !finished) video.requestVideoFrameCallback(onFrame); };
-    const tick = () => { show(video.currentTime); if (!video.ended && !fallen && !finished) requestAnimationFrame(tick); };
+    // frames are drawn as the video delivers them; Safari sometimes stops sending those calls, so a screen-refresh loop fills in whenever they go quiet
+    let lastVF = -1e9;
+    const onFrame = (now, meta) => { lastVF = performance.now(); show(meta.mediaTime); if (!video.ended && !fallen && !finished) video.requestVideoFrameCallback(onFrame); };
+    const tick = () => { if (performance.now() - lastVF > 40) show(video.currentTime); if (!video.ended && !fallen && !finished) requestAnimationFrame(tick); };
     video.addEventListener('ended', () => { if (!fallen) { draw(); finish(); } }, { once: true });
     if (!gl) return fallback();
     video.currentTime = 0;
-    video.requestVideoFrameCallback ? video.requestVideoFrameCallback(onFrame) : requestAnimationFrame(tick);
+    if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(onFrame);
+    requestAnimationFrame(tick);
     const pr = video.play(); if (pr) pr.catch(fallback);
     setTimeout(() => { if (!started) fallback(); }, 1000);   // video didn't start moving within a second
   });
@@ -679,14 +689,26 @@ function tipCheck() {
 
 
 // ---- 1. on load: nav and the three lines of text
+// download a whole clip and play it from memory: streamed instead, Safari runs dry mid-turn (the clips play at ~2× speed) and the knight stalls
+function inMemory(v) {
+  const ready = () => new Promise(r => v.readyState >= 4 ? r() : v.addEventListener('canplaythrough', r, { once: true }));
+  const src = v.getAttribute('src');
+  if (!src || !/\.mp4$/.test(src)) { v.preload = 'auto'; v.load(); return ready(); }   // already packed into the page (opened from a folder)
+  return fetch(src, { priority: 'low' }).then(r => r.ok ? r.blob() : Promise.reject())
+    .then(b => { v.src = URL.createObjectURL(b); }, () => { v.preload = 'auto'; })
+    .then(() => { v.load(); return ready(); });
+}
+// the heading only waits for the fonts and the pictures at the top; the knight scene also waits for its video and board
+const decoded = sel => [...document.querySelectorAll(sel)].map(i => i.decode().catch(() => {}));
+const heroReady = Promise.all([window.FONTS, ...decoded('#inf img, #logo img')]);
 const loaded = Promise.all([
-  window.FONTS,
-  Promise.race([new Promise(r => video.readyState >= 4 ? r() : video.addEventListener('canplaythrough', r, { once: true })), wait(4000)]),   // never wait forever
-  ...[...document.images].map(i => i.decode().catch(() => {})),
+  heroReady,
+  Promise.race([inMemory(video), wait(10000)]),   // never wait forever
+  ...decoded('#boardWrap img, #still img'),
 ]);
 let introDone, revealed = false;
 async function intro() {
-  await loaded; await wait(150);
+  await heroReady; await wait(150);
   setTimeout(carousel, 2000);   // first phrase change 2s after the page appears
   // the nav is simply there (the same on every page); only the content below it makes its entrance
   await wait(350); reveal($('hero'), 2400, 16, 10); reveal($('inf'), 2400, 16, 10);

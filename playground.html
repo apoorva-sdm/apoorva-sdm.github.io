@@ -120,7 +120,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
     <div class="panel" style="padding:20px 24px"><div><p class="t">Proof - of - concept for a global tech and automotive giant</p><p class="s">Presented designed solution alongside Deloitte leadership to the client C-suite</p></div></div>
   </a>
   <a href="https://apoorva-sdm.github.io/india-travel-insurance-analysis/" target="_blank" rel="noopener" class="pcard dark abs" style="left:753px;top:351.4px">
-    <img class="art" src="work/globe.png" alt="" style="left:38px;top:70px;width:490.8px;height:512.4px;object-fit:cover">
+    <img class="art" src="work/globe.webp" alt="" style="left:38px;top:70px;width:490.8px;height:512.4px;object-fit:cover">
     <p class="brand" style="left:405px">Vibe-coding</p>
     <div class="panel" style="padding:20px 32px"><div><p class="t">Service Audit for Travel Insurances in India</p><p class="s">Vibe-coded visualisation for understanding HDFC Ergo’s service</p></div></div>
   </a>
@@ -167,6 +167,9 @@ const stage = document.getElementById('stage'), shell = document.getElementById(
 let H = +stage.dataset.h;
 function fit() { const s = innerWidth / 1440; stage.style.transform = `scale(${s})`; shell.style.height = H * s + 'px'; }
 fit(); addEventListener('resize', fit);
+// Brave can miss a window's final size (full screen, a resize while the tab was hidden): check again on return and every so often
+let fitW = innerWidth; addEventListener('pageshow', fit); document.addEventListener('visibilitychange', fit);
+setInterval(() => { if (innerWidth !== fitW) { fitW = innerWidth; fit(); } }, 500);
 document.querySelectorAll('.glass').forEach(el => { if (el.style.getPropertyValue('--c')) return; const w = el.offsetWidth, h = el.offsetHeight;
   el.style.setProperty('--c', (Math.atan2(w / 2 - h / 2, h / 2) * 180 / Math.PI).toFixed(2) + 'deg'); });
 const themeBtn = document.getElementById('themeBtn');

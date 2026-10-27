@@ -11,7 +11,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>About | Apoorva B S</title>
-<link rel="preload" as="image" href="knight-fig-src.png">
+<link rel="preload" as="image" href="knight-fig-src.webp">
 <script>try { const t = localStorage.getItem('theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <style>
   /* same two themes as the home page */
@@ -325,10 +325,10 @@ If that sounds like someone you’d like on your team, let’s talk.</p>
     </div>
 
     <div id="diaZone" class="abs" style="left:140px;top:1600px;width:1160px;height:420px;pointer-events:none"></div>
-    <div class="kWrap abs" id="kWrap"><div class="kScale"><div class="rig abs" id="rig"><div class="inner"><canvas id="turnCanvas" width="210" height="445"></canvas><canvas class="pan" id="panCanvas" width="210" height="528"></canvas><div class="still" id="still"><img class="forDark" src="knight-fig-src.png" alt="Glass knight chess piece"><img class="forLight" src="knight-light-src.png" alt="Glass knight chess piece"></div><img class="top" id="topStill" src="knight-top-v4.png" alt="Glass knight seen from above, facing right"></div></div></div></div>
-    <video id="turn" src="turn-v12.mp4" muted playsinline preload="auto"></video>
-    <video id="clip-rise" src="rise-v4.mp4" muted playsinline preload="auto"></video>
-    <video id="clip-lower" src="lower-v4.mp4" muted playsinline preload="auto"></video>
+    <div class="kWrap abs" id="kWrap"><div class="kScale"><div class="rig abs" id="rig"><div class="inner"><canvas id="turnCanvas" width="210" height="445"></canvas><canvas class="pan" id="panCanvas" width="210" height="528"></canvas><div class="still" id="still"><img class="forDark" src="knight-fig-src.webp" alt="Glass knight chess piece"><img class="forLight" src="knight-light-src.webp" alt="Glass knight chess piece"></div><img class="top" id="topStill" src="knight-top-v4.png" alt="Glass knight seen from above, facing right"></div></div></div></div>
+    <video id="turn" src="turn-v13.mp4" muted playsinline preload="none"></video>
+    <video id="clip-rise" src="rise-v4.mp4" muted playsinline preload="none"></video>
+    <video id="clip-lower" src="lower-v4.mp4" muted playsinline preload="none"></video>
 
     <button class="iterate glass abs" id="iterate" type="button" aria-disabled="true" aria-label="Iterate: replay the knight's walk a different way">Iterate<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1.33337L14 3.33337L12 5.33337M4 14.6667L2 12.6667L4 10.6667"/><path d="M14 3.33337H6.66667C5.42899 3.33337 4.242 3.82504 3.36683 4.70021C2.49167 5.57538 2 6.76236 2 8.00004M2 12.6667H9.33333C10.571 12.6667 11.758 12.175 12.6332 11.2999C13.5083 10.4247 14 9.23772 14 8.00004"/></svg></button>
     <h2 class="h2 abs" style="top:2242.71px">Professional Experience</h2>
@@ -382,6 +382,9 @@ const stage = document.getElementById('stage'), shell = document.getElementById(
 const PAGE_H = 3480.69;
 function fit() { const s = innerWidth / 1440; stage.style.transform = `scale(${s})`; shell.style.height = PAGE_H * s + 'px'; }
 fit(); addEventListener('resize', fit);
+// Brave can miss a window's final size (full screen, a resize while the tab was hidden): check again on return and every so often
+let fitW = innerWidth; addEventListener('pageshow', fit); document.addEventListener('visibilitychange', fit);
+setInterval(() => { if (innerWidth !== fitW) { fitW = innerWidth; fit(); } }, 500);
 document.querySelectorAll('.glass').forEach(el => { if (el.style.getPropertyValue('--c')) return; const w = el.offsetWidth, h = el.offsetHeight;
   el.style.setProperty('--c', (Math.atan2(w / 2 - h / 2, h / 2) * 180 / Math.PI).toFixed(2) + 'deg'); });
 
@@ -494,7 +497,9 @@ const panCv = $('panCanvas'), topStill = $('topStill');
 const CLIP = Object.fromEntries(['rise', 'lower'].map(k => [k, $('clip-' + k)]));
 // a colour|alpha video drawn with real transparency onto a canvas
 function player(canvas, vid0) {
-  const gl = canvas.getContext('webgl2', { premultipliedAlpha: true, alpha: true }) || canvas.getContext('webgl', { premultipliedAlpha: true, alpha: true });
+  // keep the last picture: a canvas drawn while invisible would otherwise be wiped before it fades in (a blank flash)
+  const opts = { premultipliedAlpha: true, alpha: true, preserveDrawingBuffer: true };
+  const gl = canvas.getContext('webgl2', opts) || canvas.getContext('webgl', opts);
   if (!gl) return { ok: false, draw: () => false };
   const mip = !!(window.WebGL2RenderingContext && gl instanceof WebGL2RenderingContext);   // smooth shrinking (no sparkle) where possible
   const sh = (t, src) => { const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o); return o; };
@@ -504,10 +509,17 @@ function player(canvas, vid0) {
   gl.linkProgram(prog); gl.useProgram(prog);
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer()); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, 1,1]), gl.STATIC_DRAW);
   const loc = gl.getAttribLocation(prog, 'p'); gl.enableVertexAttribArray(loc); gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
-  gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
-  for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, mip ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v);
+  const newTex = () => { gl.bindTexture(gl.TEXTURE_2D, gl.createTexture());
+    for (const [k, v] of [[gl.TEXTURE_MIN_FILTER, mip ? gl.LINEAR_MIPMAP_LINEAR : gl.LINEAR], [gl.TEXTURE_MAG_FILTER, gl.LINEAR], [gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE], [gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE]]) gl.texParameteri(gl.TEXTURE_2D, k, v); };
+  newTex();
+  // with smooth shrinking, frames are copied into a fixed-size RGBA texture: a frame uploaded on its own can arrive in a format
+  // the shrink levels can't be built from (Chrome, before a clip has played), and the clip then flashes blank
+  let tw = 0, th = 0;
   return { ok: true, draw(vid = vid0) { if (vid.readyState < 2) return true;
-    try { gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, vid); if (mip) gl.generateMipmap(gl.TEXTURE_2D);
+    try { if (mip) { const w = vid.videoWidth, h = vid.videoHeight;
+            if (w !== tw || h !== th) { newTex(); gl.texStorage2D(gl.TEXTURE_2D, Math.floor(Math.log2(Math.max(w, h))) + 1, gl.RGBA8, w, h); tw = w; th = h; }
+            gl.texSubImage2D(gl.TEXTURE_2D, 0, 0, 0, gl.RGBA, gl.UNSIGNED_BYTE, vid); gl.generateMipmap(gl.TEXTURE_2D); }
+          else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, vid);
           gl.viewport(0, 0, canvas.width, canvas.height); gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); return true; } catch (e) { return false; } } };
 }
 const turnPlayer = player(cv, video), clipPlayer = player(panCv, CLIP.rise);
@@ -548,12 +560,15 @@ function playTurn() {
     const fallback = () => { if (fallen || finished) return; fallen = true; noVideo = true; video.pause(); cv.style.visibility = 'hidden';
       tween(KT.turn * 1000, p => pose(p), t => t).then(finish); };
     const show = t => { if (finished || fallen) return; if (!draw()) return fallback(); if (t > 0) started = true; pose(clamp(t / dur)); };
-    const onFrame = (now, meta) => { show(meta.mediaTime); if (!video.ended && !fallen && !finished) video.requestVideoFrameCallback(onFrame); };
-    const tick = () => { show(video.currentTime); if (!video.ended && !fallen && !finished) requestAnimationFrame(tick); };
+    // frames are drawn as the video delivers them; Safari sometimes stops sending those calls, so a screen-refresh loop fills in whenever they go quiet
+    let lastVF = -1e9;
+    const onFrame = (now, meta) => { lastVF = performance.now(); show(meta.mediaTime); if (!video.ended && !fallen && !finished) video.requestVideoFrameCallback(onFrame); };
+    const tick = () => { if (performance.now() - lastVF > 40) show(video.currentTime); if (!video.ended && !fallen && !finished) requestAnimationFrame(tick); };
     video.addEventListener('ended', () => { if (!fallen) { draw(); finish(); } }, { once: true });
     if (!gl) return fallback();
     video.currentTime = 0;
-    video.requestVideoFrameCallback ? video.requestVideoFrameCallback(onFrame) : requestAnimationFrame(tick);
+    if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(onFrame);
+    requestAnimationFrame(tick);
     const pr = video.play(); if (pr) pr.catch(fallback);
     setTimeout(() => { if (!started) fallback(); }, 1000);
   });
@@ -628,12 +643,15 @@ async function walk() {
   return here;
 }
 // play one of the rendered clips on the knight's canvas
-function seek(v, t) { return new Promise(r => { if (Math.abs(v.currentTime - t) < 0.001 && v.readyState >= 2) return r(); v.addEventListener('seeked', r, { once: true }); v.currentTime = t; }); }
+// always a real seek (even to where it already is): a clip loaded from memory may not have its picture decoded until asked
+function seek(v, t) { return new Promise(r => { v.addEventListener('seeked', r, { once: true }); v.currentTime = t; setTimeout(r, 400); }); }
 function play(v) { return new Promise(done => {
   let over = false; const end = () => { if (over) return; over = true; clipPlayer.draw(v); done(); };
-  const onFrame = () => { clipPlayer.draw(v); if (!v.ended && !over) v.requestVideoFrameCallback(onFrame); };
+  let lastVF = -1e9;   // as for the turn: a screen-refresh loop fills in if Safari stops sending frame calls
+  const onFrame = () => { lastVF = performance.now(); clipPlayer.draw(v); if (!v.ended && !over) v.requestVideoFrameCallback(onFrame); };
   v.addEventListener('ended', end, { once: true });
-  v.requestVideoFrameCallback ? v.requestVideoFrameCallback(onFrame) : (function tick() { clipPlayer.draw(v); if (!v.ended && !over) requestAnimationFrame(tick); })();
+  if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(onFrame);
+  (function tick() { if (performance.now() - lastVF > 40) clipPlayer.draw(v); if (!v.ended && !over) requestAnimationFrame(tick); })();
   v.playbackRate = (v.duration || 2.5) / KT.clip;
   const pr = v.play(); if (pr) pr.catch(end);
   setTimeout(end, KT.clip * 1000 + 300); }); }   // never let a stalled clip hold up the story
@@ -718,10 +736,19 @@ themeBtn.addEventListener('click', () => {
 });
 
 // ---- order of things
+// download a whole clip and play it from memory: streamed instead, Safari runs dry mid-turn (the clips play at ~2× speed) and the knight stalls
+function inMemory(v) {
+  const ready = () => new Promise(r => v.readyState >= 4 ? r() : v.addEventListener('canplaythrough', r, { once: true }));
+  const src = v.getAttribute('src');
+  if (!src || !/\.mp4$/.test(src)) { v.preload = 'auto'; v.load(); return ready(); }   // already packed into the page (opened from a folder)
+  return fetch(src, { priority: 'low' }).then(r => r.ok ? r.blob() : Promise.reject())
+    .then(b => { v.src = URL.createObjectURL(b); }, () => { v.preload = 'auto'; })
+    .then(() => { v.load(); return ready(); });
+}
 const loaded = Promise.all([
   window.FONTS,
-  Promise.race([new Promise(r => video.readyState >= 4 ? r() : video.addEventListener('canplaythrough', r, { once: true })), wait(4000)]),
-  ...Object.values(CLIP).map(v => Promise.race([new Promise(r => v.readyState >= 4 ? r() : v.addEventListener('canplaythrough', r, { once: true })), wait(4000)])),
+  Promise.race([inMemory(video), wait(10000)]),
+  ...Object.values(CLIP).map(v => Promise.race([inMemory(v), wait(10000)])),
   ...[...document.images].map(i => i.decode().catch(() => {})),
 ]);
 const fontsIn = window.FONTS.then(() => { glassEmoji(); sizeCards(); });
