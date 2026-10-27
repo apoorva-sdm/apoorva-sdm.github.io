@@ -92,6 +92,17 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   :root[data-theme="light"] .themeBtn .moon { opacity: 1; transform: none; }
   .themeBtn:hover { background: linear-gradient(135deg, rgba(var(--hi), calc(0.12 * var(--hiA))), rgba(var(--hi), calc(0.17 * var(--hiA)))); }
   .themeBtn:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; }
+  /* a small hint under the theme switch while the hero is on screen (dark theme only) */
+  .themeTip { left: 797.5px; top: 93px; z-index: 5; padding: 8px 14px; border-radius: 50px; white-space: nowrap; pointer-events: none;
+              font-family: 'Satoshi', sans-serif; font-size: 13px; line-height: 18px; letter-spacing: .26px; color: var(--ink);
+              background: rgba(255,255,255,.08); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+              box-shadow: inset 0 1px 0 rgba(255,255,255,.28), 0 8px 20px rgba(0,0,0,.25);
+              opacity: 0; transform: translate(-50%, -6px) scale(.94); transform-origin: 50% 0;
+              transition: opacity .45s ease, transform .55s cubic-bezier(.3,.7,.2,1); }
+  .themeTip::before { content: ''; position: absolute; left: 50%; top: -5px; width: 10px; height: 10px; margin-left: -5px; transform: rotate(45deg);
+                      background: inherit; border-radius: 2px 0 0 0; box-shadow: inset 1px 1px 0 rgba(255,255,255,.28); }
+  .themeTip.on { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  :root[data-theme="light"] .themeTip { display: none; }
   .board { left: 0; top: 799px; width: 1440px; height: 414px; display: block; }
   /* Rectangle 4: background colour → transparent, blurred 8px — melts the board's top edge */
   .fadeTop { left: -7px; top: 793px; width: 1441px; height: 95px; pointer-events: none; filter: blur(8px);
@@ -414,6 +425,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
     <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
     <svg class="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M20.2 14.6A8.4 8.4 0 0 1 9.4 3.8a8.4 8.4 0 1 0 10.8 10.8Z"/></svg>
   </button>
+  <div class="themeTip abs" id="themeTip" role="status">Prefer light mode? Switch now!</div>
   <a class="logo abs" id="logo" href="home.html"><img src="logo-t@4x.png" alt="Logo — home"></a>
   <nav class="nav abs" id="nav">
     <a style="--c:33.41deg" href="home.html" class="glass current" aria-current="page">Home</a><a style="--c:34.25deg" href="about.html" class="glass">About</a><a style="--c:54.13deg" href="playground.html" class="glass">Playground</a>
@@ -652,7 +664,18 @@ themeBtn.addEventListener('click', () => {
   if (document.startViewTransition && !reduced) document.startViewTransition(apply); else apply();
   // the knight makes its entrance again in the new theme (only once it has landed; mid-turn it simply carries on)
   if (knightLanded && !turning && !reduced) playTurn();
+  tipOff(); tipDone = true;
 });
+// the "Prefer light mode?" hint: pops up by itself each time the hero is on screen, then fades after ~3.5s
+const themeTip = $('themeTip');
+let tipDone = false, tipShown = false, tipTimer;
+function tipOff() { themeTip.classList.remove('on'); clearTimeout(tipTimer); }
+function tipCheck() {
+  const atHero = $('hero').getBoundingClientRect().bottom > 0;
+  if (!atHero) { tipOff(); tipShown = false; return; }
+  if (tipDone || tipShown || currentTheme() === 'light') return;
+  tipShown = true; themeTip.classList.add('on'); tipTimer = setTimeout(tipOff, 3500);
+}
 
 
 // ---- 1. on load: nav and the three lines of text
@@ -709,6 +732,7 @@ if (reduced) {   // people who ask their device for less motion get the finished
   addEventListener('wheel', onWheel, { passive: false }); addEventListener('touchmove', onTouch, { passive: true }); addEventListener('keydown', onKey); addEventListener('scroll', onScroll, { passive: true });
   introDone = intro();
 }
+Promise.resolve(introDone || loaded).then(() => { tipCheck(); addEventListener('scroll', tipCheck, { passive: true }); });
 // ---- skills: opening one slides it so its name grows away from the knight (left ones leftwards, the top one from its centre)
 const skillEls = [...document.querySelectorAll('.skill')];
 skillEls.forEach((s, i) => s.style.setProperty('--bd', (i * 0.9).toFixed(1) + 's'));   // out of step, so they drift rather than march (each starts from rest)
