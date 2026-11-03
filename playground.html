@@ -75,7 +75,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
       rgba(var(--hi), calc(.75 * var(--hiA))) calc(360deg - var(--c,72deg) - 10deg), rgba(var(--hi), calc(.75 * var(--hiA))) calc(360deg - var(--c,72deg) - 5deg),
       rgba(var(--hi), calc(.37 * var(--hiA))) calc(360deg - var(--c,72deg) - 0.5deg), rgba(var(--hi), calc(.37 * var(--hiA))) 360deg);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
-            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
   .glass::after { content: ""; position: absolute; inset: 1px; border-radius: inherit; pointer-events: none;
     box-shadow: inset -1px -1.5px 2px rgba(var(--hi), calc(0.07 * var(--hiA))); }
 

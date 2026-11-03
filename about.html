@@ -77,7 +77,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
       rgba(var(--hi), calc(.75 * var(--hiA))) calc(360deg - var(--c,72deg) - 10deg), rgba(var(--hi), calc(.75 * var(--hiA))) calc(360deg - var(--c,72deg) - 5deg),
       rgba(var(--hi), calc(.37 * var(--hiA))) calc(360deg - var(--c,72deg) - 0.5deg), rgba(var(--hi), calc(.37 * var(--hiA))) 360deg);
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
-            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
   .glass::after { content: ""; position: absolute; inset: 1px; border-radius: inherit; pointer-events: none;
     box-shadow: inset -1px -1.5px 2px rgba(var(--hi), calc(0.07 * var(--hiA))); }
   :root[data-theme="light"] .glass { background: rgba(1,7,7,0.04); }
@@ -129,7 +129,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .rc::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
     background: linear-gradient(160deg, rgba(255,255,255,.25), rgba(255,255,255,.13) 50%, rgba(255,255,255,.18));
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
-            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
   :root[data-theme="light"] .rc { background: rgba(1,7,7,.04); }
   :root[data-theme="light"] .rc::before { background: linear-gradient(160deg, rgba(1,7,7,.14), rgba(1,7,7,.07) 50%, rgba(1,7,7,.1)); }
   .rc.show  { visibility: visible; opacity: 1; transform: none; filter: blur(0);
@@ -183,7 +183,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .dia::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
     background: linear-gradient(to right, rgba(255,255,255,.42), rgba(255,255,255,.16) 30%, rgba(255,255,255,.09) 65%, rgba(255,255,255,.16));
     -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor;
-            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); }
+            mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
   :root[data-theme="light"] .dia { background: rgba(1,7,7,.035); box-shadow: none; }
   :root[data-theme="light"] .dia::before { background: linear-gradient(to right, rgba(1,7,7,.2), rgba(1,7,7,.1) 30%, rgba(1,7,7,.07) 65%, rgba(1,7,7,.1)); }
   .split { width: 1px; height: 297px; background: repeating-linear-gradient(to bottom, rgba(242,242,242,.3) 0 6px, transparent 6px 12px); }
@@ -662,13 +662,18 @@ async function walk() {
 // play one of the rendered clips on the knight's canvas
 // always a real seek (even to where it already is): a clip loaded from memory may not have its picture decoded until asked
 function seek(v, t) { return new Promise(r => { v.addEventListener('seeked', r, { once: true }); v.currentTime = t; setTimeout(r, 400); }); }
-function play(v) { return new Promise(done => {
-  let over = false; const end = () => { if (over) return; over = true; clipPlayer.draw(v); done(); };
+// onStart runs once, with the clip's first fresh frame on the canvas: after a replay, Safari can hand over the clip's last
+// picture (the other camera angle) until it has really started again, so the canvas is only shown from that frame on
+function play(v, onStart) { return new Promise(done => {
+  let over = false, started = false;
+  const start = () => { if (!started) { started = true; if (onStart) onStart(); } };
+  const end = () => { if (over) return; over = true; clipPlayer.draw(v); start(); done(); };
   let lastVF = -1e9;   // as for the turn: a screen-refresh loop fills in if Safari stops sending frame calls
-  const onFrame = () => { lastVF = performance.now(); clipPlayer.draw(v); if (!v.ended && !over) v.requestVideoFrameCallback(onFrame); };
+  const fresh = () => v.currentTime > 0.03;
+  const onFrame = () => { lastVF = performance.now(); if (fresh()) { clipPlayer.draw(v); start(); } if (!v.ended && !over) v.requestVideoFrameCallback(onFrame); };
   v.addEventListener('ended', end, { once: true });
   if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(onFrame);
-  (function tick() { if (performance.now() - lastVF > 40) clipPlayer.draw(v); if (!v.ended && !over) requestAnimationFrame(tick); })();
+  (function tick() { if (performance.now() - lastVF > 40 && fresh()) { clipPlayer.draw(v); start(); } if (!v.ended && !over) requestAnimationFrame(tick); })();
   v.playbackRate = (v.duration || 2.5) / KT.clip;
   const pr = v.play(); if (pr) pr.catch(end);
   setTimeout(end, KT.clip * 1000 + 300); }); }   // never let a stalled clip hold up the story
@@ -677,17 +682,16 @@ const clipsOk = () => clipPlayer.ok && CLIP.rise.readyState >= 2 && CLIP.lower.r
 const fade = (out, inn, ms) => tween(ms, e => { out.style.opacity = 1 - e; inn.style.opacity = e; }, E.sine);
 async function toTop() {        // side view (your knight) → camera rises → top view picture
   if (!clipsOk()) { await fade(still, topStill, 600); view = 'top'; return; }
-  await seek(CLIP.rise, 0); clipPlayer.draw(CLIP.rise);
-  await fade(still, panCv, KT.fadeIn);
-  await play(CLIP.rise);
+  await seek(CLIP.rise, 0);
+  // the clip's first frames are the same pose as your knight, so the switch from the still to the clip can't be seen
+  await play(CLIP.rise, () => { panCv.style.opacity = 1; still.style.opacity = 0; });
   await fade(panCv, topStill, KT.fadeOut); view = 'top';
 }
 async function toSide() {       // top view → camera comes back down → your knight
   if (!clipsOk()) { await fade(topStill, still, 600); view = 'side'; return; }
-  await seek(CLIP.lower, 0); clipPlayer.draw(CLIP.lower);
-  await fade(topStill, panCv, KT.fadeOut);
+  await seek(CLIP.lower, 0);
   view = 'side';
-  await play(CLIP.lower);
+  await play(CLIP.lower, () => { panCv.style.opacity = 1; topStill.style.opacity = 0; });
   await fade(panCv, still, KT.fadeIn);
 }
 const diamonds = $('diamonds'), iterateBtn = $('iterate');
