@@ -5,6 +5,10 @@
          transition: transform .6s cubic-bezier(.2,.7,.2,1), box-shadow .6s ease; }
 a.pcard:hover { transform: translateY(-6px); box-shadow: 0 18px 40px rgba(0,0,0,.35); }
 a.pcard:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
+/* a card that opens its project: an invisible link over the whole card */
+.pcard .cardLink { position: absolute; inset: 0; z-index: 20; border-radius: inherit; }
+.pcard .cardLink:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }
+.pcard:has(.cardLink), .pcard.w:has(.cardLink) { cursor: pointer; }
 .pcard .art { position: absolute; display: block; max-width: none; pointer-events: none; }
 .pcard p { margin: 0; }
 /* Figma "Glass" (4px) on the tags and panels: frosted fill with a thin bright rim */

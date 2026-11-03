@@ -29,7 +29,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   html, body { margin: 0; background: var(--bg); overflow-x: hidden; }
   body { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   /* 1440-wide Figma frame "About", scaled to the window width for previewing */
-  .stage { width: 1440px; height: 3480.69px; position: relative; overflow: hidden; background: var(--bg); transform-origin: top left; }
+  .stage { width: 1440px; height: 3487.41px; position: relative; overflow: hidden; background: var(--bg); transform-origin: top left; }
   .abs { position: absolute !important; }
   .forLight { display: none !important; }
   :root[data-theme="light"] .forLight { display: block !important; }
@@ -214,7 +214,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
 
   /* ---- professional experience (Figma "Frame 124"): three rows, each with a soft gradient rule underneath */
   :root { --exHead: #f2f2f2; --exBody: rgba(217,217,217,.85); --exDate: #787878; --rule: linear-gradient(90deg, #1a1a1a, #343434 51%, #1a1a1a);
-          --foot: #111111; --footInk: #aeaeae; --footIcon: #afafaf; --footFine: #4d4d4d; }
+          --foot: #0c0c0c; --footInk: #aeaeae; --footIcon: #afafaf; --footFine: #4d4d4d; }
   :root[data-theme="light"] { --exHead: #0d1515; --exBody: rgba(13,21,21,.85); --exDate: #6f7777; --rule: linear-gradient(90deg, #e3e6e6, #c6cbcb 51%, #e3e6e6);
           --foot: #e9ecec; --footInk: #6b7272; --footIcon: #9aa1a1; --footFine: #a7adad; }
   .exRow { left: 120px; width: 1201px; padding: 0 0 24px 24px; display: flex; }
@@ -240,7 +240,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   :root[data-theme="light"] .pager a { background: rgba(79,127,168,0.4); }
   .pager svg { width: 28.28px; height: 20px; display: block; flex: none; overflow: visible; }   /* Figma: 28.28px between padding and text */
   /* footer (Figma "Frame 117") */
-  .foot { left: 0; top: 3442.99px; width: 1440px; height: 295px; background: var(--foot); }
+  .foot { left: 0; top: 3478.71px; width: 1440px; height: 266px; background: var(--foot); }
   .foot .reach { position: absolute; left: 0; width: 1440px; top: 109px; margin: 0; text-align: center; font-family: 'Satoshi', sans-serif; font-weight: 500;
                  font-size: 16px; line-height: 21.6px; letter-spacing: .32px; color: var(--footInk); }
   .foot .icons { position: absolute; left: 634.15px; top: 117px; width: 171.7px; height: 35.35px; display: block; }
@@ -270,7 +270,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
 <feFuncB type="table" tableValues="0.0000 0.0483 0.0965 0.1448 0.1930 0.2414 0.2897 0.3379 0.3862 0.4345 0.4745 0.5183 0.5444 0.5761 0.6058 0.6346 0.6603 0.6844 0.7075 0.7280 0.7469 0.7663 0.7819 0.7976 0.8134 0.8241 0.8389 0.8487 0.8620 0.8718 0.8855 0.8911 0.8975 0.9096 0.9135 0.9239 0.9266 0.9369 0.9422 0.9487 0.9522 0.9607 0.9661 0.9687 0.9726 0.9765 0.9805 0.9819 0.9845 0.9882 0.9885 0.9924 0.9925 0.9963 0.9963 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000"/>
 </feComponentTransfer></filter></svg>
 <div id="shell"><div class="stage" id="stage">
-<script>(() => { const s = innerWidth / 1440, st = document.getElementById('stage'); st.style.transform = `scale(${s})`; document.getElementById('shell').style.height = 3480.69 * s + 'px'; })();</script>
+<script>(() => { const s = innerWidth / 1440, st = document.getElementById('stage'); st.style.transform = `scale(${s})`; document.getElementById('shell').style.height = 3487.41 * s + 'px'; })();</script>
 
   <button class="themeBtn glass abs" id="themeBtn" style="--c:0.00deg" type="button" aria-label="Switch to light theme">
     <svg class="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"/></svg>
@@ -396,7 +396,7 @@ if (location.protocol === 'file:' && window.CLIPS) {
 <script>
 // fit the 1440-wide frame to the window width (preview convenience only)
 const stage = document.getElementById('stage'), shell = document.getElementById('shell');
-const PAGE_H = 3480.69;
+const PAGE_H = 3487.41;
 function fit() { const s = innerWidth / 1440; document.documentElement.style.setProperty('--s', s); stage.style.transform = `scale(${s})`; shell.style.height = PAGE_H * s + 'px'; }
 fit(); addEventListener('resize', fit);
 // Brave can miss a window's final size (full screen, a resize while the tab was hidden): check again on return and every so often

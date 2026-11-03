@@ -1,0 +1,1742 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>FLOAT intake</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* FLOAT brand styling. Raleway; sky #95BCE3 and peach #F5AF92.
+   Brand colours are surfaces only: white text on them fails contrast, so text on them is ink. */
+:root {
+  color-scheme: light;
+  --sky: #95BCE3;
+  --peach: #F5AF92;
+  --sky-soft: #E7F0FA;
+  --peach-soft: #FDEDE5;
+  --sky-deep: #3F6E9E;
+  --peach-deep: #A8502C;
+  --ink: #283353;
+  --muted: #5A6480;
+  --line: rgba(40, 51, 83, .14);
+  --sheet: rgba(255, 255, 255, .84);
+  --sheet-edge: rgba(255, 255, 255, .9);
+  --field: #ffffff;
+  --btn-bg: #95BCE3;
+  --btn-ink: #283353;
+  --sel-bg: #283353;
+  --sel-ink: #ffffff;
+  --shadow: 0 24px 60px -30px rgba(40, 51, 83, .45);
+  --page-bg: linear-gradient(180deg, #95BCE3 0%, #F5AF92 100%);
+  --on-bg: #283353;
+  --on-bg-muted: #4A5472;
+  --on-bg-line: rgba(40, 51, 83, .35);
+  --glass: linear-gradient(145deg, rgba(255, 255, 255, .46), rgba(255, 255, 255, .2));
+  --glass-edge: rgba(255, 255, 255, .55);
+  --glass-shine: inset 0 1px 0 rgba(255, 255, 255, .75), inset 0 -1px 0 rgba(255, 255, 255, .15);
+  --glass-field: rgba(255, 255, 255, .42);
+  --glass-field-edge: rgba(255, 255, 255, .7);
+  --glass-field-hover: rgba(255, 255, 255, .62);
+  --grain-opacity: .08;
+  --font: "Raleway", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --sky-soft: #26314F; --peach-soft: #3A2E3A; --sky-deep: #95BCE3; --peach-deep: #F5AF92;
+    --ink: #EDF1F8; --muted: #AAB3C8; --line: rgba(237, 241, 248, .14);
+    --sheet: rgba(31, 39, 66, .86); --sheet-edge: rgba(149, 188, 227, .16); --field: #252E4C;
+    --btn-bg: #95BCE3; --btn-ink: #1F2742; --sel-bg: #EDF1F8; --sel-ink: #1F2742;
+    --shadow: 0 24px 60px -30px rgba(0, 0, 0, .7);
+    --grain-opacity: .08; --glass: linear-gradient(145deg, rgba(40, 51, 83, .62), rgba(31, 39, 66, .38)); --glass-edge: rgba(237, 241, 248, .18); --glass-shine: inset 0 1px 0 rgba(237, 241, 248, .16), inset 0 -1px 0 rgba(0, 0, 0, .2); --glass-field: rgba(31, 39, 66, .45); --glass-field-edge: rgba(237, 241, 248, .16); --glass-field-hover: rgba(31, 39, 66, .65);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --sky-soft: #26314F; --peach-soft: #3A2E3A; --sky-deep: #95BCE3; --peach-deep: #F5AF92;
+  --ink: #EDF1F8; --muted: #AAB3C8; --line: rgba(237, 241, 248, .14);
+  --sheet: rgba(31, 39, 66, .86); --sheet-edge: rgba(149, 188, 227, .16); --field: #252E4C;
+  --btn-bg: #95BCE3; --btn-ink: #1F2742; --sel-bg: #EDF1F8; --sel-ink: #1F2742;
+  --shadow: 0 24px 60px -30px rgba(0, 0, 0, .7);
+  --grain-opacity: .08; --glass: linear-gradient(145deg, rgba(40, 51, 83, .62), rgba(31, 39, 66, .38)); --glass-edge: rgba(237, 241, 248, .18); --glass-shine: inset 0 1px 0 rgba(237, 241, 248, .16), inset 0 -1px 0 rgba(0, 0, 0, .2); --glass-field: rgba(31, 39, 66, .45); --glass-field-edge: rgba(237, 241, 248, .16); --glass-field-hover: rgba(31, 39, 66, .65);
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; min-height: 100%; background: #F5AF92 var(--page-bg) no-repeat fixed; }
+body {
+  margin: 0; min-height: 100vh; color: var(--ink); background: #F5AF92 var(--page-bg) no-repeat fixed;
+  font: 500 1rem/1.6 var(--font); font-variant-numeric: lining-nums tabular-nums;
+  overflow-x: hidden; position: relative;
+}
+body::before {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 0; opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.16 0 0 0 0 0.2 0 0 0 0 0.33 0 0 0 .55 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+.bar, main { position: relative; z-index: 2; }
+
+/* Floating lights */
+.orbs { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.orb {
+  position: absolute; left: var(--x); top: var(--y);
+  width: calc(var(--s) * 2.2); height: calc(var(--s) * 2.2);
+  margin: calc(var(--s) * -1.1) 0 0 calc(var(--s) * -1.1); border-radius: 50%;
+  background: radial-gradient(circle closest-side,
+    #FFFFF6 0%, #FFFFF2 34%, rgba(255, 252, 240, .9) 40%,
+    rgba(255, 246, 236, .45) 50%, rgba(255, 242, 234, .18) 68%, rgba(255, 240, 232, 0) 100%);
+  opacity: var(--o, .95);
+  animation: orb-bob var(--d) ease-in-out var(--delay) infinite alternate;
+  will-change: transform;
+}
+@keyframes orb-bob {
+  from { transform: translate3d(0, calc(var(--a) * -1.2), 0); }
+  to { transform: translate3d(0, calc(var(--a) * 1.2), 0); }
+}
+@media (max-width: 30rem) { .orb:nth-child(n + 11) { display: none; } }
+
+/* Header */
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; max-width: 72rem; margin: 0 auto; padding: 1rem 1.25rem; }
+.brand { color: var(--ink); text-decoration: none; display: inline-flex; align-items: baseline; gap: .5rem; }
+.wordmark { font-weight: 800; font-size: 1.35rem; letter-spacing: .04em; }
+.brand-sub { font-weight: 500; font-size: .9rem; color: var(--muted); }
+.bar nav { display: flex; gap: .25rem; padding: .25rem; border-radius: 999px; background: var(--sheet); border: 1px solid var(--sheet-edge); }
+.brand, .bar nav a { white-space: nowrap; }
+.bar nav a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: .92rem; padding: .4rem .85rem; border-radius: 999px; }
+.bar nav a[aria-current="page"] { color: var(--sel-ink); background: var(--sel-bg); }
+
+/* Page */
+main { max-width: 38rem; margin: 0 auto; padding: clamp(.75rem, 5vh, 3.5rem) 1.25rem 4rem; }
+main.wide { max-width: 72rem; }
+
+h1 { font-size: clamp(1.55rem, 1.2rem + 1.4vw, 2.1rem); line-height: 1.2; letter-spacing: -.01em; margin: 0 0 .8rem; font-weight: 700; }
+h1:focus { outline: none; }
+h2 { font-size: 1.08rem; line-height: 1.3; margin: 2rem 0 .5rem; font-weight: 700; }
+h3 { font-size: .92rem; margin: 0 0 .35rem; color: var(--muted); font-weight: 700; }
+p { margin: 0 0 1rem; }
+.lead { font-size: 1.12rem; line-height: 1.55; }
+.muted, .hint { color: var(--muted); }
+.hint { font-size: .9rem; margin: .1rem 0 0; }
+.error { color: var(--peach-deep); font-weight: 600; font-size: .92rem; margin: .4rem 0 0; }
+.flag { color: var(--peach-deep); font-weight: 600; font-size: .92rem; }
+a { color: var(--sky-deep); }
+a:focus-visible, button:focus-visible, input:focus-visible, summary:focus-visible { outline: 3px solid var(--sky-deep); outline-offset: 3px; }
+
+/* The sheet: every participant screen sits on one */
+.screen {
+  background: var(--glass); border: 1px solid var(--glass-edge); border-radius: 28px;
+  padding: clamp(1.4rem, 1rem + 2vw, 2.4rem);
+  box-shadow: var(--glass-shine), 0 30px 60px -34px rgba(40, 51, 83, .45);
+  -webkit-backdrop-filter: blur(22px) saturate(1.4); backdrop-filter: blur(22px) saturate(1.4);
+}
+
+.hint-row { display: flex; justify-content: space-between; align-items: flex-start; gap: .75rem; }
+.hint-row p { margin: 0; }
+
+/* Buttons */
+.btn {
+  font: inherit; font-weight: 700; min-height: 46px; padding: .6rem 1.35rem; border-radius: 999px;
+  border: 1.5px solid var(--line); background: var(--field); color: var(--ink); cursor: pointer;
+  text-decoration: none; display: inline-flex; align-items: center; justify-content: center;
+}
+.btn.primary { background: var(--btn-bg); border-color: var(--btn-bg); color: var(--btn-ink); }
+.btn.primary:hover:not(:disabled) { filter: brightness(.94); }
+.btn.quiet { border-color: transparent; background: transparent; color: var(--muted); }
+.btn.small { min-height: 34px; padding: .25rem .85rem; font-size: .85rem; }
+.btn.danger { border-color: var(--peach-deep); color: var(--peach-deep); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn[hidden] { display: none; }
+.nav { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: space-between; align-items: center; margin-top: 1.75rem; }
+.nav.end { justify-content: flex-end; }
+.nav-group { display: flex; gap: .5rem; flex-wrap: wrap; }
+
+/* Progress */
+.progress { display: grid; gap: .45rem; margin-bottom: 1.4rem; color: var(--muted); font-size: .88rem; font-weight: 600; }
+.progress .bar { display: block; max-width: none; margin: 0; height: 6px; padding: 0; border-radius: 999px; background: var(--line); overflow: hidden; }
+.progress .bar i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--sky), var(--peach)); }
+
+/* Fields and options */
+fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+legend { padding: 0; }
+.legend { font-weight: 700; margin-bottom: .25rem; }
+.field { display: grid; gap: .3rem; margin: 0 0 1.75rem; }
+.field label { font-weight: 700; }
+.field input { font: inherit; padding: .7rem .9rem; border: 1.5px solid var(--line); border-radius: 14px; background: var(--field); color: var(--ink); }
+.options { display: grid; gap: .55rem; margin-top: .75rem; }
+.option {
+  display: flex; gap: .8rem; align-items: flex-start; padding: .85rem 1rem; border: 1.5px solid var(--line);
+  border-radius: 16px; background: var(--field); cursor: pointer; line-height: 1.45;
+}
+.option input { flex: none; width: 1.15rem; height: 1.15rem; margin: .15rem 0 0; accent-color: var(--sky-deep); }
+.option:hover { border-color: var(--sel-bg); }
+.option.is-checked { border-color: var(--sel-bg); background: var(--sel-bg); color: var(--sel-ink); }
+.option.is-checked input { accent-color: var(--sel-ink); }
+
+/* Order of need */
+.order { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: .55rem; }
+.order-item {
+  position: relative; width: 100%; min-height: 52px; display: flex; gap: .85rem; align-items: center; text-align: left;
+  font: inherit; color: var(--ink); padding: .75rem 1rem; border: 1.5px solid var(--line); border-radius: 16px; background: var(--field); cursor: pointer;
+}
+.order-item .pos { flex: none; width: 2rem; height: 2rem; border-radius: 50%; border: 1.5px dashed var(--line); display: grid; place-items: center; font-weight: 800; }
+.order-item[aria-pressed="true"] { border-color: var(--peach); background: var(--peach-soft); }
+.order-item[aria-pressed="true"] .pos { border: 0; background: var(--peach); color: #283353; }
+
+/* Result */
+.result h1 { font-size: clamp(1.8rem, 1.3rem + 2.2vw, 2.6rem); }
+.backup { margin-top: 2rem; padding: 1.1rem 1.2rem .3rem; border-radius: 18px; background: var(--sky-soft); }
+.backup h2 { margin-top: 0; }
+.save-status { margin-top: 1.5rem; font-size: .92rem; color: var(--muted); }
+.save-status p { margin-bottom: .5rem; }
+.matching { text-align: center; padding-block: 3rem; }
+.intro h1 { font-size: clamp(1.8rem, 1.3rem + 2.2vw, 2.5rem); }
+
+/* Board */
+.board > h1, .board > p, .board > .sync { position: relative; }
+.controls {
+  display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; align-items: end; margin: 1rem 0; padding: 1rem 1.2rem;
+  background: var(--sheet); border: 1px solid var(--sheet-edge); border-radius: 20px; box-shadow: var(--shadow);
+}
+.controls label { display: grid; gap: .3rem; font-size: .9rem; font-weight: 600; color: var(--muted); }
+.controls input[type="number"] { width: 5.5rem; font: inherit; padding: .45rem .6rem; border: 1.5px solid var(--line); border-radius: 10px; background: var(--field); color: var(--ink); }
+.controls .check { display: flex; gap: .5rem; align-items: center; color: var(--ink); min-height: 44px; }
+.controls .check input { width: 1.1rem; height: 1.1rem; accent-color: var(--sky-deep); }
+.rules { margin: 0 0 1.5rem; padding: .8rem 1.2rem; background: var(--sheet); border-radius: 16px; border: 1px solid var(--sheet-edge); }
+.rules summary { cursor: pointer; font-weight: 700; min-height: 32px; display: flex; align-items: center; }
+.rules ol { margin: .6rem 0 .3rem; padding-left: 1.3rem; color: var(--muted); }
+.rules li { margin-bottom: .35rem; }
+.summary { font-weight: 700; font-size: 1.05rem; }
+.sync { margin: .25rem 0 1rem; }
+.sync .nav-group { margin-top: .25rem; }
+
+.cohorts { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); }
+.cohort { padding: 1.1rem 1.2rem; background: var(--sheet); border: 1px solid var(--sheet-edge); border-radius: 22px; box-shadow: var(--shadow); }
+
+.cohort.idle { background: transparent; border: 1.5px dashed var(--line); box-shadow: none; }
+.cohort header { display: flex; justify-content: space-between; align-items: baseline; gap: .5rem; }
+.cohort h2 { margin: 0; font-size: 1.15rem; }
+.cohort .asks { color: var(--muted); font-size: .9rem; margin: .15rem 0 .6rem; }
+.cohort .count { font-size: .92rem; margin-bottom: .6rem; }
+.state { font-size: .82rem; font-weight: 700; padding: .05rem .6rem; border-radius: 999px; }
+.cohort.runs .state { background: var(--sel-bg); color: var(--sel-ink); }
+.cohort.idle .state { color: var(--muted); }
+.group { margin-top: .8rem; }
+.people { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; }
+.people li { font-size: .92rem; line-height: 1.7; }
+.people .name { margin-right: .35rem; }
+.people .tag { display: inline-block; margin: 0 .25rem .15rem 0; line-height: 1.45; vertical-align: middle; }
+.name { font-weight: 700; }
+.tag { font-size: .74rem; font-weight: 600; padding: .05rem .5rem; border: 1px solid var(--line); border-radius: 999px; color: var(--muted); white-space: nowrap; }
+.tag.backup { border-color: var(--sel-bg); background: var(--sel-bg); color: var(--sel-ink); }
+.tag.close { border-color: var(--peach); background: var(--peach-soft); color: var(--peach-deep); }
+.held { margin-top: 1.5rem; padding: 1rem 1.2rem; border: 1.5px dashed var(--peach); border-radius: 20px; background: var(--peach-soft); }
+.held h2 { margin-top: 0; }
+.table-title { margin-top: 2.5rem; }
+.table-wrap { position: relative; overflow-x: auto; background: var(--sheet); border: 1px solid var(--sheet-edge); border-radius: 20px; box-shadow: var(--shadow); }
+table { width: 100%; min-width: 48rem; border-collapse: collapse; font-size: .9rem; }
+th, td { text-align: left; vertical-align: top; padding: .6rem .8rem; border-bottom: 1px solid var(--line); }
+thead th { color: var(--muted); font-weight: 700; }
+tbody th { font-weight: 700; }
+tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+.num { color: var(--muted); }
+.empty { padding: 2rem 1rem; text-align: center; border: 1.5px dashed var(--line); border-radius: 22px; background: var(--sheet); }
+.empty h2 { margin-top: 0; }
+
+.name-btn { font: inherit; font-weight: 700; color: var(--ink); background: none; border: 0; padding: .1rem 0; margin-right: .35rem; cursor: pointer; text-decoration: underline; text-decoration-color: var(--sel-bg); text-decoration-thickness: 2px; text-underline-offset: 4px; min-height: 32px; }
+.name-btn:hover, .name-btn[aria-expanded="true"] { text-decoration-color: var(--peach); }
+tr.is-open th, tr.is-open td { background: var(--sky-soft); border-bottom: 0; }
+.detail-row td { padding: 0; background: var(--field); }
+.detail { position: sticky; left: 0; width: min(68rem, calc(100vw - 4.5rem)); padding: 1.1rem 1.2rem 1.5rem; font-size: .95rem; }
+.detail h3 { margin: 1.2rem 0 .4rem; color: var(--ink); font-size: .92rem; }
+.detail h3:first-child { margin-top: 0; }
+.detail h3 .muted { font-weight: 500; }
+.detail-grid { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr)); }
+.small { font-size: .9rem; margin: .5rem 0 0; }
+.order-summary { margin: 0; padding-left: 1.3rem; font-size: .9rem; }
+
+.evidence { list-style: none; margin: .5rem 0 0; padding: 0; display: grid; gap: .35rem; }
+.ev { display: grid; grid-template-columns: 2.4rem 1fr auto; gap: .75rem; align-items: baseline; padding: .45rem .75rem; background: var(--sheet); border: 1px solid var(--line); border-radius: 12px; font-size: .9rem; }
+.ev-q { color: var(--muted); font-size: .85rem; font-weight: 700; }
+.ev-p { font-weight: 700; text-align: right; }
+.ev-p b { color: var(--ink); }
+.tally { display: grid; gap: .55rem; margin-top: .6rem; }
+.t-row { display: grid; grid-template-columns: minmax(7.5rem, 11rem) 1fr 1.8rem 3.4rem; gap: .7rem; align-items: center; }
+.t-name { font-weight: 700; line-height: 1.25; }
+.t-name small { display: block; font-weight: 500; font-size: .78rem; color: var(--muted); }
+.t-cells { display: grid; grid-template-columns: repeat(11, 1fr); gap: 3px; }
+.t-cells i { height: .8rem; border-radius: 3px; background: var(--line); }
+.t-cells i.on { background: var(--sel-bg); }
+.t-row.is-primary .t-cells i.on { background: var(--peach); }
+.t-num { text-align: right; font-weight: 800; }
+.t-role { font-size: .8rem; font-weight: 700; color: var(--muted); }
+.t-row.is-primary .t-role { color: var(--peach-deep); }
+.verdict { margin-top: 1.1rem; padding: .9rem 1rem; background: var(--sheet); border-left: 4px solid var(--peach); border-radius: 0 12px 12px 0; }
+.verdict p:last-child { margin-bottom: 0; }
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+@media (max-width: 30rem) {
+  main { padding: .5rem .75rem 3rem; }
+  .bar { padding: .8rem .9rem; }
+  .brand-sub { display: none; }
+  .screen { border-radius: 22px; }
+  .t-row { grid-template-columns: 1fr 1.8rem 3.2rem; }
+  .t-row .t-cells { grid-column: 1 / -1; grid-row: 2; }
+  .ev { grid-template-columns: 2.1rem 1fr; }
+  .ev-p { grid-column: 2; text-align: left; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .orb { animation: none; }
+}
+
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .orb { --o: .55; } }
+:root[data-theme="dark"] .orb { --o: .55; }
+
+/* Glass controls inside the question frame */
+.screen .option, .screen .order-item, .screen .field input {
+  background: var(--glass-field); border-color: var(--glass-field-edge);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+.screen .option:hover, .screen .order-item:hover { background: var(--glass-field-hover); border-color: var(--glass-field-edge); }
+.screen .option.is-checked { background: var(--sel-bg); border-color: var(--sel-bg); color: var(--sel-ink); }
+.screen .order-item[aria-pressed="true"] { background: rgba(245, 175, 146, .55); border-color: rgba(255, 255, 255, .75); }
+.screen .btn:not(.primary):not(.quiet) { background: var(--glass-field); border-color: var(--glass-field-edge); }
+.screen .progress .bar { background: rgba(255, 255, 255, .45); }
+.screen .backup { background: var(--glass-field); border: 1px solid var(--glass-field-edge); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .screen { background: rgba(255, 255, 255, .88); }
+}
+
+.legend + .small { margin: 0 0 .25rem; }
+
+/* Text sitting directly on the sky uses the frame navy, in light and dark mode alike */
+.bar .brand, .wordmark { color: var(--on-bg); }
+.brand-sub { color: var(--on-bg-muted); }
+.board > h1, .board > p { color: var(--on-bg); }
+.board > p.muted, #board-status { color: var(--on-bg-muted); }
+.sync > p, .sync .small { color: var(--on-bg-muted); }
+.sync > p.flag { color: #7A3417; }
+#board-results > .summary, #board-results > .table-title { color: var(--on-bg); }
+#board-results > p.muted { color: var(--on-bg-muted); }
+.cohort.idle { border-color: var(--on-bg-line); }
+.cohort.idle, .cohort.idle h2, .cohort.idle .name-btn, .cohort.idle .count, .cohort.idle .people li { color: var(--on-bg); }
+.cohort.idle .asks, .cohort.idle .state { color: var(--on-bg-muted); }
+.cohort.idle .name-btn { text-decoration-color: var(--on-bg); }
+
+</style>
+</head>
+<body>
+<div class="orbs" aria-hidden="true">
+  <span class="orb" style="--x:8%;--y:12%;--s:34px;--d:13.7s;--delay:-2.1s;--a:14px"></span>
+  <span class="orb" style="--x:13.5%;--y:18%;--s:10px;--d:9.3s;--delay:-5.4s;--a:8px"></span>
+  <span class="orb" style="--x:4.5%;--y:25%;--s:16px;--d:11.9s;--delay:-8.2s;--a:10px"></span>
+  <span class="orb" style="--x:16%;--y:8.5%;--s:6px;--d:8.1s;--delay:-1.3s;--a:6px"></span>
+  <span class="orb" style="--x:79%;--y:71%;--s:44px;--d:16.3s;--delay:-6.7s;--a:16px"></span>
+  <span class="orb" style="--x:85%;--y:77%;--s:14px;--d:10.1s;--delay:-3.8s;--a:9px"></span>
+  <span class="orb" style="--x:74.5%;--y:81%;--s:8px;--d:8.7s;--delay:-9.9s;--a:6px"></span>
+  <span class="orb" style="--x:88.5%;--y:65%;--s:20px;--d:12.9s;--delay:-4.6s;--a:11px"></span>
+  <span class="orb" style="--x:81%;--y:87%;--s:26px;--d:14.3s;--delay:-11.2s;--a:13px"></span>
+  <span class="orb" style="--x:70%;--y:13%;--s:18px;--d:11.3s;--delay:-7.5s;--a:10px"></span>
+  <span class="orb" style="--x:22%;--y:47%;--s:12px;--d:10.7s;--delay:-2.9s;--a:8px"></span>
+  <span class="orb" style="--x:19%;--y:59%;--s:22px;--d:13.1s;--delay:-6.1s;--a:12px"></span>
+  <span class="orb" style="--x:92%;--y:23%;--s:8px;--d:9.1s;--delay:-4.2s;--a:6px"></span>
+  <span class="orb" style="--x:11%;--y:91%;--s:14px;--d:12.3s;--delay:-8.8s;--a:9px"></span>
+  <span class="orb" style="--x:46%;--y:33%;--s:24px;--d:15.7s;--delay:-10.4s;--a:12px"></span>
+  <span class="orb" style="--x:56%;--y:63%;--s:10px;--d:9.7s;--delay:-1.7s;--a:7px"></span>
+</div>
+<header class="bar">
+  <a class="brand" href="#/" aria-label="FLOAT intake, home"><span class="wordmark">FLOAT</span><span class="brand-sub">intake</span></a>
+  <nav aria-label="Main">
+    <a href="#/" data-nav="flow">Register</a>
+    <a href="#/board" data-nav="board">Cohort board</a>
+  </nav>
+</header>
+<main id="app"><noscript><p>This intake needs JavaScript to run.</p></noscript></main>
+<script>
+/* FLOAT intake: sorting logic.
+   Pure functions only. Nothing in this file uses randomness:
+   the same answers always produce the same cohort. */
+const FLOAT = (() => {
+
+  const PROMISE_ORDER = ["clarity", "value", "recognition", "validation", "reassurance"];
+
+  /* Each promise answers one question a person is stuck on after a transition.
+     Before the transition, an employer or college answered it for them by default.
+     `name` and `asks` are team-facing. `shown` is what the participant sees:
+     the same promise, named by what the group does rather than what the person lacks. */
+  const PROMISES = {
+    clarity: {
+      name: "Clarity",
+      asks: "Where do I actually stand?",
+      shown: {
+        name: "Seeing the full picture",
+        sitf: "You are working on many things at once. This group helps you see your options, so you can choose your next step.",
+        trb: "You know what you are working towards. This group helps you check your options, so your plan is based on facts.",
+        leave: "A clear view of where you are and what to do next."
+      }
+    },
+    value: {
+      name: "Value",
+      asks: "What is this period worth?",
+      shown: {
+        name: "Setting your terms",
+        sitf: "You have done a lot across different areas. This group helps you work out what your skills and time are worth.",
+        trb: "You can describe what you have built. This group helps you put a fair value on it.",
+        leave: "A clear sense of what to charge or ask for."
+      }
+    },
+    recognition: {
+      name: "Recognition",
+      asks: "Has anyone seen what I did?",
+      shown: {
+        name: "On the record",
+        sitf: "You are doing a lot of different work. This group notices that effort as it happens.",
+        trb: "You are working towards one main goal. This group sees the effort you put in and says so.",
+        leave: "People who have seen your effort and can speak about it."
+      }
+    },
+    validation: {
+      name: "Validation",
+      asks: "Does my account of it hold up?",
+      shown: {
+        name: "Making your case",
+        sitf: "You have made several changes. This group helps you explain your choices in a way others understand.",
+        trb: "You can already explain your choices. This group helps you say it with more confidence.",
+        leave: "Confidence explaining your decisions to anyone who asks."
+      }
+    },
+    reassurance: {
+      name: "Reassurance",
+      asks: "Will what I have hold while I’m in between?",
+      shown: {
+        name: "Keeping things running",
+        sitf: "You have many things to keep track of. This group helps you keep your money, routines and commitments on track.",
+        trb: "You made this change by choice. This group helps you keep the things you rely on going while you focus on what is next.",
+        leave: "A simple way to keep up with the things you rely on."
+      }
+    }
+  };
+
+  const ARCHETYPES = {
+    sitf: { name: "Striver in the Fog", plain: "working on several fronts" },
+    trb: { name: "Reflective Builder", plain: "building one thing on purpose" }
+  };
+
+  const CONTEXTS = [
+    { id: "study", label: "I am currently studying", short: "Studying" },
+    { id: "break", label: "I am currently taking a break from work", short: "Break from work" },
+    { id: "switch", label: "I am currently changing careers", short: "Changing careers" },
+    { id: "finish", label: "I recently finished my studies", short: "Finished studies" },
+    { id: "own", label: "I am currently building something of my own", short: "Building my own thing" },
+    { id: "moved", label: "I recently moved to a new city", short: "Moved city" },
+    { id: "other", label: "Something else", short: "Something else" }
+  ];
+
+  /* Lived answers (what is happening) add 2 each; the stated want adds 3.
+     Four lived answers together (8) outweigh the want; the want outweighs any single lived answer.
+     The want's total is always odd and every other total is even, so the want can never tie. */
+  const WEIGHTS = { dealing: 2, want: 3 };
+
+  /* Option order for the five-option questions follows a Latin square:
+     every promise sits in every position exactly once across Q4 to Q8. */
+  const QUESTIONS = [
+    {
+      id: "a1", part: "moving", text: "How do you spend most of your week right now?",
+      options: [
+        { arch: "sitf", text: "I work on many different things at the same time.", short: "Many things at once" },
+        { arch: "trb", text: "I spend most of my time on one main goal.", short: "One main goal" },
+        { arch: "sitf", text: "I do whatever comes up that week.", short: "Whatever comes up" },
+        { arch: "trb", text: "I set aside time each week to think about where I am heading.", short: "Weekly time to think ahead" }
+      ]
+    },
+    {
+      id: "a2", part: "moving", text: "Someone asks what you are doing these days. What do you say?",
+      options: [
+        { arch: "trb", text: "I have one short answer that I always give.", short: "One short answer" },
+        { arch: "sitf", text: "I list all the different things I am doing.", short: "A list of things" },
+        { arch: "trb", text: "I tell them my main goal and my next step.", short: "Main goal and next step" },
+        { arch: "sitf", text: "I say different things to different people.", short: "Different answers to different people" }
+      ]
+    },
+    {
+      id: "a3", part: "moving", text: "How do you decide what to do next?",
+      options: [
+        { arch: "sitf", text: "I keep many options open and see what works.", short: "Keep options open" },
+        { arch: "trb", text: "I look back at what I have done so far, then decide.", short: "Look back, then decide" },
+        { arch: "sitf", text: "I say yes to good chances when they come.", short: "Say yes to chances" },
+        { arch: "trb", text: "I check whether it fits the goal I set.", short: "Check it fits my goal" }
+      ]
+    },
+    {
+      id: "b1", part: "dealing", text: "In the last few months, which of these has happened to you?",
+      options: [
+        { promise: "clarity", text: "I had to choose something before I understood all my options.", short: "Chose without knowing my options" },
+        { promise: "value", text: "I was not sure how much to charge or ask for my time.", short: "Unsure what to charge" },
+        { promise: "recognition", text: "I worked hard on something and nobody saw it.", short: "Worked hard, nobody saw" },
+        { promise: "validation", text: "Someone questioned a decision I made and I did not know how to respond.", short: "Could not respond when questioned" },
+        { promise: "reassurance", text: "I had to take care of something that someone else used to handle for me.", short: "Took over something handled for me" }
+      ]
+    },
+    {
+      id: "b2", part: "dealing", text: "When people ask about your life right now, what is hardest to answer?",
+      options: [
+        { promise: "value", text: "What my time and skills are worth.", short: "What my skills are worth" },
+        { promise: "recognition", text: "What I have achieved, with nobody there to see it.", short: "What I achieved, unseen" },
+        { promise: "validation", text: "Why I chose this path.", short: "Why I chose this path" },
+        { promise: "reassurance", text: "Whether my money and routines are still on track.", short: "Money and routines on track" },
+        { promise: "clarity", text: "What my plan is for the coming months.", short: "My plan for the coming months" }
+      ]
+    },
+    {
+      id: "b3", part: "dealing", text: "Which of these did you have before, but miss most now?",
+      options: [
+        { promise: "recognition", text: "People around me who knew how hard I worked.", short: "People who knew how hard I worked" },
+        { promise: "validation", text: "A title or role that people understood right away.", short: "A role people understood" },
+        { promise: "reassurance", text: "A steady routine and income I could count on.", short: "Steady routine and income" },
+        { promise: "clarity", text: "Always knowing what came next.", short: "Knowing what came next" },
+        { promise: "value", text: "Clear pay for the work I did.", short: "Clear pay for my work" }
+      ]
+    },
+    {
+      id: "b4", part: "dealing", text: "If nothing changes, what is most likely to go wrong in the next 3 months?",
+      options: [
+        { promise: "validation", text: "People will not understand why I chose this path.", short: "People not understanding my path" },
+        { promise: "reassurance", text: "I will lose track of my commitments.", short: "Losing track of commitments" },
+        { promise: "clarity", text: "I will keep going without a plan.", short: "Going on without a plan" },
+        { promise: "value", text: "I will say yes to work or pay without knowing if it is fair.", short: "Accepting pay without knowing if fair" },
+        { promise: "recognition", text: "No one will notice the effort I am putting in.", short: "Effort going unnoticed" }
+      ]
+    },
+    {
+      id: "c1", part: "want", text: "What would you most like to get from FLOAT?",
+      options: [
+        { promise: "reassurance", text: "Keeping the things I rely on going while life changes.", short: "Keeping what I rely on going" },
+        { promise: "clarity", text: "Getting a clear view of my situation.", short: "A clear view of my situation" },
+        { promise: "value", text: "Understanding what to charge or ask for.", short: "Understanding what to charge" },
+        { promise: "recognition", text: "People who see and value what I do.", short: "People who see what I do" },
+        { promise: "validation", text: "Being able to explain my choices with confidence.", short: "Explaining my choices with confidence" }
+      ]
+    },
+    {
+      id: "d1", part: "order", text: "Put these in order, starting with what you need most.",
+      hint: "Tap the most important one first. Tap again to remove it.",
+      items: {
+        clarity: "Knowing my options and what to do next",
+        value: "Knowing what my skills are worth",
+        recognition: "Having others notice my effort",
+        validation: "Being able to explain my decisions",
+        reassurance: "Keeping up with my commitments"
+      }
+    }
+  ];
+
+  const QUESTION_NUMBER = Object.fromEntries(QUESTIONS.map((q, i) => [q.id, i + 1]));
+
+  function isPermutation(order) {
+    return Array.isArray(order) && order.length === PROMISE_ORDER.length &&
+      PROMISE_ORDER.every(p => order.includes(p));
+  }
+
+  /* Returns null when answers are complete and well-formed, otherwise a reason. */
+  function checkAnswers(a) {
+    if (!a || typeof a !== "object") return "no answers";
+    for (const q of QUESTIONS) {
+      const v = a[q.id];
+      if (q.part === "moving" && !(Number.isInteger(v) && v >= 0 && v < q.options.length)) return "missing " + q.id;
+      if ((q.part === "dealing" || q.part === "want") && !PROMISE_ORDER.includes(v)) return "missing " + q.id;
+      if (q.part === "order" && !isPermutation(v)) return "incomplete order";
+    }
+    return null;
+  }
+
+  function evaluate(a) {
+    const problem = checkAnswers(a);
+    if (problem) throw new Error("Cannot evaluate: " + problem);
+
+    const scores = Object.fromEntries(PROMISE_ORDER.map(p => [p, 0]));
+    const support = Object.fromEntries(PROMISE_ORDER.map(p => [p, 0]));
+    const evidence = [];
+    for (const q of QUESTIONS) {
+      if (q.part !== "dealing" && q.part !== "want") continue;
+      const p = a[q.id];
+      const weight = WEIGHTS[q.part];
+      scores[p] += weight;
+      support[p] += 1;
+      evidence.push({ qid: q.id, n: QUESTION_NUMBER[q.id], part: q.part, promise: p, weight, short: q.options.find(o => o.promise === p).short });
+    }
+
+    /* Highest total wins. A tie goes to whichever the person put earlier in their own order. */
+    const orderPos = p => a.d1.indexOf(p);
+    const ranked = [...PROMISE_ORDER].sort((x, y) => (scores[y] - scores[x]) || (orderPos(x) - orderPos(y)));
+    const primary = ranked[0];
+    const secondary = ranked[1];
+    const levelTop = PROMISE_ORDER.filter(p => scores[p] === scores[primary]);
+    const levelSecond = PROMISE_ORDER.filter(p => p !== primary && scores[p] === scores[secondary]);
+    const lead = scores[primary] - scores[secondary];
+
+    const moving = QUESTIONS.filter(q => q.part === "moving").map(q => {
+      const o = q.options[a[q.id]];
+      return { qid: q.id, n: QUESTION_NUMBER[q.id], arch: o.arch, short: o.short };
+    });
+    const sitfVotes = moving.filter(m => m.arch === "sitf").length;
+    const archetype = sitfVotes >= 2 ? "sitf" : "trb";
+
+    /* Team-facing flag. Close: main and backup are level or one point apart,
+       and both are backed by at least two answers. Checked first in session 1. */
+    return {
+      scores,
+      support,
+      ranked,
+      primary,
+      secondary,
+      lead,
+      call: lead <= 1 && support[secondary] >= 2 ? "close" : "clear",
+      topTie: levelTop.length > 1 ? sortByOrder(levelTop, a.d1) : null,
+      secondTie: levelTop.length === 1 && levelSecond.length > 1 ? sortByOrder(levelSecond, a.d1) : null,
+      evidence,
+      moving,
+      archetype,
+      archetypeVotes: archetype === "sitf" ? sitfVotes : moving.length - sitfVotes
+    };
+  }
+
+  function sortByOrder(list, order) {
+    return [...list].sort((x, y) => order.indexOf(x) - order.indexOf(y));
+  }
+
+  /* Cohort formation.
+     people: [{ id, primary, secondary, archetype, createdAt, ... }]
+     Tries every set of cohorts that could run (2^5 = 32) and keeps the best by, in order:
+       1. most people placed
+       2. most people in their main promise
+       3. largest smallest cohort
+       4. earlier registrations kept in their main promise */
+  function formCohorts(people, opts) {
+    const min = Math.max(1, Math.floor((opts && opts.min) || 4));
+    const max = Math.max(min, Math.floor((opts && opts.max) || 6));
+    const list = [...people].sort(byRegistration);
+    let best = null;
+    let workable = 0;
+
+    for (let mask = 0; mask < (1 << PROMISE_ORDER.length); mask++) {
+      const open = PROMISE_ORDER.filter((_, i) => mask & (1 << i));
+      const members = Object.fromEntries(PROMISE_ORDER.map(p => [p, []]));
+      const held = [];
+      for (const person of list) {
+        if (open.includes(person.primary)) members[person.primary].push({ person, via: "main" });
+        else if (open.includes(person.secondary)) members[person.secondary].push({ person, via: "backup" });
+        else held.push(person);
+      }
+      if (open.some(p => members[p].length < min)) continue;
+      workable++;
+      const candidate = {
+        open,
+        members,
+        held,
+        placed: list.length - held.length,
+        inMain: list.filter(p => open.includes(p.primary)).length,
+        smallest: open.length ? Math.min(...open.map(p => members[p].length)) : 0,
+        firstCome: list.map(p => (open.includes(p.primary) ? "1" : "0")).join("")
+      };
+      if (!best || isBetter(candidate, best)) best = candidate;
+    }
+
+    const placement = {};
+    for (const p of PROMISE_ORDER) for (const m of best.members[p]) placement[m.person.id] = { promise: p, via: m.via };
+    for (const person of best.held) placement[person.id] = { promise: null, via: "held" };
+
+    const cohorts = PROMISE_ORDER.map(p => {
+      const runs = best.open.includes(p);
+      const mainPeople = list.filter(x => x.primary === p);
+      const split = runs ? splitGroups(best.members[p], min, max) : { groups: [], oversize: false };
+      return {
+        promise: p,
+        runs,
+        mainCount: mainPeople.length,
+        members: best.members[p],
+        groups: split.groups,
+        oversize: split.oversize,
+        movedOut: runs ? [] : mainPeople.map(x => ({ person: x, to: placement[x.id] }))
+      };
+    });
+
+    return {
+      min, max, cohorts, placement,
+      held: best.held,
+      total: list.length,
+      placed: best.placed,
+      inMain: best.inMain,
+      running: best.open.length,
+      combinations: 1 << PROMISE_ORDER.length,
+      workable
+    };
+  }
+
+  function isBetter(a, b) {
+    if (a.placed !== b.placed) return a.placed > b.placed;
+    if (a.inMain !== b.inMain) return a.inMain > b.inMain;
+    if (a.smallest !== b.smallest) return a.smallest > b.smallest;
+    return a.firstCome > b.firstCome;
+  }
+
+  function byRegistration(x, y) {
+    return (x.createdAt - y.createdAt) || String(x.id).localeCompare(String(y.id));
+  }
+
+  /* Splits a running cohort into groups within the size limits, dealing people out
+     one at a time so both ways of moving are spread across groups. */
+  function splitGroups(members, min, max) {
+    const n = members.length;
+    if (!n) return { groups: [], oversize: false };
+    let count = Math.ceil(n / max);
+    if (count * min > n) count = Math.max(1, Math.floor(n / min));
+    const dealt = [...members].sort((x, y) =>
+      (x.person.archetype === y.person.archetype ? 0 : (x.person.archetype === "sitf" ? -1 : 1)) ||
+      byRegistration(x.person, y.person));
+    const groups = Array.from({ length: count }, () => []);
+    dealt.forEach((m, i) => groups[i % count].push(m));
+    return { groups, oversize: groups.some(g => g.length > max) };
+  }
+
+  /* Fixed sample intake for demonstrating cohort formation. Never saved.
+     name, context, [Q1–Q3 option], [Q4–Q7 promise], Q8 promise, Q9 order */
+  const C = "clarity", V = "value", R = "recognition", L = "validation", S = "reassurance";
+  const SAMPLE_ROWS = [
+    ["Aarav", "study", [0, 1, 0], [C, C, S, C], C, [C, S, V, R, L]],
+    ["Meera", "break", [1, 0, 1], [C, V, C, V], C, [C, V, R, L, S]],
+    ["Kabir", "switch", [2, 0, 2], [C, R, C, R], V, [C, R, V, S, L]],
+    ["Ishita", "finish", [3, 2, 3], [C, S, C, S], C, [C, S, L, V, R]],
+    ["Rohan", "other", [2, 3, 0], [V, C, C, C], L, [C, L, V, R, S]],
+    ["Sana", "study", [1, 2, 1], [R, R, R, L], R, [R, L, C, V, S]],
+    ["Vikram", "switch", [0, 3, 2], [R, V, R, V], R, [R, V, C, S, L]],
+    ["Nandini", "break", [3, 0, 0], [L, R, R, R], L, [L, R, C, S, V]],
+    ["Arjun", "finish", [2, 1, 2], [R, C, R, S], R, [R, S, C, V, L]],
+    ["Farhan", "break", [3, 0, 3], [R, R, V, V], R, [R, V, L, C, S]],
+    ["Divya", "switch", [0, 2, 1], [C, R, R, C], R, [R, C, V, L, S]],
+    ["Tenzin", "study", [0, 3, 0], [V, V, V, R], V, [V, R, C, S, L]],
+    ["Aditi", "switch", [1, 2, 3], [V, L, V, L], V, [V, L, R, C, S]],
+    ["Rahul", "break", [2, 1, 3], [V, C, V, C], S, [V, C, S, R, L]],
+    ["Kavya", "finish", [3, 0, 1], [V, V, R, C], V, [V, R, C, L, S]],
+    ["Imran", "switch", [2, 1, 0], [L, R, L, R], L, [L, R, V, C, S]],
+    ["Sneha", "break", [1, 0, 3], [L, L, R, L], R, [R, L, C, V, S]],
+    ["Karthik", "study", [1, 3, 1], [L, C, L, C], L, [L, C, R, S, V]],
+    ["Zoya", "other", [0, 1, 2], [S, S, C, S], S, [S, C, V, L, R]],
+    ["Dev", "finish", [3, 2, 1], [S, L, S, L], S, [S, L, C, R, V]]
+  ];
+  const SAMPLE_START = Date.UTC(2026, 8, 1, 4, 0, 0);
+  const SAMPLE_INTAKE = SAMPLE_ROWS.map(([name, context, moving, dealing, want, order], i) => ({
+    id: "sample-" + String(i + 1).padStart(2, "0"),
+    sample: true,
+    name,
+    context,
+    createdAt: SAMPLE_START + i * 60000,
+    answers: {
+      a1: moving[0], a2: moving[1], a3: moving[2],
+      b1: dealing[0], b2: dealing[1], b3: dealing[2], b4: dealing[3],
+      c1: want, d1: order
+    }
+  }));
+
+  return {
+    PROMISE_ORDER, PROMISES, ARCHETYPES, CONTEXTS, WEIGHTS, QUESTIONS, QUESTION_NUMBER,
+    checkAnswers, evaluate, formCohorts, splitGroups, SAMPLE_INTAKE
+  };
+})();
+
+if (typeof module !== "undefined") module.exports = FLOAT;
+
+</script>
+<script>
+/* Registrations store.
+   Shared database when the hosted page provides one; this browser's storage otherwise.
+   Documents are flat (top-level strings and numbers only) to stay inside the database's rules.
+   A registration the database refuses is kept on this device and retried, never dropped. */
+const Store = (() => {
+  const LOCAL_KEY = "float-intake:v1:registrations";
+  const PENDING_KEY = "float-intake:v1:pending";
+  const COLLECTION = "registrations";
+  const ANSWER_KEYS = ["a1", "a2", "a3", "b1", "b2", "b3", "b4", "c1"];
+  let db = null;
+  let mode = "connecting"; // connecting | shared | local
+  let sharedRows = [];
+  let liveError = null;
+  let counter = 0;
+  let syncing = false;
+  const listeners = new Set();
+
+  function emit() { listeners.forEach(fn => { try { fn(); } catch (e) { console.error(e); } }); }
+  function wait(ms) { return new Promise(res => setTimeout(res, ms)); }
+  function newId(prefix) { counter += 1; return prefix + Date.now().toString(36) + "-" + counter; }
+
+  function readList(key) {
+    try { const v = JSON.parse(localStorage.getItem(key) || "[]"); return Array.isArray(v) ? v : []; }
+    catch (e) { return []; }
+  }
+  function writeList(key, list) {
+    try { localStorage.setItem(key, JSON.stringify(list)); return true; } catch (e) { return false; }
+  }
+
+  /* Record (nested, used by the page) -> flat document (what the database stores). */
+  function toDoc(record) {
+    const doc = {
+      v: 2,
+      name: String(record.name || "").slice(0, 40),
+      context: Array.isArray(record.context) ? record.context.join(",") : String(record.context || ""),
+      d1: record.answers.d1.join(","),
+      primary: record.result.primary,
+      secondary: record.result.secondary,
+      archetype: record.result.archetype,
+      call: record.result.call,
+      createdAt: Number(record.createdAt) || Date.now()
+    };
+    for (const k of ANSWER_KEYS) doc[k] = record.answers[k];
+    return doc;
+  }
+
+  /* Flat document or older nested document -> row the page can read. */
+  function fromDoc(id, d) {
+    if (!d || typeof d !== "object") return null;
+    if (d.answers && typeof d.answers === "object") return Object.assign({}, d, { id });
+    const answers = {};
+    for (const k of ANSWER_KEYS) answers[k] = d[k];
+    answers.d1 = typeof d.d1 === "string" ? d.d1.split(",") : d.d1;
+    return { id, name: d.name, context: d.context, createdAt: d.createdAt, answers };
+  }
+
+  function describe(err) {
+    const code = (err && err.code) || "unknown";
+    const text = {
+      invalid_argument: "the shared database refused this entry",
+      resource_exhausted: "too many saves at once",
+      quota_exceeded: "the shared database is full",
+      unavailable: "the shared database couldn’t be reached",
+      revoked: "this page lost access to the shared database",
+      not_granted: "this page doesn’t have access to the shared database",
+      capability_disabled: "the shared database isn’t available in this view",
+      capability_removed: "the shared database isn’t available in this view",
+      transform_error: "the entry couldn’t be prepared for saving"
+    }[code] || "an unexpected error";
+    return { code, text };
+  }
+
+  async function writeShared(ref, doc) {
+    try { await ref.set(doc); return { ok: true }; }
+    catch (e) {
+      if (e && e.code === "unavailable") {
+        await wait(600 + (Date.now() % 400));
+        try { await ref.set(doc); return { ok: true }; } catch (e2) { return { ok: false, error: describe(e2) }; }
+      }
+      return { ok: false, error: describe(e) };
+    }
+  }
+
+  function keepPending(record, error) {
+    const list = readList(PENDING_KEY);
+    const id = record.pendingId || newId("pending-");
+    const entry = Object.assign({}, record, { pendingId: id, lastError: error });
+    const i = list.findIndex(x => x.pendingId === id);
+    if (i >= 0) list[i] = entry; else list.push(entry);
+    writeList(PENDING_KEY, list);
+    return id;
+  }
+
+  const ready = (async () => {
+    try {
+      if (window.claude && typeof window.claude.use === "function") {
+        const ns = await window.claude.use("db");
+        if (ns) {
+          db = ns;
+          mode = "shared";
+          db.collection(COLLECTION).orderBy("createdAt").limit(1000).onSnapshot(
+            snap => {
+              sharedRows = snap.docs.map(d => fromDoc(d.id, d.data())).filter(Boolean);
+              liveError = null;
+              emit();
+            },
+            err => { liveError = describe(err); emit(); }
+          );
+          emit();
+          syncPending();
+          return;
+        }
+      }
+    } catch (e) { /* fall through to device storage */ }
+    mode = "local";
+    emit();
+  })();
+
+  async function add(record) {
+    await ready;
+    if (mode === "shared") {
+      const res = await writeShared(db.collection(COLLECTION).doc(), toDoc(record));
+      if (res.ok) return { ok: true, where: "shared" };
+      keepPending(record, res.error);
+      emit();
+      return { ok: true, where: "pending", error: res.error };
+    }
+    const list = readList(LOCAL_KEY);
+    list.push(Object.assign({}, record, { id: newId("local-") }));
+    if (!writeList(LOCAL_KEY, list)) {
+      return { ok: false, error: { code: "storage", text: "this browser isn’t allowing saved data" } };
+    }
+    emit();
+    return { ok: true, where: "local" };
+  }
+
+  /* Retries registrations this device couldn't send. Returns counts. */
+  async function syncPending() {
+    await ready;
+    if (mode !== "shared" || syncing) return { sent: 0, left: readList(PENDING_KEY).length };
+    syncing = true;
+    let sent = 0;
+    for (const entry of readList(PENDING_KEY)) {
+      const record = Object.assign({}, entry);
+      delete record.pendingId; delete record.lastError;
+      const res = await writeShared(db.collection(COLLECTION).doc(), toDoc(record));
+      const list = readList(PENDING_KEY);
+      if (res.ok) { writeList(PENDING_KEY, list.filter(x => x.pendingId !== entry.pendingId)); sent++; }
+      else keepPending(entry, res.error);
+    }
+    syncing = false;
+    emit();
+    return { sent, left: readList(PENDING_KEY).length };
+  }
+
+  /* Writes and deletes a tiny test document, to tell access problems from data-shape problems. */
+  async function checkConnection() {
+    await ready;
+    if (mode !== "shared") return { ok: false, error: { code: "local", text: "this page is using device storage, not the shared database" } };
+    const ref = db.collection("health").doc();
+    try {
+      await ref.set({ t: Date.now() });
+      try { await ref.delete(); } catch (e) { /* test doc left behind is harmless */ }
+      return { ok: true };
+    } catch (e) { return { ok: false, error: describe(e) }; }
+  }
+
+  async function remove(id) {
+    await ready;
+    if (String(id).indexOf("pending-") === 0) {
+      writeList(PENDING_KEY, readList(PENDING_KEY).filter(x => x.pendingId !== id));
+      emit();
+      return { ok: true };
+    }
+    if (mode === "shared") {
+      try { await db.doc(COLLECTION + "/" + id).delete(); return { ok: true }; }
+      catch (e) { return { ok: false, error: describe(e) }; }
+    }
+    writeList(LOCAL_KEY, readList(LOCAL_KEY).filter(r => r.id !== id));
+    emit();
+    return { ok: true };
+  }
+
+  return {
+    ready, add, remove, syncPending, checkConnection,
+    get rows() {
+      const pending = readList(PENDING_KEY).map(p => Object.assign({}, p, { id: p.pendingId, pending: true }));
+      if (mode === "shared") return sharedRows.concat(pending);
+      if (mode === "local") return readList(LOCAL_KEY).concat(pending);
+      return pending;
+    },
+    get pendingCount() { return readList(PENDING_KEY).length; },
+    get lastPendingError() { const l = readList(PENDING_KEY); return l.length ? l[l.length - 1].lastError : null; },
+    get mode() { return mode; },
+    get liveError() { return liveError; },
+    subscribe(fn) { listeners.add(fn); return () => listeners.delete(fn); }
+  };
+})();
+
+</script>
+<script>
+/* FLOAT intake: interface. */
+(() => {
+  const {
+    PROMISE_ORDER, PROMISES, ARCHETYPES, CONTEXTS, QUESTIONS, WEIGHTS,
+    checkAnswers, evaluate, formCohorts, SAMPLE_INTAKE
+  } = FLOAT;
+
+  const app = document.getElementById("app");
+  const DEFAULT_MIN = 4;
+  const DRAFT_KEY = "float-intake:v1:draft";
+  const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const ARCH_TAG = { sitf: "many things at once", trb: "one clear goal" };
+
+  let flow = restoreDraft() || freshFlow();
+  const board = { min: DEFAULT_MIN, max: 6, sample: false, confirmId: null, open: new Set(), syncMessage: "" };
+  let timers = [];
+
+  /* ---------- helpers ---------- */
+  function freshFlow() {
+    return { step: "intro", q: 0, name: "", context: [], answers: {}, order: [], result: null, record: null, save: { state: "idle" } };
+  }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+  function joinNames(list) {
+    if (list.length <= 1) return list.join("");
+    return list.slice(0, -1).join(", ") + " and " + list[list.length - 1];
+  }
+  const pname = p => PROMISES[p].name;
+  const shownName = p => PROMISES[p].shown.name;
+  function plural(n, one, many) { return n + " " + (n === 1 ? one : many); }
+  function cleanName(v) { const s = typeof v === "string" ? v.trim().slice(0, 40) : ""; return s || "Unnamed"; }
+  function contextLabel(value) {
+    const ids = Array.isArray(value) ? value : String(value || "").split(",").filter(Boolean);
+    const labels = ids.map(id => { const c = CONTEXTS.find(x => x.id === id); return c ? c.short : null; }).filter(Boolean);
+    return labels.length ? labels.join(", ") : "Not given";
+  }
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+  function focusHeading() {
+    const h = app.querySelector("h1");
+    if (h) { h.setAttribute("tabindex", "-1"); h.focus({ preventScroll: true }); }
+    window.scrollTo(0, 0);
+  }
+
+  function saveDraft() {
+    if (flow.step !== "about" && flow.step !== "question") return;
+    try {
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify({
+        step: flow.step, q: flow.q, name: flow.name, context: flow.context, answers: flow.answers, order: flow.order
+      }));
+    } catch (e) { /* drafts are a convenience only */ }
+  }
+  function clearDraft() { try { sessionStorage.removeItem(DRAFT_KEY); } catch (e) { } }
+  function restoreDraft() {
+    try {
+      const d = JSON.parse(sessionStorage.getItem(DRAFT_KEY) || "null");
+      if (!d || (d.step !== "about" && d.step !== "question")) return null;
+      const f = freshFlow();
+      f.step = d.step;
+      f.q = Math.min(Math.max(0, Number(d.q) || 0), QUESTIONS.length - 1);
+      f.name = typeof d.name === "string" ? d.name : "";
+      f.context = Array.isArray(d.context) ? d.context.filter(id => CONTEXTS.some(c => c.id === id)) : (typeof d.context === "string" && d.context ? [d.context] : []);
+      f.answers = d.answers && typeof d.answers === "object" ? d.answers : {};
+      f.order = Array.isArray(d.order) ? d.order.filter(p => PROMISE_ORDER.includes(p)) : [];
+      return f;
+    } catch (e) { return null; }
+  }
+
+  /* ---------- routing ---------- */
+  function route() { return location.hash.indexOf("#/board") === 0 ? "board" : "flow"; }
+
+  function render() {
+    clearTimers();
+    const r = route();
+    document.querySelectorAll("[data-nav]").forEach(a => {
+      if (a.dataset.nav === r) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    app.classList.toggle("wide", r === "board");
+    if (r === "board") renderBoard();
+    else renderFlow();
+    focusHeading();
+  }
+
+  function renderFlow() {
+    if (flow.step === "intro") return renderIntro();
+    if (flow.step === "about") return renderAbout();
+    if (flow.step === "question") return renderQuestion();
+    if (flow.step === "result") return renderResult();
+    flow = freshFlow();
+    renderIntro();
+  }
+
+
+  /* ---------- intro ---------- */
+  function renderIntro() {
+    app.innerHTML = `
+      <section class="screen intro">
+        <h1>Find your FLOAT group</h1>
+        <p class="lead">FLOAT forms small groups of people in transition, sorted by what each person needs most right now.</p>
+        <p>Answer nine questions. After the last question, you will see the group you are joining. You will also see a second group that fits you, in case the first group does not fill.</p>
+        <p class="muted">Takes about four minutes.</p>
+        <div class="nav end"><button type="button" class="btn primary" data-act="start">Start</button></div>
+      </section>`;
+  }
+
+  /* ---------- about you ---------- */
+  function renderAbout() {
+    const contexts = CONTEXTS.map(c => {
+      const on = flow.context.includes(c.id);
+      return `
+      <label class="option${on ? " is-checked" : ""}">
+        <input type="checkbox" name="context" value="${c.id}"${on ? " checked" : ""}>
+        <span>${esc(c.label)}</span>
+      </label>`;
+    }).join("");
+    app.innerHTML = `
+      <form class="screen" data-form="about" novalidate>
+        <h1>About you</h1>
+        <div class="field">
+          <label for="name">First name</label>
+          <input id="name" name="name" autocomplete="given-name" maxlength="40" value="${esc(flow.name)}" aria-describedby="name-hint name-error">
+          <p class="hint" id="name-hint">Your group will see this.</p>
+          <p class="error" id="name-error" hidden>Add your first name.</p>
+        </div>
+        <fieldset aria-describedby="context-error">
+          <legend class="legend">Which of these describe you?</legend>
+          <p class="muted small">Choose all that apply.</p>
+          <div class="options">${contexts}</div>
+          <p class="error" id="context-error" hidden>Choose at least one option.</p>
+        </fieldset>
+        <div class="nav">
+          <button type="button" class="btn" data-act="back">Back</button>
+          <button type="submit" class="btn primary">Continue</button>
+        </div>
+      </form>`;
+  }
+
+  /* ---------- questions ---------- */
+  function progress(n, total) {
+    return `
+      <div class="progress">
+        <span>Question ${n} of ${total}</span>
+        <div class="bar" role="progressbar" aria-label="Progress" aria-valuemin="0" aria-valuemax="${total}" aria-valuenow="${n - 1}">
+          <i style="width:${Math.round(((n - 1) / total) * 100)}%"></i>
+        </div>
+      </div>`;
+  }
+
+  function renderQuestion() {
+    const q = QUESTIONS[flow.q];
+    if (q.part === "order") return renderOrder(q);
+    const current = flow.answers[q.id];
+    const options = q.options.map((o, i) => {
+      const value = q.part === "moving" ? String(i) : o.promise;
+      const checked = q.part === "moving" ? current === i : current === o.promise;
+      return `
+        <label class="option${checked ? " is-checked" : ""}">
+          <input type="radio" name="answer" value="${value}"${checked ? " checked" : ""}>
+          <span>${esc(o.text)}</span>
+        </label>`;
+    }).join("");
+    app.innerHTML = `
+      <form class="screen" data-form="question" novalidate>
+        ${progress(flow.q + 1, QUESTIONS.length)}
+        <fieldset>
+          <legend><h1>${esc(q.text)}</h1></legend>
+          <p class="muted">Pick the one closest to you.</p>
+          <div class="options">${options}</div>
+        </fieldset>
+        <div class="nav">
+          <button type="button" class="btn" data-act="back">Back</button>
+          <button type="submit" class="btn primary"${current === undefined ? " disabled" : ""}>Next</button>
+        </div>
+      </form>`;
+  }
+
+  function renderOrder(q) {
+    app.innerHTML = `
+      <form class="screen" data-form="order" novalidate>
+        ${progress(flow.q + 1, QUESTIONS.length)}
+        <h1>${esc(q.text)}</h1>
+        <div class="hint-row">
+          <p class="muted" id="order-hint">${esc(q.hint)}</p>
+          <button type="button" class="btn quiet small" data-act="clear-order">Clear</button>
+        </div>
+        <ul class="order" id="order-list" aria-describedby="order-hint"></ul>
+        <p class="sr-only" aria-live="polite" id="order-live"></p>
+        <div class="nav">
+          <button type="button" class="btn" data-act="back">Back</button>
+          <button type="submit" class="btn primary" id="order-submit">Find my group</button>
+        </div>
+      </form>`;
+    updateOrderList();
+  }
+
+  function updateOrderList(focusPromise) {
+    const list = document.getElementById("order-list");
+    if (!list) return;
+    list.innerHTML = PROMISE_ORDER.map(p => {
+      const pos = flow.order.indexOf(p);
+      const chosen = pos >= 0;
+      return `
+        <li>
+          <button type="button" class="order-item" data-act="order" data-promise="${p}" aria-pressed="${chosen}">
+            <span class="pos" aria-hidden="true">${chosen ? pos + 1 : ""}</span>
+            <span>${esc(QUESTIONS.find(q => q.part === "order").items[p])}</span>
+            <span class="sr-only">${chosen ? "Position " + (pos + 1) : "Not placed yet"}</span>
+          </button>
+        </li>`;
+    }).join("");
+    const submit = document.getElementById("order-submit");
+    if (submit) submit.disabled = flow.order.length !== PROMISE_ORDER.length;
+    if (focusPromise) {
+      const b = list.querySelector(`[data-promise="${focusPromise}"]`);
+      if (b) b.focus();
+    }
+  }
+
+  function tapOrder(p) {
+    const live = document.getElementById("order-live");
+    const i = flow.order.indexOf(p);
+    if (i >= 0) {
+      flow.order.splice(i, 1);
+      if (live) live.textContent = QUESTIONS.find(q => q.part === "order").items[p] + " removed.";
+    } else {
+      flow.order.push(p);
+      if (flow.order.length === PROMISE_ORDER.length - 1) {
+        flow.order.push(PROMISE_ORDER.find(x => !flow.order.includes(x)));
+      }
+      if (live) live.textContent = QUESTIONS.find(q => q.part === "order").items[p] + " placed " + (flow.order.indexOf(p) + 1) + ".";
+    }
+    updateOrderList(p);
+    saveDraft();
+  }
+
+  function finish() {
+    flow.answers.d1 = flow.order.slice();
+    const problem = checkAnswers(flow.answers);
+    if (problem) {
+      const missing = QUESTIONS.findIndex(q => problem.indexOf(q.id) >= 0);
+      flow.q = missing >= 0 ? missing : flow.q;
+      render();
+      return;
+    }
+    const r = evaluate(flow.answers);
+    flow.result = r;
+    flow.record = {
+      v: 1,
+      name: flow.name.trim().slice(0, 40),
+      context: flow.context.slice(),
+      answers: JSON.parse(JSON.stringify(flow.answers)),
+      result: { primary: r.primary, secondary: r.secondary, archetype: r.archetype, scores: r.scores, call: r.call },
+      createdAt: Date.now()
+    };
+    flow.step = "result";
+    flow.matching = true;
+    flow.save = { state: "saving" };
+    clearDraft();
+    render();
+    const started = Date.now();
+    saveRecord().then(() => {
+      const wait = reduceMotion ? 0 : Math.max(0, 1200 - (Date.now() - started));
+      timers.push(setTimeout(() => {
+        flow.matching = false;
+        if (route() === "flow" && flow.step === "result") { renderResult(); focusHeading(); }
+      }, wait));
+    });
+  }
+
+  async function saveRecord() {
+    flow.save = { state: "saving" };
+    updateSaveStatus();
+    const res = await Store.add(flow.record);
+    flow.save = res.ok
+      ? { state: res.where }
+      : { state: "error", message: (res.error && (res.error.text || res.error.code)) || "unknown error" };
+    updateSaveStatus();
+  }
+
+  /* ---------- result ---------- */
+  function renderResult() {
+    if (flow.matching && flow.save.state !== "saving") flow.matching = false;
+    if (flow.matching) {
+      app.innerHTML = `
+        <section class="screen matching">
+          <h1>Finding your group</h1>
+          <p class="muted">Matching your answers to the five FLOAT groups.</p>
+        </section>`;
+      return;
+    }
+    const r = flow.result;
+    const main = PROMISES[r.primary].shown;
+    const backup = PROMISES[r.secondary].shown;
+    app.innerHTML = `
+      <section class="screen result">
+        <h1>Your group: ${esc(main.name)}</h1>
+        <p class="lead">${esc(main[r.archetype])}</p>
+
+        <h2>What you’ll leave with</h2>
+        <p>${esc(main.leave)}</p>
+
+        <div class="backup">
+          <h2>Also a good fit: ${esc(backup.name)}</h2>
+          <p>${esc(backup[r.archetype])}</p>
+          <p class="muted">Groups start once at least ${DEFAULT_MIN} people join. If ${esc(main.name)} doesn’t fill when registration closes, you’ll join ${esc(backup.name)}. If neither fills, we’ll keep your place for the next round.</p>
+        </div>
+
+        <div class="save-status" id="save-status" role="status"></div>
+
+        <div class="nav">
+          <button type="button" class="btn" data-act="restart">Start a new registration</button>
+        </div>
+      </section>`;
+    updateSaveStatus();
+  }
+
+  function updateSaveStatus() {
+    const el = document.getElementById("save-status");
+    if (!el) return;
+    const s = flow.save;
+    if (s.state === "saving") el.innerHTML = `<p>Saving your registration…</p>`;
+    else if (s.state === "shared") el.innerHTML = `<p>You’re registered. We’ll confirm your group when registration closes.</p>`;
+    else if (s.state === "local") el.innerHTML = `<p>You’re registered on this device.</p>`;
+    else if (s.state === "pending") el.innerHTML = `<p>You’re registered. Your answers are saved on this device while the connection catches up.</p>`;
+    else if (s.state === "error") el.innerHTML = `<p class="error">Your registration wasn’t saved (${esc(s.message)}).</p><button type="button" class="btn" data-act="retry-save">Try again</button>`;
+    else el.innerHTML = "";
+  }
+
+  /* ---------- cohort board ---------- */
+  function renderBoard() {
+    app.innerHTML = `
+      <section class="board">
+        <h1>Cohort board</h1>
+        <p>For the FLOAT team. Select a name to see how that person was scored. Participants only see their group names.</p>
+        <p class="muted" id="board-status" role="status"></p>
+        <div class="sync" id="board-sync"></div>
+
+        <div class="controls">
+          <label>Smallest group
+            <input type="number" inputmode="numeric" min="2" max="10" value="${board.min}" data-ctl="min">
+          </label>
+          <label>Largest group
+            <input type="number" inputmode="numeric" min="2" max="12" value="${board.max}" data-ctl="max">
+          </label>
+          <label class="check">
+            <input type="checkbox" data-ctl="sample"${board.sample ? " checked" : ""}>
+            Include the sample intake (20 people, not saved)
+          </label>
+        </div>
+
+        <details class="rules">
+          <summary>How placement works</summary>
+          <ol>
+            <li>Everyone starts in their main promise.</li>
+            <li>A cohort runs only if it has at least <span data-show="min">${board.min}</span> people.</li>
+            <li>If your main cohort doesn’t run, you join your backup cohort, as long as that one runs.</li>
+            <li>If neither runs, your place is held for the next intake.</li>
+            <li>The board checks all 32 possible sets of running cohorts and keeps the set that places the most people. Where two sets place the same number, it keeps the one with more people in their main promise, then the one whose smallest cohort is largest, then the one that keeps earlier registrations in their main promise.</li>
+            <li>A cohort bigger than <span data-show="max">${board.max}</span> is split into groups, with both ways of moving spread across them.</li>
+          </ol>
+        </details>
+
+        <div id="board-results"></div>
+      </section>`;
+    updateBoardStatus();
+    renderBoardResults();
+  }
+
+  function updateBoardStatus() {
+    renderSync();
+    const el = document.getElementById("board-status");
+    if (!el) return;
+    const n = Store.rows.filter(r => !r.pending).length;
+    if (Store.mode === "connecting") el.textContent = "Connecting to the shared intake…";
+    else if (Store.mode === "shared") {
+      el.textContent = Store.liveError
+        ? `Live updates stopped: ${Store.liveError.text} (${Store.liveError.code}). Reload the page to reconnect.`
+        : `Live. ${plural(n, "registration", "registrations")} so far. New ones appear as they come in.`;
+    } else el.textContent = `${plural(n, "registration", "registrations")} saved on this device.`;
+    app.querySelectorAll('[data-show="min"]').forEach(s => { s.textContent = board.min; });
+    app.querySelectorAll('[data-show="max"]').forEach(s => { s.textContent = board.max; });
+  }
+
+  function renderSync() {
+    const box = document.getElementById("board-sync");
+    if (!box) return;
+    const n = Store.pendingCount;
+    const err = Store.lastPendingError;
+    const pending = n ? `
+      <p class="flag">${plural(n, "registration on this device hasn’t", "registrations on this device haven’t")} reached the shared database${err ? `: ${esc(err.text)} (${esc(err.code)})` : ""}. They’re kept here and shown below as “not sent”.</p>` : "";
+    const shared = Store.mode === "shared";
+    box.innerHTML = (pending || shared) ? `
+      ${pending}
+      <div class="nav-group">
+        ${n && shared ? `<button type="button" class="btn small" data-act="sync">Try sending again</button>` : ""}
+        ${shared ? `<button type="button" class="btn small" data-act="check">Check connection</button>` : ""}
+      </div>
+      <p class="small muted" id="sync-result" role="status">${esc(board.syncMessage || "")}</p>` : "";
+  }
+
+  function collectPeople() {
+    const source = Store.rows.concat(board.sample ? SAMPLE_INTAKE : []);
+    const people = [];
+    let unreadable = 0;
+    for (const row of source) {
+      if (!row || typeof row !== "object" || checkAnswers(row.answers)) { unreadable++; continue; }
+      const r = evaluate(row.answers);
+      people.push({
+        id: String(row.id),
+        sample: !!row.sample,
+        pending: !!row.pending,
+        name: cleanName(row.name),
+        context: row.context,
+        createdAt: Number(row.createdAt) || 0,
+        primary: r.primary,
+        secondary: r.secondary,
+        archetype: r.archetype,
+        call: r.call,
+        scores: r.scores,
+        answers: row.answers,
+        result: r
+      });
+    }
+    return { people, unreadable };
+  }
+
+  function personTags(person, via, fromPromise) {
+    let tags = `<span class="tag">${esc(ARCHETYPES[person.archetype].name)}</span>`;
+    if (via === "backup") tags += `<span class="tag backup">backup, from ${esc(pname(fromPromise))}</span>`;
+    if (person.call === "close") tags += `<span class="tag close" title="Main and backup are level or one point apart, both backed by at least two answers">close</span>`;
+    if (person.sample) tags += `<span class="tag">sample</span>`;
+    if (person.pending) tags += `<span class="tag close">not sent</span>`;
+    return tags;
+  }
+
+  function nameButton(person, where) {
+    const open = board.open.has(person.id);
+    return `<button type="button" class="name-btn" data-act="toggle-person" data-where="${where}" data-id="${esc(person.id)}" aria-expanded="${open}" aria-controls="detail-${esc(person.id)}">${esc(person.name)}</button>`;
+  }
+
+  function verdictLines(r) {
+    const s = r.scores;
+    if (r.topTie) {
+      return [
+        `${joinNames(r.topTie.map(pname))} are level at ${s[r.primary]}.`,
+        `They put ${pname(r.primary)} earlier in their order, so it leads and ${pname(r.secondary)} is the backup.`
+      ];
+    }
+    if (r.secondTie) {
+      if (s[r.secondary] === 0) {
+        return [
+          `All weighted answers point to ${pname(r.primary)}.`,
+          `The backup comes from their order: ${pname(r.secondary)} came next.`
+        ];
+      }
+      return [
+        `${pname(r.primary)} leads with ${s[r.primary]}.`,
+        `${joinNames(r.secondTie.map(pname))} are level at ${s[r.secondary]} for second place. They put ${pname(r.secondary)} earliest in their order, so it is the backup.`
+      ];
+    }
+    return [
+      `${pname(r.primary)} leads with ${s[r.primary]}.`,
+      `${pname(r.secondary)} is next with ${s[r.secondary]}, so it is the backup.`
+    ];
+  }
+
+  function placementLine(person, plan) {
+    const place = plan.placement[person.id];
+    const mainCohort = plan.cohorts.find(c => c.promise === person.primary);
+    const backupCohort = plan.cohorts.find(c => c.promise === person.secondary);
+    if (place && place.via === "main") return `Placed in their main promise, ${pname(person.primary)}.`;
+    const why = `${pname(person.primary)} had ${plural(mainCohort.mainCount, "person", "people")} choosing it as their main promise and needs at least ${plan.min}.`;
+    if (place && place.via === "backup") return `${why} Moved to their backup, ${pname(person.secondary)}.`;
+    return `${why} ${pname(person.secondary)} isn’t running either, so they’re held for the next intake.`;
+  }
+
+  function breakdownHTML(person, plan) {
+    const r = person.result;
+    const order = person.answers.d1;
+    const evRow = (n, answer, outcome) => `
+      <li class="ev"><span class="ev-q">Q${n}</span><span class="ev-a">${esc(answer)}</span><span class="ev-p">${outcome}</span></li>`;
+    const tally = PROMISE_ORDER.map(p => {
+      const role = p === r.primary ? "Main" : p === r.secondary ? "Backup" : "";
+      return `
+        <div class="t-row${p === r.primary ? " is-primary" : ""}">
+          <div class="t-name">${pname(p)}<small>${esc(PROMISES[p].asks)}</small></div>
+          <div class="t-cells" aria-hidden="true">${Array.from({ length: 11 }, (_, i) => `<i${i < r.scores[p] ? ' class="on"' : ""}></i>`).join("")}</div>
+          <div class="t-num">${r.scores[p]}</div>
+          <div class="t-role">${role}</div>
+        </div>`;
+    }).join("");
+    return `
+      <div class="detail-grid">
+        <div>
+          <h3>How they’re moving</h3>
+          <ol class="evidence">${r.moving.map(m => evRow(m.n, m.short, esc(ARCH_TAG[m.arch]))).join("")}</ol>
+          <p class="small">${r.archetypeVotes} of 3 answers point to ${esc(ARCHETYPES[r.archetype].name)}. This changes the wording of their result, not their group.</p>
+
+          <h3>What they’re dealing with <span class="muted">(+${WEIGHTS.dealing} each)</span></h3>
+          <ol class="evidence">${r.evidence.filter(e => e.part === "dealing").map(e => evRow(e.n, e.short, `${pname(e.promise)} <b>+${e.weight}</b>`)).join("")}</ol>
+
+          <h3>What they want to leave with <span class="muted">(+${WEIGHTS.want})</span></h3>
+          <ol class="evidence">${r.evidence.filter(e => e.part === "want").map(e => evRow(e.n, e.short, `${pname(e.promise)} <b>+${e.weight}</b>`)).join("")}</ol>
+
+          <h3>Their order of need <span class="muted">(Q9, used only to break ties)</span></h3>
+          <ol class="order-summary">${order.map(p => `<li>${pname(p)}</li>`).join("")}</ol>
+        </div>
+        <div>
+          <h3>Totals</h3>
+          <div class="tally">${tally}</div>
+          <div class="verdict">
+            ${verdictLines(r).map(l => `<p>${esc(l)}</p>`).join("")}
+            ${r.call === "close" ? `<p class="flag">Close call: main and backup are level or one point apart, and both are backed by at least two answers. Check the fit in session 1.</p>` : ""}
+          </div>
+          <h3>Placement</h3>
+          <p class="small">${esc(placementLine(person, plan))}</p>
+          <h3>What they were shown</h3>
+          <p class="small">Group: ${esc(shownName(r.primary))} (${pname(r.primary)}). Also a good fit: ${esc(shownName(r.secondary))} (${pname(r.secondary)}).</p>
+        </div>
+      </div>`;
+  }
+
+  function renderBoardResults() {
+    const box = document.getElementById("board-results");
+    if (!box) return;
+    const { people, unreadable } = collectPeople();
+
+    if (!people.length) {
+      box.innerHTML = `
+        <div class="empty">
+          <h2>No registrations yet</h2>
+          <p class="muted">Register someone, or include the sample intake to see how cohorts form.</p>
+          <a class="btn primary" href="#/">Register someone</a>
+        </div>`;
+      return;
+    }
+
+    const plan = formCohorts(people, { min: board.min, max: board.max });
+
+    const cards = plan.cohorts.map(c => {
+      const pr = PROMISES[c.promise];
+      if (c.runs) {
+        const groups = c.groups.map((g, i) => `
+          <div class="group">
+            ${c.groups.length > 1 ? `<h3>Group ${i + 1}</h3>` : ""}
+            <ul class="people">
+              ${g.map(m => `<li>${nameButton(m.person, "card")}${personTags(m.person, m.via, m.person.primary)}</li>`).join("")}
+            </ul>
+          </div>`).join("");
+        return `
+          <article class="cohort runs">
+            <header><h2>${pr.name}</h2><span class="state">Runs</span></header>
+            <p class="asks">${esc(pr.asks)}</p>
+            <p class="count">${plural(c.members.length, "person", "people")} in ${plural(c.groups.length, "group", "groups")}. ${c.mainCount} chose it as their main promise.</p>
+            ${c.oversize ? `<p class="flag">${c.members.length} people can’t be split into groups of ${plan.min} to ${plan.max}. Run it as one group or move someone by hand.</p>` : ""}
+            ${groups}
+          </article>`;
+      }
+      const moved = c.movedOut.map(m => `
+        <li>${nameButton(m.person, "card")}
+          ${m.to.promise ? `moved to ${esc(pname(m.to.promise))}` : "held for the next intake"}
+        </li>`).join("");
+      return `
+        <article class="cohort idle">
+          <header><h2>${pr.name}</h2><span class="state">Doesn’t run</span></header>
+          <p class="asks">${esc(pr.asks)}</p>
+          <p class="count">${c.mainCount ? `${c.mainCount} chose it as their main promise. It needs at least ${plan.min}.` : "No one chose it as their main promise."}</p>
+          ${moved ? `<ul class="people">${moved}</ul>` : ""}
+        </article>`;
+    }).join("");
+
+    const held = plan.held.length ? `
+      <section class="held">
+        <h2>Held for the next intake</h2>
+        <p class="muted">Neither their main nor their backup cohort has enough people.</p>
+        <ul class="people">
+          ${plan.held.map(p => `<li>${nameButton(p, "card")} main ${esc(pname(p.primary))}, backup ${esc(pname(p.secondary))}</li>`).join("")}
+        </ul>
+      </section>` : "";
+
+    const ordered = [...people].sort((a, b) => (a.createdAt - b.createdAt) || a.id.localeCompare(b.id));
+    const rows = ordered.map(p => {
+      const place = plan.placement[p.id];
+      const placed = !place || !place.promise ? "Held" : pname(place.promise) + (place.via === "backup" ? " (backup)" : "");
+      const confirming = board.confirmId === p.id;
+      const action = p.sample ? "" : `<button type="button" class="btn small${confirming ? " danger" : ""}" data-act="remove" data-id="${esc(p.id)}">${confirming ? "Confirm remove" : "Remove"}</button>`;
+      const isOpen = board.open.has(p.id);
+      const detail = isOpen ? `
+        <tr class="detail-row" id="detail-${esc(p.id)}">
+          <td colspan="8"><div class="detail">${breakdownHTML(p, plan)}</div></td>
+        </tr>` : "";
+      return `
+        <tr class="${isOpen ? "is-open" : ""}">
+          <th scope="row">${nameButton(p, "row")}${p.sample ? ` <span class="tag">sample</span>` : ""}${p.pending ? ` <span class="tag close">not sent</span>` : ""}</th>
+          <td>${esc(contextLabel(p.context))}</td>
+          <td>${esc(ARCHETYPES[p.archetype].name)}</td>
+          <td>${pname(p.primary)} <span class="num">${p.scores[p.primary]}</span></td>
+          <td>${pname(p.secondary)} <span class="num">${p.scores[p.secondary]}</span></td>
+          <td>${p.call === "close" ? "Close" : "Clear"}</td>
+          <td>${esc(placed)}</td>
+          <td>${action}</td>
+        </tr>${detail}`;
+    }).join("");
+
+    box.innerHTML = `
+      <p class="summary">
+        ${plural(plan.total, "person", "people")}. ${plan.placed} placed, ${plan.inMain} in their main promise, ${plan.held.length} held.
+        ${plan.running} of 5 cohorts run.
+      </p>
+      <div class="cohorts">${cards}</div>
+      ${held}
+      <h2 class="table-title">Registrations</h2>
+      ${unreadable ? `<p class="muted">${plural(unreadable, "registration couldn’t be read and isn’t", "registrations couldn’t be read and aren’t")} included.</p>` : ""}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Name</th><th scope="col">What’s changing</th><th scope="col">Way of moving</th>
+              <th scope="col">Main</th><th scope="col">Backup</th><th scope="col">Call</th>
+              <th scope="col">Placed in</th><th scope="col"><span class="sr-only">Actions</span></th>
+            </tr>
+          </thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  }
+
+  /* ---------- events ---------- */
+  app.addEventListener("click", async e => {
+    const el = e.target.closest("[data-act]");
+    if (!el) return;
+    const act = el.dataset.act;
+
+    if (act === "start") { flow.step = "about"; saveDraft(); render(); }
+    else if (act === "back") {
+      if (flow.step === "about") { flow.step = "intro"; clearDraft(); }
+      else if (flow.step === "question") {
+        if (flow.q === 0) flow.step = "about"; else flow.q -= 1;
+        saveDraft();
+      }
+      render();
+    }
+    else if (act === "order") tapOrder(el.dataset.promise);
+    else if (act === "clear-order") { flow.order = []; updateOrderList(); saveDraft(); }
+    else if (act === "toggle-person") {
+      const id = el.dataset.id;
+      const fromCard = el.dataset.where === "card";
+      if (board.open.has(id) && !fromCard) board.open.delete(id); else board.open.add(id);
+      renderBoardResults();
+      const target = fromCard
+        ? document.getElementById("detail-" + id)
+        : app.querySelector(`[data-act="toggle-person"][data-where="row"][data-id="${CSS.escape(id)}"]`);
+      if (fromCard && target) {
+        target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+        const rowBtn = app.querySelector(`[data-act="toggle-person"][data-where="row"][data-id="${CSS.escape(id)}"]`);
+        if (rowBtn) rowBtn.focus({ preventScroll: true });
+      } else if (target) target.focus();
+    }
+    else if (act === "retry-save") saveRecord();
+    else if (act === "sync") {
+      el.disabled = true;
+      board.syncMessage = "Sending…"; renderSync();
+      const res = await Store.syncPending();
+      board.syncMessage = res.left ? `Sent ${res.sent}. ${res.left} still not sent.` : `Sent ${res.sent}. Everything on this device is now shared.`;
+      updateBoardStatus(); renderBoardResults();
+    }
+    else if (act === "check") {
+      el.disabled = true;
+      board.syncMessage = "Checking…"; renderSync();
+      const res = await Store.checkConnection();
+      board.syncMessage = res.ok
+        ? "Connection works: a test entry was saved and removed. If registrations still fail, the entry itself is being refused."
+        : `Connection check failed: ${res.error.text} (${res.error.code}). This points to access, not the registration data.`;
+      renderSync();
+    }
+    else if (act === "restart") { flow = freshFlow(); clearDraft(); render(); }
+    else if (act === "remove") {
+      const id = el.dataset.id;
+      if (board.confirmId !== id) {
+        board.confirmId = id;
+        renderBoardResults();
+        const again = app.querySelector(`[data-act="remove"][data-id="${CSS.escape(id)}"]`);
+        if (again) again.focus();
+        timers.push(setTimeout(() => { if (board.confirmId === id) { board.confirmId = null; renderBoardResults(); } }, 5000));
+        return;
+      }
+      board.confirmId = null;
+      el.disabled = true;
+      const res = await Store.remove(id);
+      if (!res.ok) {
+        const status = document.getElementById("board-status");
+        if (status) status.textContent = "Couldn’t remove that registration. Try again.";
+      }
+      renderBoardResults();
+    }
+  });
+
+  app.addEventListener("change", e => {
+    const input = e.target;
+    if (input.name === "answer") {
+      input.closest(".options").querySelectorAll(".option").forEach(o => o.classList.toggle("is-checked", o.contains(input) && input.checked));
+    }
+    if (input.name === "context") {
+      input.closest(".option").classList.toggle("is-checked", input.checked);
+    }
+    if (input.name === "answer") {
+      const q = QUESTIONS[flow.q];
+      flow.answers[q.id] = q.part === "moving" ? Number(input.value) : input.value;
+      const submit = app.querySelector('form[data-form="question"] [type="submit"]');
+      if (submit) submit.disabled = false;
+      saveDraft();
+    } else if (input.name === "context") {
+      flow.context = CONTEXTS.map(c => c.id).filter(id => id === input.value ? input.checked : flow.context.includes(id));
+      const err = document.getElementById("context-error");
+      if (err) err.hidden = true;
+      saveDraft();
+    } else if (input.dataset.ctl === "sample") {
+      board.sample = input.checked;
+      renderBoardResults();
+    } else if (input.dataset.ctl === "min" || input.dataset.ctl === "max") {
+      applySize(input, true);
+    }
+  });
+
+  app.addEventListener("input", e => {
+    const input = e.target;
+    if (input.name === "name") {
+      flow.name = input.value;
+      const err = document.getElementById("name-error");
+      if (err && input.value.trim()) err.hidden = true;
+      saveDraft();
+    } else if (input.dataset.ctl === "min" || input.dataset.ctl === "max") {
+      applySize(input, false);
+    }
+  });
+
+  function applySize(input, commit) {
+    const v = parseInt(input.value, 10);
+    const minInput = app.querySelector('[data-ctl="min"]');
+    const maxInput = app.querySelector('[data-ctl="max"]');
+    if (input.dataset.ctl === "min") {
+      if (!Number.isInteger(v) || v < 2 || v > 10) { if (commit) input.value = board.min; return; }
+      board.min = v;
+      if (board.max < board.min) { board.max = board.min; if (maxInput) maxInput.value = board.max; }
+    } else {
+      if (!Number.isInteger(v) || v < board.min || v > 12) { if (commit) input.value = board.max; return; }
+      board.max = v;
+    }
+    if (minInput && commit) minInput.value = board.min;
+    updateBoardStatus();
+    renderBoardResults();
+  }
+
+  app.addEventListener("submit", e => {
+    e.preventDefault();
+    const form = e.target;
+    if (form.dataset.form === "about") {
+      const nameOk = flow.name.trim().length > 0;
+      const contextOk = flow.context.length > 0;
+      document.getElementById("name-error").hidden = nameOk;
+      document.getElementById("context-error").hidden = contextOk;
+      if (!nameOk) { document.getElementById("name").focus(); return; }
+      if (!contextOk) { form.querySelector('input[name="context"]').focus(); return; }
+      flow.step = "question";
+      flow.q = 0;
+      saveDraft();
+      render();
+    } else if (form.dataset.form === "question") {
+      const q = QUESTIONS[flow.q];
+      if (flow.answers[q.id] === undefined) return;
+      flow.q += 1;
+      saveDraft();
+      render();
+    } else if (form.dataset.form === "order") {
+      if (flow.order.length === PROMISE_ORDER.length) finish();
+    }
+  });
+
+  window.addEventListener("hashchange", render);
+
+  Store.subscribe(() => {
+    if (route() !== "board") return;
+    updateBoardStatus();
+    renderBoardResults();
+  });
+
+  render();
+})();
+
+</script>
+</body>
+</html>

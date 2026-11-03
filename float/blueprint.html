@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Float — Service Blueprint</title>
+<link rel="stylesheet" href="../fonts/fonts.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --coral:#E0896B;--blue:#80AFE0;--t1:#f2f2f2;--t2:#ababab;
+  --line:rgba(242,242,242,.14);--g1:rgba(255,255,255,.055);--g2:rgba(255,255,255,.1);
+  --fh:'Bricolage Grotesque','Satoshi',system-ui,sans-serif;--fb:'Satoshi',system-ui,sans-serif;
+}
+html,body{background:transparent;color:var(--t1);font-family:var(--fb);font-size:13px;line-height:1.45;-webkit-font-smoothing:antialiased}
+.page{padding:20px;max-width:1480px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.glass{background:var(--g1);backdrop-filter:blur(22px) saturate(150%);-webkit-backdrop-filter:blur(22px) saturate(150%);border:1px solid var(--line);border-radius:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 10px 30px rgba(0,0,0,.16)}
+button{font-family:inherit;color:var(--t1);cursor:pointer}
+:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+.mut{color:var(--t2)}
+
+/* header + tabs */
+.top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:14px 18px}
+.top h1{font-family:var(--fh);font-size:26px;font-weight:700;letter-spacing:-.03em}
+.top p{color:var(--t2);font-size:12.5px}
+.tabs{margin-left:auto;display:flex;gap:4px;padding:4px;border-radius:99px;border:1px solid var(--line);background:var(--g1)}
+.tab{border:0;background:transparent;padding:7px 16px;border-radius:99px;font-size:13px;font-weight:500;color:var(--t2)}
+.tab.on{color:var(--t1);background:linear-gradient(135deg,rgba(128,175,224,.3),rgba(224,137,107,.3));box-shadow:inset 0 0 0 1px rgba(242,242,242,.2)}
+
+/* collapsible sections */
+.sec>summary,.cp>summary,.jr>summary,.nd>summary,.sub-d>summary{list-style:none;cursor:pointer}
+summary::-webkit-details-marker{display:none}
+.sec>summary{display:flex;align-items:baseline;gap:12px;padding:14px 18px;flex-wrap:wrap}
+.sec>summary h2{font-family:var(--fh);font-size:18px;font-weight:600;letter-spacing:-.02em}
+.sec>summary span{color:var(--t2);font-size:12px}
+.sec>summary::after,.jr>summary::after,.cp>summary::after,.nd>summary::after,.sub-d>summary::after{content:"";width:7px;height:7px;border-right:1.5px solid var(--t2);border-bottom:1.5px solid var(--t2);transform:rotate(45deg);margin-left:auto;align-self:center;flex-shrink:0;transition:transform .15s}
+details[open]>summary::after{transform:rotate(-135deg)}
+.sec-body{padding:0 18px 18px}
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
+.btn{border:1px solid var(--line);background:var(--g1);padding:5px 12px;border-radius:99px;font-size:12px;font-weight:500;color:var(--t2)}
+.btn:hover{background:var(--g2);color:var(--t1)}
+.btn.on{--c:var(--blue);color:var(--t1);border-color:var(--c);background:color-mix(in srgb,var(--c) 24%,transparent)}
+.sp{width:1px;height:20px;background:var(--line)}
+.count{margin-left:auto;color:var(--t2);font-size:12px}
+
+/* legend */
+.legend{display:flex;flex-wrap:wrap;gap:6px 18px;padding:10px 4px 2px;color:var(--t2);font-size:11.5px}
+.legend div{display:flex;align-items:center;gap:6px}
+.sw{width:10px;height:10px;border-radius:3px;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 30%,transparent)}
+.dia{display:inline-block;width:8px;height:8px;background:var(--coral);transform:rotate(45deg);margin-right:7px;flex-shrink:0;position:relative;top:-1px}
+.dia.sm{width:7px;height:7px}
+
+/* reference blueprint */
+.bp-outer{overflow-x:auto;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.025)}
+.bp-wrap{min-width:1400px}
+.timeline-hdr{display:flex;border-bottom:1px solid var(--line)}
+.tl-corner,.lane-label{width:156px;min-width:156px;position:sticky;left:0;z-index:5;background:rgba(40,44,54,.55);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-right:1px solid var(--line)}
+.tl-corner{padding:10px 12px;display:flex;align-items:flex-end;font-size:11px;color:var(--t2);font-weight:700}
+.tl-phases{flex:1;display:flex}
+.tl-phase{padding:8px 10px;border-left:1px solid var(--line)}
+.tl-phase-name{font-family:var(--fh);font-weight:600;font-size:12.5px}
+.tl-phase-sub{color:var(--t2);font-size:10.5px}
+.lane{display:flex;align-items:stretch;border-bottom:1px solid var(--line)}
+.lane-label{padding:10px 12px;display:flex;flex-direction:column;justify-content:center;position:sticky;cursor:pointer;gap:2px;padding-right:26px}
+.lane-label .chev{position:absolute;right:11px;top:50%;width:6px;height:6px;margin-top:-4px;border-right:1.5px solid var(--t2);border-bottom:1.5px solid var(--t2);transform:rotate(45deg);transition:transform .15s}
+.lane.collapsed .chev{transform:rotate(-45deg)}
+.lane-name{font-family:var(--fh);font-size:12.5px;font-weight:600;color:var(--t1)}
+.lane-desc{font-size:10.5px;color:var(--t2);line-height:1.3}
+.lane.collapsed>div:not(.lane-label){display:none}
+.lane.collapsed .lane-desc{display:none}
+.lane.collapsed .lane-label{padding-top:7px;padding-bottom:7px}
+.lane.zv{--z:var(--blue)}.lane.zb{--z:var(--t2)}
+.lane.zv .lane-label{box-shadow:inset 3px 0 0 var(--blue)}
+.lane.zb .lane-label{box-shadow:inset 3px 0 0 rgba(171,171,171,.5)}
+.lane.divider{min-height:22px;background:rgba(255,255,255,.03)}
+.lane.divider .lane-label{box-shadow:none;cursor:default}
+.lane-divider-line{flex:1;display:flex;align-items:center;padding:0 12px}
+.lane-divider-text{width:100%;border-top:1px dashed rgba(242,242,242,.28);padding-top:4px;font-size:10.5px;color:var(--t2);font-weight:500}
+.cell{padding:8px;display:flex;flex-direction:column;gap:5px;align-items:flex-start;border-left:1px solid var(--line)}
+.c-touch,.c-evidence,.c-action,.c-agent{width:100%;padding:6px 8px;border-radius:9px;font-size:11px;line-height:1.4;color:var(--t1);background:rgba(255,255,255,.05);border:1px solid var(--line);border-left:2px solid var(--z,var(--blue))}
+.tp-ch,.ag-does{display:block;color:var(--t2);font-size:10px;margin-top:2px}
+.ag-role{display:block;font-weight:700}
+.crit{border-color:rgba(224,137,107,.65)!important;background:rgba(224,137,107,.13)!important}
+
+/* journeys */
+.jr{margin-bottom:8px;border-radius:14px}
+.jr[open]{border-color:rgba(128,175,224,.4)}
+.jr>summary{display:flex;gap:14px;align-items:center;padding:12px 16px}
+.jm{flex:1;min-width:0}
+.jt{font-family:var(--fh);font-weight:600;font-size:14px;letter-spacing:-.01em;margin-bottom:6px}
+.chips{display:flex;flex-wrap:wrap;align-items:center;gap:4px}
+.ar{color:var(--t2);font-style:normal;padding:0 1px}
+.chip{--c:var(--blue);padding:2px 10px;border-radius:99px;font-size:11px;font-weight:500;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 16%,transparent)}
+.chip.peak{background:color-mix(in srgb,var(--c) 42%,transparent);font-weight:700}
+.chip.ins{border-style:dashed}
+.jb{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.bd{--c:var(--t2);padding:2px 9px;border-radius:99px;font-size:10.5px;font-weight:700;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 18%,transparent);white-space:nowrap}
+.jd{padding:0 16px 16px;display:flex;flex-direction:column;gap:8px}
+.jd .sub{color:var(--t2);font-size:12px;margin-bottom:2px}
+.nd{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.035)}
+.nd>summary{display:flex;align-items:center;gap:9px;padding:9px 12px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--c);flex-shrink:0}
+.nd>summary b{font-weight:700;font-size:12.5px}
+.nd>summary .mut{margin-left:auto;font-size:11px}
+.nd>summary::after{margin-left:6px}
+.tg{font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px;border:1px solid var(--blue);background:rgba(128,175,224,.2)}
+.tg.in{border-color:var(--coral);background:rgba(224,137,107,.2)}
+.nb{padding:2px 12px 12px;display:flex;flex-direction:column;gap:8px}
+.note{color:var(--t2);font-style:italic;font-size:12px}
+.g4{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.cb{padding:8px 10px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:12px}
+.cb span,.vs span,.lbl{display:block;font-size:10.5px;font-weight:700;color:var(--t2);margin-bottom:2px}
+.cb:nth-child(odd){border-left:2px solid var(--blue)}
+.cb:nth-child(even){border-left:2px solid rgba(171,171,171,.6)}
+.acts{list-style:none;display:flex;flex-direction:column;gap:3px}
+.acts li{font-size:12px;color:var(--t2);padding:4px 9px;border-radius:8px;background:rgba(255,255,255,.04)}
+.vs{padding:8px 11px;border-radius:10px;background:rgba(128,175,224,.12);border:1px solid rgba(128,175,224,.35);font-size:12px}
+.vs span{color:var(--blue)}
+.sigs{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px;padding-top:10px}
+.sigs div{padding:8px 11px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:12px;color:var(--t2)}
+.sigs b{display:block;color:var(--t1);margin-bottom:2px}
+.sub-d{margin-bottom:12px;border-radius:12px}
+.sub-d>summary{display:flex;padding:9px 14px;font-size:12.5px;font-weight:500}
+
+/* critical paths */
+.intro{color:var(--t2);font-size:13px;max-width:80ch;padding:0 18px 14px}
+.intro strong{color:var(--t1)}
+.cp{margin-bottom:8px;border-radius:14px;border-left:3px solid var(--coral)}
+.cp.hub{border-color:rgba(242,242,242,.5);border-left:3px solid var(--t1)}
+.cp>summary{display:flex;align-items:center;gap:10px;padding:12px 16px;flex-wrap:wrap}
+.cp-id{font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:6px;background:rgba(242,242,242,.14)}
+.cp-name{font-family:var(--fh);font-weight:600;font-size:14px}
+.cp .bd{margin-left:auto}
+.cp>summary::after{margin-left:6px}
+.cp-body{padding:0 16px 16px;display:flex;flex-direction:column;gap:10px}
+.cp-carries{color:var(--t2);font-size:12.5px;max-width:90ch}
+.cp-chain{display:flex;flex-wrap:wrap;align-items:stretch;gap:4px}
+.cp-step{padding:6px 10px;border-radius:10px;font-size:11.5px;max-width:190px;border:1px solid var(--line);background:rgba(255,255,255,.05)}
+.cp-step.k{border-color:rgba(224,137,107,.65);background:rgba(224,137,107,.13)}
+.cs-lane{display:block;font-size:10px;font-weight:700;color:var(--t2);margin-bottom:2px}
+.cp-arr{align-self:center;color:var(--t2)}
+.cp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.cp-f{padding:9px 11px;border-radius:10px;border:1px solid var(--line);background:rgba(255,255,255,.04);font-size:12px;color:var(--t2)}
+.cp-f b{display:block;font-size:10.5px;color:var(--t1);margin-bottom:3px}
+.cp-f.sig{border-color:rgba(128,175,224,.45);background:rgba(128,175,224,.12)}
+.cp-f.sig b{color:var(--blue)}
+.cp-f.none{border-color:rgba(224,137,107,.5);background:rgba(224,137,107,.12)}
+.cp-f.none b{color:var(--coral)}
+.cp-links{display:flex;gap:6px;align-items:center;flex-wrap:wrap;color:var(--t2);font-size:11.5px;padding-top:8px;border-top:1px dashed var(--line)}
+.cp-chip{font-size:10.5px;font-weight:700;padding:2px 9px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--t1)}
+.cp-chip.in{border-color:var(--blue)}.cp-chip.out{border-color:var(--coral)}
+.cp-map{padding:14px;overflow-x:auto}
+.shared{display:flex;flex-direction:column;gap:6px;padding-top:10px}
+.sh-row{display:grid;grid-template-columns:170px 220px 1fr;gap:12px;padding:10px 12px;border-radius:10px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:12px;color:var(--t2);align-items:start}
+.sh-row b{color:var(--t1)}
+.sh-row .cp-chip{margin:0 2px 3px 0;display:inline-block}
+.flag{padding:11px 14px;border-radius:12px;margin-top:8px;border:1px solid rgba(224,137,107,.5);border-left:3px solid var(--coral);background:rgba(224,137,107,.1);font-size:12.5px;color:var(--t2)}
+.flag b{display:block;color:var(--coral);margin-bottom:3px;font-size:13px}
+.note-p{color:var(--t2);font-size:12px;line-height:1.6;max-width:86ch;margin-top:10px}
+@media(max-width:900px){.cp-grid,.g4,.sh-row{grid-template-columns:1fr}.jr>summary{flex-wrap:wrap}.jb{justify-content:flex-start}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<style>
+@font-face{font-family:'Bricolage Grotesque';src:url('../fonts/bricolage-700-latin.woff2') format('woff2');font-weight:600 700;font-style:normal;font-display:swap}
+/* shown inside the Float case study: the frame scrolls both ways */
+:root{color-scheme:dark}
+html{overflow:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.22) transparent}
+.bp-outer{overflow:visible}
+/* the page hugs the blueprint, so every card ends on the same clean edge */
+.page{max-width:none;width:max-content;min-width:100%;box-sizing:border-box}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.22);border-radius:8px}
+::-webkit-scrollbar-corner{background:transparent}
+/* panels: #ffffff at 4%, and the lane-name column scrolls with the rest */
+:root{--g1:rgba(255,255,255,.04)}
+.glass,.bp-outer{background:rgba(255,255,255,.04)}
+.tl-corner,.lane-label{position:relative;left:auto;background:rgba(255,255,255,.04);backdrop-filter:none;-webkit-backdrop-filter:none}
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="top glass">
+  <h1><img src="float-logo.svg" alt="Float" width="78" height="30" style="display:block;height:30px;width:auto"></h1>
+  <p id="hsub"></p>
+  <div class="tabs" role="tablist" aria-label="View">
+    <button class="tab on" id="t-bp" role="tab" aria-selected="true" onclick="setView('bp')">Blueprint</button>
+    <button class="tab" id="t-cp" role="tab" aria-selected="false" onclick="setView('cp')">Critical paths</button>
+  </div>
+</header>
+
+<main id="v-bp" style="display:flex;flex-direction:column;gap:14px">
+
+<details class="sec glass" open>
+  <summary><h2>Service blueprint</h2><span>Eight lanes, seven phases. Select a lane name to fold it.</span></summary>
+  <div class="sec-body">
+    <div class="tools">
+      <button class="btn" onclick="allLanes(true)">Collapse lanes</button>
+      <button class="btn" onclick="allLanes(false)">Expand lanes</button>
+    </div>
+    <div class="bp-outer"><div class="bp-wrap">
+<!-- TIMELINE HEADER -->
+<div class="timeline-hdr">
+  <div class="tl-corner"><span class="tl-corner-text">Phase</span></div>
+  <div class="tl-phases" id="tl-phases">
+    <!-- injected per journey selection -->
+    <div class="tl-phase" style="flex:1.2;"><div class="tl-phase-name">1. Discovery</div><div class="tl-phase-sub">First contact</div></div>
+    <div class="tl-phase" style="flex:1.2;"><div class="tl-phase-name">2. Onboarding</div><div class="tl-phase-sub">Form + matching</div></div>
+    <div class="tl-phase" style="flex:1.5;"><div class="tl-phase-name">3. Entry Session(s)</div><div class="tl-phase-sub">Entry promise dimension</div></div>
+    <div class="tl-phase" style="flex:1;"><div class="tl-phase-name">4. Branch Point</div><div class="tl-phase-sub">Validation check</div></div>
+    <div class="tl-phase" style="flex:1.5;"><div class="tl-phase-name">5. Mid Session(s)</div><div class="tl-phase-sub">Next dimension(s)</div></div>
+    <div class="tl-phase" style="flex:1.5;"><div class="tl-phase-name">6. Peak Session(s)</div><div class="tl-phase-sub">Peak promise</div></div>
+    <div class="tl-phase" style="flex:1;"><div class="tl-phase-name">7. Exit / Re-entry</div><div class="tl-phase-sub">Service conclusion</div></div>
+  </div>
+</div>
+
+<!-- SWIM LANES -->
+<div class="lanes">
+
+  <!-- TOUCHPOINTS -->
+  <div class="lane" style="">
+    <div class="lane-label" style="">
+      <div class="lane-name">Touchpoints</div>
+      <div class="lane-desc">Each moment of contact, its channel and direction</div>
+    </div>
+    <div style="flex:1;display:flex;">
+      <div class="cell" style="flex:1.2;">
+        <div class="c-touch">Peer share in a WhatsApp group<span class="tp-ch">Inbound pull · person to person</span></div>
+        <div class="c-touch">Campus poster / meme-format post<span class="tp-ch">Passive · one-way</span></div>
+        <div class="c-touch">Landing page<span class="tp-ch">Self-serve · unattended</span></div>
+      </div>
+      <div class="cell" style="flex:1.2;">
+        <div class="c-touch crit"><span class="dia sm"></span>4-touchpoint trust layer<span class="tp-ch">Outbound · sequenced · runs before the form</span></div>
+        <div class="c-touch">Onboarding form<span class="tp-ch">Self-serve · self-report</span></div>
+        <div class="c-touch">Post-submission message<span class="tp-ch">Outbound · warm · no label given</span></div>
+        <div class="c-touch">Group assignment message<span class="tp-ch">Outbound · archetype withheld</span></div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-touch">Session invite + location or link<span class="tp-ch">Outbound · scheduled</span></div>
+        <div class="c-touch">The room or the call<span class="tp-ch">Synchronous · hosted · peer to peer</span></div>
+        <div class="c-touch">Activity materials — cards, paper, markers<span class="tp-ch">In-session · handled</span></div>
+        <div class="c-touch crit"><span class="dia sm"></span>Exit card<span class="tp-ch">In-session · the only written record the participant leaves</span></div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-touch">One-week follow-up form<span class="tp-ch">Outbound · self-report · asynchronous</span></div>
+        <div class="c-touch crit"><span class="dia sm"></span>Cohort nudge message<span class="tp-ch">Outbound · promise-blind wording</span></div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-touch">Session invite<span class="tp-ch">Outbound · scheduled</span></div>
+        <div class="c-touch">The room or the call<span class="tp-ch">Synchronous · hosted</span></div>
+        <div class="c-touch crit"><span class="dia sm"></span>Exit card<span class="tp-ch">In-session · feeds the routing decision</span></div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-touch">Peak session invite<span class="tp-ch">Outbound · scheduled</span></div>
+        <div class="c-touch">The room or the call<span class="tp-ch">Synchronous · peers deliver the promise</span></div>
+        <div class="c-touch crit"><span class="dia sm"></span>Rose reveal<span class="tp-ch">In-session · first participant-facing view · cannot be taken back</span></div>
+        <div class="c-touch">Exit card<span class="tp-ch">In-session</span></div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-touch">Exit message<span class="tp-ch">Outbound · one-way</span></div>
+        <div class="c-touch crit"><span class="dia sm"></span>Rose handed over — current vs. potential<span class="tp-ch">Participant keeps it · unaccompanied</span></div>
+        <div class="c-touch">Re-entry door message<span class="tp-ch">Outbound · dormant until triggered</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PHYSICAL EVIDENCE -->
+  <div class="lane" style="">
+    <div class="lane-label" style="">
+      <div class="lane-name">Physical Evidence</div>
+      <div class="lane-desc">What the participant sees, holds, reads</div>
+    </div>
+    <div style="flex:1;display:flex;" id="pe-row">
+      <div class="cell" style="flex:1.2;">
+        <div class="c-evidence">Landing page copy</div>
+        <div class="c-evidence">Peer-shared link / campus poster / meme-format content</div>
+      </div>
+      <div class="cell" style="flex:1.2;">
+        <div class="c-evidence crit"><span class="dia sm"></span>Onboarding form (4-touchpoint trust layer)</div>
+        <div class="c-evidence">Post-submission message</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-evidence">Session invite + location / link</div>
+        <div class="c-evidence">Physical: chai, space, materials</div>
+        <div class="c-evidence">Virtual: video call link</div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-evidence crit"><span class="dia sm"></span>Exit card (physical/digital)</div>
+        <div class="c-evidence">One-week follow-up form</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-evidence">Next cohort nudge message (no promise label visible)</div>
+        <div class="c-evidence">Rose shape update (team-facing)</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-evidence">Peak session invite</div>
+        <div class="c-evidence">Potential rose shape (participant-facing)</div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-evidence">Exit message from team</div>
+        <div class="c-evidence crit"><span class="dia sm"></span>Rose — current vs. potential shape</div>
+        <div class="c-evidence">Re-entry open door message</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINE OF INTERACTION -->
+  <div class="lane divider">
+    <div class="lane-label" style=""></div>
+    <div class="lane-divider-line"><div class="lane-divider-text">Line of Interaction</div></div>
+  </div>
+
+  <!-- CUSTOMER ACTIONS -->
+  <div class="lane" style="">
+    <div class="lane-label" style="">
+      <div class="lane-name">Customer Actions</div>
+      <div class="lane-desc">What the participant does at each phase</div>
+    </div>
+    <div style="flex:1;display:flex;" id="ca-row">
+      <div class="cell" style="flex:1.2;">
+        <div class="c-action c-frontstage">Encounters Float (peer share, poster, WA group)</div>
+        <div class="c-action c-frontstage">Reads landing page copy</div>
+      </div>
+      <div class="cell" style="flex:1.2;">
+        <div class="c-action c-frontstage">Completes onboarding form</div>
+        <div class="c-action c-frontstage crit"><span class="dia sm"></span>Self-locates entry promise</div>
+        <div class="c-action c-frontstage">Receives group assignment (no archetype revealed)</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-action c-frontstage">Attends session(s) for entry promise dimension</div>
+        <div class="c-action c-frontstage">Participates in icebreaker + core activities</div>
+        <div class="c-action c-frontstage">Receives peer additions</div>
+        <div class="c-action c-frontstage crit"><span class="dia sm"></span>Completes exit card</div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-action c-frontstage">Completes one-week follow-up form</div>
+        <div class="c-action c-frontstage">Receives nudge toward next cohort</div>
+      </div>
+      <div class="cell" style="flex:1.5;" id="ca-mid">
+        <div class="c-action c-frontstage">Attends mid-journey session(s)</div>
+        <div class="c-action c-frontstage">Promise dimension deepens or step-back taken</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-action c-frontstage">Attends peak session(s)</div>
+        <div class="c-action c-frontstage">Peak promise delivered by peers</div>
+        <div class="c-action c-frontstage crit"><span class="dia sm"></span>Sees own rose shape + potential</div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-action c-frontstage">Exits service (peak reached)</div>
+        <div class="c-action c-frontstage">OR re-enters if new transition disrupts any promise</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINE OF VISIBILITY -->
+  <div class="lane divider">
+    <div class="lane-label" style=""></div>
+    <div class="lane-divider-line"><div class="lane-divider-text">Line of Visibility</div></div>
+  </div>
+
+  <!-- FRONTSTAGE (facilitation) -->
+  <div class="lane">
+    <div class="lane-label">
+      <div class="lane-name">Frontstage</div>
+      <div class="lane-desc">Visible facilitation — what the team does that participants see</div>
+    </div>
+    <div style="flex:1;display:flex;">
+      <div class="cell" style="flex:1.2;">
+        <div class="c-action c-backstage">Copy calibrated to archetype hook (not shown to user)</div>
+        <div class="c-action c-backstage">Channel placement (WA, Instagram, campus)</div>
+      </div>
+      <div class="cell" style="flex:1.2;">
+        <div class="c-action c-backstage">Form structured around 5 promise dimensions</div>
+        <div class="c-action c-backstage crit"><span class="dia sm"></span>Trust-building: 4-touchpoint pre-form layer</div>
+        <div class="c-action c-backstage">Warm post-submission message</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-action c-backstage">Facilitates icebreaker</div>
+        <div class="c-action c-backstage crit"><span class="dia sm"></span>Hosts activities (not moderates)</div>
+        <div class="c-action c-backstage">Distributes exit card</div>
+        <div class="c-action c-backstage">Maintains non-therapy, aspirational tone</div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-action c-backstage">Sends one-week follow-up form</div>
+        <div class="c-action c-backstage crit"><span class="dia sm"></span>Sends cohort nudge (promise-blind language)</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-action c-backstage">Facilitates mid-journey sessions</div>
+        <div class="c-action c-backstage">Maintains invisible archetype balance in group</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-action c-backstage">Facilitates peak session</div>
+        <div class="c-action c-backstage crit"><span class="dia sm"></span>Shares rose (current + potential only)</div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-action c-backstage">Sends exit message</div>
+        <div class="c-action c-backstage">Leaves re-entry door open</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FRONTSTAGE AGENT -->
+  <div class="lane" style="">
+    <div class="lane-label" style="">
+      <div class="lane-name">Frontstage agent</div>
+      <div class="lane-desc">Who performs the visible work at each phase</div>
+    </div>
+    <div style="flex:1;display:flex;">
+      <div class="cell" style="flex:1.2;">
+        <div class="c-agent fs"><span class="ag-role">Past participant</span><span class="ag-does">Shares the link. The first frontstage agent is not on the team.</span></div>
+        <div class="c-agent fs"><span class="ag-role">Channel owner</span><span class="ag-does">Places copy and posts. Never speaks to the person directly.</span></div>
+      </div>
+      <div class="cell" style="flex:1.2;">
+        <div class="c-agent fs"><span class="ag-role">Onboarding owner</span><span class="ag-does">Runs the trust layer, sends the post-submission and assignment messages.</span></div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-agent fs crit"><span class="ag-role"><span class="dia sm"></span>Peer group (4–6)</span><span class="ag-does">Delivers the promise. The additions come from here, not from the team.</span></div>
+        <div class="c-agent fs crit"><span class="ag-role"><span class="dia sm"></span>Session host</span><span class="ag-does">Opens, sequences, closes. Hosts rather than moderates — does not add.</span></div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-agent fs"><span class="ag-role">Follow-up sender</span><span class="ag-does">Sends the form and the nudge. Carries no interpretation to the participant.</span></div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-agent fs crit"><span class="ag-role"><span class="dia sm"></span>Peer group</span><span class="ag-does">Composition changes per cohort, so the delivering agent is never the same twice.</span></div>
+        <div class="c-agent fs"><span class="ag-role">Session host</span><span class="ag-does">Same hosting posture as entry.</span></div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-agent fs crit"><span class="ag-role"><span class="dia sm"></span>Peer group</span><span class="ag-does">Delivers the peak promise. The service claim rests on this group on this day.</span></div>
+        <div class="c-agent fs crit"><span class="ag-role"><span class="dia sm"></span>Peak host</span><span class="ag-does">Reveals the rose. The one moment the team hands the participant a picture they did not make.</span></div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-agent fs"><span class="ag-role">Exit sender</span><span class="ag-does">Closes the arc and leaves the re-entry door open.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LINE OF INTERNAL INTERACTION -->
+  <div class="lane divider">
+    <div class="lane-label" style=""></div>
+    <div class="lane-divider-line"><div class="lane-divider-text">Line of Internal Interaction</div></div>
+  </div>
+
+  <!-- BACKSTAGE -->
+  <div class="lane" style="">
+    <div class="lane-label" style="">
+      <div class="lane-name">Backstage</div>
+      <div class="lane-desc">Invisible team processes participants never see</div>
+    </div>
+    <div style="flex:1;display:flex;">
+      <div class="cell" style="flex:1.2;">
+        <div class="c-action c-backstage">Archetype-aware channel strategy</div>
+        <div class="c-action c-backstage">SITF hooks: "can't see your progress"</div>
+        <div class="c-action c-backstage">TRB hooks: "what you've built, finally visible"</div>
+      </div>
+      <div class="cell" style="flex:1.2;">
+        <div class="c-action c-backstage crit"><span class="dia sm"></span>Promise-dimension scoring of form responses</div>
+        <div class="c-action c-backstage">Archetype placement (invisible to participant)</div>
+        <div class="c-action c-backstage crit"><span class="dia sm"></span>Group composition: same transition state, mixed archetype, 1–2 TRBs per group of 4–6</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-action c-backstage">Observe peer addition landing/deflection</div>
+        <div class="c-action c-backstage">Read exit card for validation signal</div>
+        <div class="c-action c-backstage">Record session observations to rose</div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-action c-backstage">Read one-week follow-up delta</div>
+        <div class="c-action c-backstage">Calibrate rose shape</div>
+        <div class="c-action c-backstage crit"><span class="dia sm"></span>Decision: continue / step-back / accelerate</div>
+        <div class="c-action c-backstage">Assign next cohort (promise-blind nudge)</div>
+      </div>
+      <div class="cell" style="flex:1.5;" id="bs-mid">
+        <div class="c-action c-backstage">Run validation signals after each mid session</div>
+        <div class="c-action c-backstage">Update rose per session</div>
+        <div class="c-action c-backstage">Decide: stay in dimension or move</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-action c-backstage crit"><span class="dia sm"></span>Confirm peak promise threshold reached</div>
+        <div class="c-action c-backstage">Final rose update</div>
+        <div class="c-action c-backstage">Determine exit vs. continued re-engagement</div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-action c-backstage">Archive participant journey</div>
+        <div class="c-action c-backstage">Flag for re-entry if new transition signal detected</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BACKSTAGE AGENT -->
+  <div class="lane" style="">
+    <div class="lane-label" style="">
+      <div class="lane-name">Backstage agent</div>
+      <div class="lane-desc">Who performs the invisible work at each phase</div>
+    </div>
+    <div style="flex:1;display:flex;">
+      <div class="cell" style="flex:1.2;">
+        <div class="c-agent bs"><span class="ag-role">Channel &amp; copy strategist</span><span class="ag-does">Writes the archetype-calibrated hooks that the person never sees labelled.</span></div>
+      </div>
+      <div class="cell" style="flex:1.2;">
+        <div class="c-agent bs crit"><span class="ag-role"><span class="dia sm"></span>Scorer &amp; matcher</span><span class="ag-does">Scores the form on five dimensions, places the archetype, composes the group.</span></div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-agent bs crit"><span class="ag-role"><span class="dia sm"></span>Session observer</span><span class="ag-does">Watches whether additions land, reads the exit card, writes to the rose.</span></div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-agent bs crit"><span class="ag-role"><span class="dia sm"></span>Routing decision-maker</span><span class="ag-does">Reads the three signals and calls continue, step-back or accelerate.</span></div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-agent bs crit"><span class="ag-role"><span class="dia sm"></span>Rose keeper</span><span class="ag-does">Holds the record across sessions. In a small team this is the observer and the router too.</span></div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-agent bs crit"><span class="ag-role"><span class="dia sm"></span>Threshold judge</span><span class="ag-does">Decides the peak promise has been reached, which is what ends the service.</span></div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-agent bs"><span class="ag-role">Archivist</span><span class="ag-does">Archives the journey and watches for a new transition signal.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUPPORTING ACTIONS -->
+  <div class="lane" style="">
+    <div class="lane-label" style="">
+      <div class="lane-name">Supporting Actions</div>
+      <div class="lane-desc">Systems, tools, infrastructure that enable the service</div>
+    </div>
+    <div style="flex:1;display:flex;">
+      <div class="cell" style="flex:1.2;">
+        <div class="c-action c-support">Landing page (Trajectory-inspired)</div>
+        <div class="c-action c-support">WhatsApp / Instagram / campus channels</div>
+      </div>
+      <div class="cell" style="flex:1.2;">
+        <div class="c-action c-support">Onboarding form tool (Typeform / Google Form)</div>
+        <div class="c-action c-support crit"><span class="dia sm"></span>Scoring rubric for promise dimensions</div>
+        <div class="c-action c-support crit"><span class="dia sm"></span>Archetype + group matching logic</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-action c-support">Physical venue or video call tool</div>
+        <div class="c-action c-support">Activity materials (cards, paper, markers)</div>
+        <div class="c-action c-support">Exit card format</div>
+        <div class="c-action c-support">Mentimeter (virtual icebreaker)</div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-action c-support">One-week follow-up form</div>
+        <div class="c-action c-support crit"><span class="dia sm"></span>Rose diagram tool (team-facing)</div>
+        <div class="c-action c-support">Nudge message templates</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-action c-support">Session activity bank (by promise dimension)</div>
+        <div class="c-action c-support">Rose update protocol</div>
+        <div class="c-action c-support">Cohort re-assignment logic</div>
+      </div>
+      <div class="cell" style="flex:1.5;">
+        <div class="c-action c-support">Peak session activity set</div>
+        <div class="c-action c-support">Rose visualisation (participant-facing)</div>
+        <div class="c-action c-support crit"><span class="dia sm"></span>Exit threshold criteria</div>
+      </div>
+      <div class="cell" style="flex:1;">
+        <div class="c-action c-support">Exit message templates</div>
+        <div class="c-action c-support">Longitudinal record (team or participant-held)</div>
+        <div class="c-action c-support">Re-entry trigger detection</div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /lanes -->
+    </div></div>
+    <details class="sub-d glass" style="margin-top:12px">
+      <summary>How to read the lanes</summary>
+      <div class="legend" style="padding:10px 14px 12px">
+        <div><span class="sw" style="--c:var(--blue)"></span>Above the line of visibility: what the participant sees</div>
+        <div><span class="sw" style="--c:var(--t2)"></span>Below it: backstage work and systems</div>
+        <div><span class="dia sm" style="margin:0"></span>Critical node: failure here travels downstream</div>
+        <div>Dashed rules mark the lines of interaction, visibility and internal interaction</div>
+      </div>
+    </details>
+  </div>
+</details>
+
+<details class="sec glass" open>
+  <summary><h2 id="jh">Customer journeys</h2><span>Each journey is a route through the five promises. Open one for its full lane detail.</span></summary>
+  <div class="sec-body">
+    <div class="tools">
+      <button class="btn on" id="ba-SITF" style="--c:var(--blue)" onclick="setArch('SITF')">Striver in the Fog</button>
+      <button class="btn" id="ba-TRB" style="--c:var(--coral)" onclick="setArch('TRB')">Reflective Builder</button>
+      <span class="sp"></span>
+      <span class="mut">Entry</span><span id="ef" style="display:contents"></span>
+      <span class="sp"></span>
+      <span class="mut">Path</span>
+      <button class="btn on" id="pf-correct" style="--c:#ababab" onclick="togglePath('correct')">Correct</button>
+      <button class="btn on" id="pf-stepback" style="--c:var(--coral)" onclick="togglePath('stepback')">Step-back</button>
+      <button class="btn on" id="pf-accel" style="--c:var(--blue)" onclick="togglePath('accel')">Accelerated</button>
+      <span class="count" id="jcount"></span>
+    </div>
+    <div class="tools">
+      <button class="btn" onclick="allJ(true)">Expand all</button>
+      <button class="btn" onclick="allJ(false)">Collapse all</button>
+      <span class="legend" style="padding:0 0 0 8px" id="dimleg"></span>
+    </div>
+    <details class="sub-d glass">
+      <summary>How every session is read: three validation signals</summary>
+      <div class="sigs" style="padding:0 14px 14px" id="sigs"></div>
+    </details>
+    <div id="jrows"></div>
+  </div>
+</details>
+</main>
+
+<main id="v-cp" style="display:none;flex-direction:column;gap:14px">
+  <section class="glass" style="padding:18px 0 4px">
+    <p class="intro">A critical path is a chain where failure at one node is carried forward and only becomes visible further down. Seven run through this service. They are not independent: <strong>CP2 is the hub</strong>, with four other paths feeding into or out of it, and a handful of artefacts sit on several paths at once. Steps marked with a diamond are where the path can break.</p>
+  </section>
+  <details class="sec glass" open><summary><h2>The seven paths</h2><span>Coral means nothing in the blueprint would catch the failure</span></summary><div class="sec-body"><div class="tools"><button class="btn" onclick="allCP(true)">Expand all</button><button class="btn" onclick="allCP(false)">Collapse all</button></div><div id="cp-list"></div></div></details>
+  <details class="sec glass" open><summary><h2>How the paths connect</h2></summary><div class="sec-body"><div class="cp-map glass" id="cp-map"></div><p class="note-p">Solid lines run forward. Dashed coral lines are the two returns: after a step-back or a nudge, the person re-enters CP2 and the group and addition chain runs again with a different group. Every repeat pass through the service goes through CP2, so a composition rule that holds once has to hold three or four times for the same person.</p></div></details>
+  <details class="sec glass"><summary><h2>Where paths share a node</h2><span>Seven artefacts carry more than one path</span></summary><div class="sec-body"><div class="shared" id="cp-shared"></div></div></details>
+  <details class="sec glass"><summary><h2>What a jury will go for</h2><span>Three pressure points</span></summary><div class="sec-body" id="cp-flags"></div></details>
+</main>
+</div>
+
+<script>
+const PC={reassurance:'#E0896B',recognition:'#C89388',validation:'#B09CA6',value:'#98A5C3',clarity:'#80AFE0'};
+const PL={clarity:'Clarity',value:'Value',validation:'Validation',recognition:'Recognition',reassurance:'Reassurance'};
+
+const VSIG=[
+  {icon:'👁',label:'Peer addition lands',text:'Person receives, expands, or is visibly moved by what peers name. Deflection or minimising = promise not landed.'},
+  {icon:'📝',label:'Exit card language',text:'Does the language reflect the promise delivered? Hollow exit card = session didn\'t land. Specific, named exit = landed.'},
+  {icon:'📅',label:'One-week delta',text:'No shift or negative movement after a session targeting a promise = wrong promise, or not ready for it yet.'},
+];
+
+const JOURNEYS=[
+// ── SITF ──
+{id:'s1',arch:'SITF',entry:'reassurance',pathType:'correct',
+ title:'Full journey from the floor',
+ sub:'Reassurance → Recognition → Validation → Value → Clarity ★',
+ nodes:[
+  {dim:'reassurance',label:'Reassurance',isEntry:true,isPeak:false,isInserted:false,
+   sessions:'1+',
+   customer:'Attends Reassurance session. Shares one moment carried alone. Receives minimal warm peer addition.',
+   frontstage:'Extended icebreaker. "Name the Invisible" activity. Exit card collected.',
+   backstage:'Observes whether addition lands. Reads exit card for "less alone" language. Checks one-week delta.',
+   support:'Physical venue. Extended icebreaker format. Exit card.',
+   acts:['Extended Icebreaker — Would You Rather (25 min)','Name the Invisible — one moment shared; peers listen then name one thing (35 min)','Exit card: "One word for how you\'re leaving vs. arriving"'],
+   validation:'Exit card shows relief or "less alone." Delta positive. If negative → another Reassurance session.',
+   note:'Most vulnerable entry. Peer addition is minimal and warm. Getting them to return is the metric — not score movement.'},
+  {dim:'recognition',label:'Recognition',isEntry:false,isPeak:false,isInserted:false,
+   sessions:'1+',
+   customer:'Attends Recognition session. Now stable enough to receive peer additions. Peers name what they\'ve built.',
+   frontstage:'Fog vs. Focus + If I Quit Today activities. Peer surplus delivered.',
+   backstage:'Observes addition landing vs. deflection. Reads exit card for specific naming.',
+   support:'Standard session format. Drawing materials.',
+   acts:['Icebreaker — Bingo (15 min)','Fog vs. Focus — peers name what\'s in the fog column (30 min)','If I Quit Today — draw what would be lost; peers describe (20 min)','Exit card: "One thing you hadn\'t given yourself credit for"'],
+   validation:'Exit card names something specific. Delta positive. If deflecting → stay in Recognition.',
+   note:'Person must be stable enough to receive — if still deflecting, Reassurance wasn\'t complete.'},
+  {dim:'validation',label:'Validation',isEntry:false,isPeak:false,isInserted:false,
+   sessions:'1+',
+   customer:'Attends Validation session. Recognised growth confirmed externally by peers.',
+   frontstage:'Rename the Invisible + Efforts vs. Value. Peers endorse, not just add.',
+   backstage:'Watches for belief shift in exit card. "I know now it counts."',
+   support:'Standard session format.',
+   acts:['Icebreaker (15 min)','Rename the Invisible — peers name precisely what was minimised (25 min)','Efforts vs. Value — input list reframed as output by peers (25 min)','Exit card: "What are you now considering yours?"'],
+   validation:'Belief shift visible. If hollow ("nice to hear" but no specific shift) → stay in Validation.',
+   note:'Endorsement, not just addition. The person needs to believe it, not just hear it.'},
+  {dim:'value',label:'Value',isEntry:false,isPeak:false,isInserted:false,
+   sessions:'1+',
+   customer:'Attends Value session. Worth question becomes answerable with validated inventory.',
+   frontstage:'Opportunity Cost Mapping. Peers challenge cost column, add to gain column.',
+   backstage:'Reads exit card for worth claim — "X was worth it because..."',
+   support:'Shared doc / whiteboard for mapping.',
+   acts:['Icebreaker — Would You Rather (trade-off framing) (15 min)','Opportunity Cost Mapping — cost vs. what it made possible (30 min)','Exit card: "What was worth it that you hadn\'t accounted for?"'],
+   validation:'Worth claim articulated in exit card. If still open → another Value session.',
+   note:'The worth question is only answerable once the inventory is validated. This is why it comes after Validation.'},
+  {dim:'clarity',label:'Clarity ★',isEntry:false,isPeak:true,isInserted:false,
+   sessions:'1+',
+   customer:'Attends Clarity session — the peak. Perceives transitional journey as a whole. Exits service.',
+   frontstage:'Past/Present/Future + Storytelling. Coherent narrative confirmed by peers.',
+   backstage:'Confirms peak threshold reached. Final rose update. Exit message prepared.',
+   support:'Rose diagram (participant-facing). Exit message template.',
+   acts:['Icebreaker (15 min)','Past / Present / Future — Draw Yourself; peers describe all three panels (30 min)','Storytelling / World Building — narrate arc; peers extend (25 min)','Exit card: "The sentence you\'d use to describe what you\'ve been through"'],
+   validation:'Coherent narrative articulated. Exit card is a complete sentence, not a fragment.',
+   note:'EXIT from service. Re-entry only when a new transition disrupts any promise again.'},
+ ]},
+
+{id:'s2',arch:'SITF',entry:'reassurance',pathType:'accel',
+ title:'Reassurance entry — accelerated (Recognition already present)',
+ sub:'Reassurance → Validation → Value → Clarity ★',
+ nodes:[
+  {dim:'reassurance',label:'Reassurance',isEntry:true,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Attends Reassurance session. Peer addition lands stronger than expected — exit card is specific, not just "less alone."',
+   frontstage:'Name the Invisible. Addition lands with precision.',
+   backstage:'Detects acceleration: addition precise + exit card names something specific. Recognition already partially built.',
+   support:'Session format.',
+   acts:['Extended Icebreaker (20 min)','Name the Invisible (35 min)','Exit card — watch for specific naming, not just relief'],
+   validation:'Exit card is specific AND names something the person hadn\'t credited themselves for → skip Recognition, move to Validation.',
+   note:'Acceleration signal: precision in peer addition landing + specific exit card.'},
+  {dim:'validation',label:'Validation',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Recognition already present. Confirmation session — peers endorse what\'s already visible.',
+   frontstage:'Rename the Invisible + Efforts vs. Value.',
+   backstage:'Reads for belief shift.',
+   support:'Standard.',
+   acts:['Rename the Invisible (25 min)','Efforts vs. Value (25 min)','Exit card: "What are you now considering yours?"'],
+   validation:'Belief shift. If hollow → step back to Recognition.',
+   note:''},
+  {dim:'value',label:'Value',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Worth assessed.',
+   frontstage:'Opportunity Cost Mapping.',
+   backstage:'Worth claim in exit card.',
+   support:'',
+   acts:['Opportunity Cost Mapping (30 min)','Exit card: "What was worth it?"'],
+   validation:'Worth claim articulated.',
+   note:''},
+  {dim:'clarity',label:'Clarity ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Past/Present/Future + Storytelling.',
+   backstage:'Peak confirmed. Exit message.',
+   support:'Rose. Exit message.',
+   acts:['Past / Present / Future (30 min)','Storytelling (25 min)','Exit card: sentence describing the journey'],
+   validation:'Coherent narrative.',
+   note:'EXIT.'},
+ ]},
+
+{id:'s3',arch:'SITF',entry:'recognition',pathType:'correct',
+ title:'Skips Reassurance — stable enough to be seen directly',
+ sub:'Recognition → Validation → Value → Clarity ★',
+ nodes:[
+  {dim:'recognition',label:'Recognition',isEntry:true,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Enters at Recognition. Peer additions delivered. If deflected → Reassurance gap detected.',
+   frontstage:'Fog vs. Focus + If I Quit Today.',
+   backstage:'Watches for landing vs. deflection. If deflection → triggers step-back path.',
+   support:'Standard session.',
+   acts:['Icebreaker — Bingo (15 min)','Fog vs. Focus (30 min)','If I Quit Today (20 min)','Exit card: "One thing you hadn\'t credited yourself for"'],
+   validation:'Addition lands, exit card specific, delta positive → proceed. Deflection → step-back to s-rec-sb path.',
+   note:'This is the correct path — assumes person is stable. If not, they branch to s4.'},
+  {dim:'validation',label:'Validation',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Recognised growth confirmed.',
+   frontstage:'Rename the Invisible + Efforts vs. Value.',
+   backstage:'Belief shift check.',
+   support:'',
+   acts:['Rename the Invisible (25 min)','Efforts vs. Value (25 min)','Exit card: "What are you now considering yours?"'],
+   validation:'Belief shift.',
+   note:''},
+  {dim:'value',label:'Value',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Worth assessed.',
+   frontstage:'Opportunity Cost Mapping.',
+   backstage:'Worth claim.',
+   support:'',
+   acts:['Opportunity Cost Mapping (30 min)','Exit card: "What was worth it?"'],
+   validation:'Worth claim.',
+   note:''},
+  {dim:'clarity',label:'Clarity ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Narrative activities.',
+   backstage:'Peak confirmed.',
+   support:'Rose. Exit.',
+   acts:['Past / Present / Future (30 min)','Storytelling (25 min)','Exit card'],
+   validation:'Coherent narrative.',
+   note:'EXIT.'},
+ ]},
+
+{id:'s4',arch:'SITF',entry:'recognition',pathType:'stepback',
+ title:'Recognition entry — Reassurance gap detected',
+ sub:'Recognition → [Reassurance] → Recognition → Validation → Value → Clarity ★',
+ nodes:[
+  {dim:'recognition',label:'Recognition',isEntry:true,isPeak:false,isInserted:false,sessions:'1',
+   customer:'Enters Recognition. Deflects peer additions. Doesn\'t engage.',
+   frontstage:'Fog vs. Focus — additions offered but deflected.',
+   backstage:'Deflection observed. Exit card vague. Delta ≤ 0. → Step-back triggered.',
+   support:'',acts:['Fog vs. Focus (30 min)','Exit card — diagnostic'],
+   validation:'Deflection + vague exit card + flat/negative delta → insert Reassurance.',
+   note:'Step-back trigger. Framed to participant as "going deeper" — never as regression.'},
+  {dim:'reassurance',label:'Reassurance',isEntry:false,isPeak:false,isInserted:true,sessions:'1+',
+   customer:'Attends Reassurance session (not announced as step-back). Safety built.',
+   frontstage:'Extended icebreaker. Name the Invisible.',
+   backstage:'Watches for safety signal. Exit card: "less alone."',
+   support:'Pre-session 1:1 message from team if needed.',
+   acts:['Extended Icebreaker (25 min)','Name the Invisible (35 min)','Exit card: "One word for how you\'re leaving"'],
+   validation:'Relief language + positive delta → return to Recognition.',
+   note:'INSERTED. Framed as "going deeper before moving forward." Never announced as a correction.'},
+  {dim:'recognition',label:'Recognition',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Second Recognition attempt — now grounded. Additions land.',
+   frontstage:'Fog vs. Focus + If I Quit Today — additions now received.',
+   backstage:'Addition landing confirmed.',
+   support:'',
+   acts:['Fog vs. Focus (30 min)','If I Quit Today (20 min)','Exit card: "What you hadn\'t credited yourself for"'],
+   validation:'Specific exit card + positive delta → proceed to Validation.',
+   note:''},
+  {dim:'validation',label:'Validation',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Endorsed.',
+   frontstage:'Rename the Invisible.',
+   backstage:'Belief shift.',
+   support:'',acts:['Rename the Invisible (25 min)','Exit card'],validation:'Belief shift.',note:''},
+  {dim:'value',label:'Value',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Worth.',
+   frontstage:'Opportunity Cost.',
+   backstage:'Worth claim.',
+   support:'',acts:['Opportunity Cost Mapping (30 min)','Exit card'],validation:'Worth claim.',note:''},
+  {dim:'clarity',label:'Clarity ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Narrative.',
+   backstage:'Peak confirmed.',
+   support:'Rose. Exit.',acts:['Past/Present/Future (30 min)','Storytelling (25 min)','Exit card'],validation:'Coherent narrative.',note:'EXIT.'},
+ ]},
+
+{id:'s5',arch:'SITF',entry:'validation',pathType:'correct',
+ title:'Has some recognition — wants it confirmed',
+ sub:'Validation → Value → Clarity ★',
+ nodes:[
+  {dim:'validation',label:'Validation',isEntry:true,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Enters Validation. Peer endorsement of existing inventory.',
+   frontstage:'Efforts vs. Value + Rename the Invisible.',
+   backstage:'Belief shift vs. hollow. If hollow → Recognition gap detected.',
+   support:'',
+   acts:['Icebreaker (15 min)','Efforts vs. Value (25 min)','Rename the Invisible (25 min)','Exit card: "What did someone confirm that you needed to hear?"'],
+   validation:'Belief shift → proceed. Hollow ("nice to hear") → step back to s6.',
+   note:'Correct path assumes inventory is already solid enough to endorse.'},
+  {dim:'value',label:'Value',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Worth assessed.',
+   frontstage:'Opportunity Cost Mapping.',
+   backstage:'Worth claim.',
+   support:'',acts:['Opportunity Cost Mapping (30 min)','Exit card'],validation:'Worth claim.',note:''},
+  {dim:'clarity',label:'Clarity ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Narrative.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Past/Present/Future (30 min)','Storytelling (25 min)','Exit card'],validation:'Coherent narrative.',note:'EXIT.'},
+ ]},
+
+{id:'s6',arch:'SITF',entry:'validation',pathType:'stepback',
+ title:'Validation entry — Recognition gap detected',
+ sub:'Validation → [Recognition] → Validation → Value → Clarity ★',
+ nodes:[
+  {dim:'validation',label:'Validation',isEntry:true,isPeak:false,isInserted:false,sessions:'1',
+   customer:'Validation hollow — can\'t name what was endorsed. Inventory not solid.',
+   frontstage:'Endorsement attempted.',
+   backstage:'Hollow detected. → Insert Recognition.',
+   support:'',acts:['Efforts vs. Value (25 min)','Exit card — diagnostic'],
+   validation:'Hollow exit card → step back to Recognition.',note:''},
+  {dim:'recognition',label:'Recognition',isEntry:false,isPeak:false,isInserted:true,sessions:'1+',
+   customer:'Recognition session. Inventory built.',
+   frontstage:'Fog vs. Focus + If I Quit Today.',
+   backstage:'Specific naming.',
+   support:'',acts:['Fog vs. Focus (30 min)','If I Quit Today (20 min)','Exit card: "What you hadn\'t credited yourself for"'],
+   validation:'Specific exit card → return to Validation.',note:'INSERTED.'},
+  {dim:'validation',label:'Validation',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Validation second attempt — inventory now solid.',
+   frontstage:'Rename the Invisible.',
+   backstage:'Belief shift.',
+   support:'',acts:['Rename the Invisible (25 min)','Efforts vs. Value (25 min)','Exit card'],validation:'Belief shift.',note:''},
+  {dim:'value',label:'Value',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Worth.',
+   frontstage:'Opportunity Cost.',
+   backstage:'Worth claim.',
+   support:'',acts:['Opportunity Cost Mapping (30 min)','Exit card'],validation:'Worth claim.',note:''},
+  {dim:'clarity',label:'Clarity ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Narrative.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Past/Present/Future','Storytelling','Exit card'],validation:'Coherent narrative.',note:'EXIT.'},
+ ]},
+
+{id:'s7',arch:'SITF',entry:'validation',pathType:'accel',
+ title:'Validation entry — Value already present, jumps to Clarity',
+ sub:'Validation → Clarity ★',
+ nodes:[
+  {dim:'validation',label:'Validation',isEntry:true,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Validation + worth both articulate in exit card. Value already present.',
+   frontstage:'Efforts vs. Value.',
+   backstage:'Both belief + worth in exit card detected → skip Value, move to Clarity.',
+   support:'',acts:['Icebreaker (15 min)','Efforts vs. Value (25 min)','Exit card — watch for belief + worth combined'],
+   validation:'Exit card combines "I know it counts" + "it was worth it" → jump to Clarity.',note:'Acceleration.'},
+  {dim:'clarity',label:'Clarity ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Narrative.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Past/Present/Future (30 min)','Storytelling (25 min)','Exit card'],validation:'Coherent narrative.',note:'EXIT.'},
+ ]},
+
+{id:'s8',arch:'SITF',entry:'value',pathType:'correct',
+ title:'Questioning worth — two steps to Clarity',
+ sub:'Value → Clarity ★',
+ nodes:[
+  {dim:'value',label:'Value',isEntry:true,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Enters at Value. Worth question answered through cost/gain mapping.',
+   frontstage:'Opportunity Cost Mapping.',
+   backstage:'Worth claim vs. still open. If Validation shaky → step back to s9.',
+   support:'Shared doc.',
+   acts:['Icebreaker — Would You Rather (trade-off) (15 min)','Opportunity Cost Mapping (30 min)','Exit card: "What was worth it that you hadn\'t accounted for?"'],
+   validation:'Worth claim → proceed. Still open → another Value session. Validation shaky → s9.',note:''},
+  {dim:'clarity',label:'Clarity ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Narrative.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Past/Present/Future (30 min)','Storytelling (25 min)','Exit card'],validation:'Coherent narrative.',note:'EXIT.'},
+ ]},
+
+{id:'s9',arch:'SITF',entry:'value',pathType:'stepback',
+ title:'Value entry — Validation gap detected',
+ sub:'Value → [Validation] → Value → Clarity ★',
+ nodes:[
+  {dim:'value',label:'Value',isEntry:true,isPeak:false,isInserted:false,sessions:'1',
+   customer:'Worth question can\'t be answered — inventory not confirmed.',
+   frontstage:'Opportunity Cost — can\'t land.',
+   backstage:'"I don\'t know if it counts" detected → insert Validation.',
+   support:'',acts:['Opportunity Cost Mapping (30 min)','Exit card — diagnostic'],
+   validation:'Person can\'t believe inventory counts → insert Validation.',note:''},
+  {dim:'validation',label:'Validation',isEntry:false,isPeak:false,isInserted:true,sessions:'1+',
+   customer:'Validation session. Inventory confirmed.',
+   frontstage:'Rename the Invisible.',
+   backstage:'Belief shift.',
+   support:'',acts:['Rename the Invisible (25 min)','Exit card: "What are you now considering yours?"'],
+   validation:'Belief shift → return to Value.',note:'INSERTED.'},
+  {dim:'value',label:'Value',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Worth — now inventory is solid.',
+   frontstage:'Opportunity Cost.',
+   backstage:'Worth claim.',
+   support:'',acts:['Opportunity Cost Mapping (30 min)','Exit card'],validation:'Worth claim.',note:''},
+  {dim:'clarity',label:'Clarity ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Narrative.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Past/Present/Future','Storytelling','Exit card'],validation:'Coherent narrative.',note:'EXIT.'},
+ ]},
+
+{id:'s10',arch:'SITF',entry:'clarity',pathType:'correct',
+ title:'Arrives at peak — confirm or discover gaps',
+ sub:'Clarity ★ (confirm + exit OR gap detected → re-enter lower)',
+ nodes:[
+  {dim:'clarity',label:'Clarity ★',isEntry:true,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Arrives believing they have Clarity. Session tests whether narrative holds.',
+   frontstage:'Past/Present/Future + Storytelling. Gaps surfaced by peer description.',
+   backstage:'If narrative holds → confirm, exit. If gaps → identify which dimension is missing, re-enter there next session.',
+   support:'Rose.',
+   acts:['Icebreaker (15 min)','Past / Present / Future — narrative tested by peers (30 min)','Storytelling / World Building — peers extend or surface gaps (25 min)','Exit card: "Describe what you\'ve been through"'],
+   validation:'Narrative holds → EXIT. Gaps emerge → re-enter at missing dimension next session.',
+   note:'Two outcomes: genuine clarity confirmed (exit), or gap discovered (targeted re-entry). Neither is announced as failure.'},
+ ]},
+
+{id:'s11',arch:'SITF',entry:'clarity',pathType:'stepback',
+ title:'Clarity entry — gaps surface; targeted re-entry at missing dimension',
+ sub:'Clarity → [missing dimension] → Clarity ★',
+ nodes:[
+  {dim:'clarity',label:'Clarity',isEntry:true,isPeak:false,isInserted:false,sessions:'1',
+   customer:'Narrative breaks under peer description. Gap emerges.',
+   frontstage:'Past/Present/Future — peers surface inconsistency.',
+   backstage:'Gap dimension identified. Assign next cohort at that dimension.',
+   support:'',acts:['Past/Present/Future (30 min)','Exit card — gap visible'],
+   validation:'Narrative doesn\'t hold → identify gap dimension → targeted re-entry.',note:'Step-back.'},
+  {dim:'validation',label:'[Gap dimension]',isEntry:false,isPeak:false,isInserted:true,sessions:'1+',
+   customer:'Targeted session at the dimension where the gap was. Could be Value, Validation, or Recognition.',
+   frontstage:'Dimension-appropriate activity.',
+   backstage:'Gap filled.',
+   support:'',acts:['Dimension-appropriate activity (variable)','Exit card'],
+   validation:'Gap resolved → return to Clarity.',note:'INSERTED. Specific dimension depends on what surfaced.'},
+  {dim:'clarity',label:'Clarity ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Gap filled. Narrative holds. Exit.',
+   frontstage:'Past/Present/Future + Storytelling.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Past/Present/Future','Storytelling','Exit card'],validation:'Coherent narrative.',note:'EXIT.'},
+ ]},
+
+{id:'s12',arch:'SITF',entry:'clarity',pathType:'accel',
+ title:'Clarity entry — confirmed immediately',
+ sub:'Clarity ★ (one session — genuine clarity, exits quickly)',
+ nodes:[
+  {dim:'clarity',label:'Clarity ★',isEntry:true,isPeak:true,isInserted:false,sessions:'1',
+   customer:'Narrative holds completely under peer description. Exit card is a complete, coherent sentence.',
+   frontstage:'Past/Present/Future — narrative confirmed by peers.',
+   backstage:'Peak threshold reached in first session. Exit message prepared.',
+   support:'Rose. Exit.',
+   acts:['Past / Present / Future (30 min)','Storytelling — narrative confirmed, peers extend coherently (25 min)','Exit card: complete sentence describing the journey'],
+   validation:'Narrative holds. Exit card is complete and specific. → EXIT.',
+   note:'Fastest possible SITF path. Person genuinely had Clarity — service confirms rather than builds it.'},
+ ]},
+
+// ── TRB ──
+{id:'t1',arch:'TRB',entry:'reassurance',pathType:'correct',
+ title:'Full journey — transmission failure, longest TRB path',
+ sub:'Reassurance → Clarity → Validation+Value → Recognition ★',
+ nodes:[
+  {dim:'reassurance',label:'Reassurance',isEntry:true,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Transmission failed recently. Session produces one moment of successful transmission. "They got it."',
+   frontstage:'Extended icebreaker — room produces warm response early. Past/Present/Future as low-stakes transmission test.',
+   backstage:'Exit card: "Did they get it?" Successful transmission = reassurance delivered.',
+   support:'Physical preferred. Keep video on if virtual.',
+   acts:['Extended Icebreaker — Would You Rather (20 min)','Past / Present / Future — Draw Yourself (low-stakes transmission test) (30 min)','Exit card: "Did they get it? What did they get exactly right?"'],
+   validation:'Exit card says "they got it" → proceed. Transmission still failed → another Reassurance session.',
+   note:'Reassurance for TRBs = successful transmission, not support language.'},
+  {dim:'clarity',label:'Clarity (transmissible)',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'TRBs often have internal clarity. This session makes it transmissible — peers receive and confirm the arc.',
+   frontstage:'Fog vs. Focus (TRB version) + Storytelling.',
+   backstage:'Peers describe back accurately — transmission of clarity confirmed.',
+   support:'',
+   acts:['Fog vs. Focus — TRB version; focus column dominates; peers receive it (30 min)','Storytelling — they narrate; peers extend (25 min)','Exit card: "What did you manage to transmit today that you normally can\'t?"'],
+   validation:'Peers receive and name the arc specifically. If transmission still unclear → more Clarity sessions.',
+   note:'Not "do you understand your journey" — but "can you describe it in a way others receive."'},
+  {dim:'validation',label:'Validation + Value',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'TRBs: Validation and Value land together. Peers endorse reality AND worth simultaneously.',
+   frontstage:'Efforts vs. Value (TRB version) + Opportunity Cost Mapping.',
+   backstage:'Both belief and worth in exit card. If only one lands → another session.',
+   support:'',
+   acts:['Efforts vs. Value — peers name the value side of the TRB\'s effort (30 min)','Opportunity Cost Mapping (25 min)','Exit card: "What did someone see in what you\'ve built that you hadn\'t articulated?"'],
+   validation:'Exit card shows both "I know what I\'ve built" AND "I know it counts." If only one → stay.',
+   note:'For TRBs, Validation and Value are tied — they land together because the internal inventory already exists.'},
+  {dim:'recognition',label:'Recognition ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Peers name what this person has built with full specificity. TRB experiences being fully seen and accurately named.',
+   frontstage:'Name the Invisible (TRB version) + Bingo Reflection.',
+   backstage:'Precise peer naming confirmed. Exit message prepared.',
+   support:'Rose. Exit message.',
+   acts:['Icebreaker (15 min)','Name the Invisible — peers arrive at same inventory the TRB already knew (30 min)','Bingo Reflection — TRBs emerge as person others cite; being cited = proof (20 min)','Exit card: "What did someone name about you that you\'ve never heard named before?"'],
+   validation:'Precise naming + TRB confirms accuracy. "Yes, that\'s exactly it." → EXIT.',
+   note:'EXIT. Precise, not warm. The TRB needs to hear the exact inventory named, not general encouragement.'},
+ ]},
+
+{id:'t2',arch:'TRB',entry:'reassurance',pathType:'accel',
+ title:'Reassurance entry — Clarity already present, accelerated',
+ sub:'Reassurance → Validation+Value → Recognition ★',
+ nodes:[
+  {dim:'reassurance',label:'Reassurance',isEntry:true,isPeak:false,isInserted:false,sessions:'1',
+   customer:'Transmission succeeds AND arc is coherent — Clarity already present.',
+   frontstage:'Past/Present/Future — succeeds clearly and coherently.',
+   backstage:'Exit card shows both transmission success AND arc coherence → skip Clarity.',
+   support:'',acts:['Extended Icebreaker','Past/Present/Future (30 min)','Exit card — watch for both success + coherence'],
+   validation:'Both transmission success + arc coherence in exit card → skip Clarity, move to Validation+Value.',note:'Acceleration.'},
+  {dim:'validation',label:'Validation + Value',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Endorsement + worth delivered together.',
+   frontstage:'Efforts vs. Value + Opportunity Cost.',
+   backstage:'Both land.',
+   support:'',acts:['Efforts vs. Value (30 min)','Opportunity Cost (25 min)','Exit card'],validation:'Both belief + worth.',note:''},
+  {dim:'recognition',label:'Recognition ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Precise naming. Exit.',
+   frontstage:'Name the Invisible + Bingo Reflection.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Name the Invisible (30 min)','Bingo Reflection (20 min)','Exit card'],validation:'Precise naming confirmed.',note:'EXIT.'},
+ ]},
+
+{id:'t3',arch:'TRB',entry:'clarity',pathType:'correct',
+ title:'Internal clarity disrupted — unusual TRB entry',
+ sub:'Clarity → Validation+Value → Recognition ★',
+ nodes:[
+  {dim:'clarity',label:'Clarity (restore + transmit)',isEntry:true,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'TRB whose internal clarity has been disrupted by the transition. Restore clarity AND make it transmissible.',
+   frontstage:'Past/Present/Future + Fog vs. Focus (TRB version). Peers describe — successful description confirms transmissibility.',
+   backstage:'If transmission fails → step back to Reassurance (t4). If clarity restored → move to Validation+Value.',
+   support:'',
+   acts:['Past / Present / Future — reconstruct arc (30 min)','Fog vs. Focus — TRB version; peers confirm what they receive (25 min)','Exit card: "What did you manage to transmit today?"'],
+   validation:'Peers receive and name arc specifically → proceed. Transmission fails → t4 (Reassurance inserted).',note:'Unusual for TRB. Signals deeper disruption.'},
+  {dim:'validation',label:'Validation + Value',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Clarity restored. Now endorsed and given worth.',
+   frontstage:'Efforts vs. Value + Opportunity Cost.',
+   backstage:'Both land.',
+   support:'',acts:['Efforts vs. Value (30 min)','Opportunity Cost (25 min)','Exit card'],validation:'Both belief + worth.',note:''},
+  {dim:'recognition',label:'Recognition ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Name the Invisible + Bingo Reflection.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Name the Invisible','Bingo Reflection','Exit card'],validation:'Precise naming.',note:'EXIT.'},
+ ]},
+
+{id:'t4',arch:'TRB',entry:'clarity',pathType:'stepback',
+ title:'Clarity entry — Reassurance gap detected',
+ sub:'Clarity → [Reassurance] → Clarity → Validation+Value → Recognition ★',
+ nodes:[
+  {dim:'clarity',label:'Clarity',isEntry:true,isPeak:false,isInserted:false,sessions:'1',
+   customer:'Transmission fails — peers can\'t receive arc. Reassurance gap.',
+   frontstage:'Past/Present/Future — transmission fails.',
+   backstage:'Peers describe something different. Exit card: "they didn\'t get it." → Insert Reassurance.',
+   support:'',acts:['Past/Present/Future (30 min)','Exit card — "Did they get it?" → diagnostic'],
+   validation:'Transmission failure → insert Reassurance.',note:''},
+  {dim:'reassurance',label:'Reassurance',isEntry:false,isPeak:false,isInserted:true,sessions:'1+',
+   customer:'Safety built. Room produces warm response. Transmission test succeeds.',
+   frontstage:'Extended icebreaker + simple transmission test.',
+   backstage:'Exit card: "they got it." → Return to Clarity.',
+   support:'Keep video on.',acts:['Extended Icebreaker (20 min)','Simple transmission test (draw something, peers describe)','Exit card: "Did they get it?"'],
+   validation:'Success → return to Clarity.',note:'INSERTED.'},
+  {dim:'clarity',label:'Clarity',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Second Clarity attempt — room is safe. Transmission succeeds.',
+   frontstage:'Past/Present/Future — confirmed and received.',
+   backstage:'Arc confirmed.',
+   support:'',acts:['Past/Present/Future (30 min)','Exit card: "What did you transmit today?"'],validation:'Arc confirmed → proceed.',note:''},
+  {dim:'validation',label:'Validation + Value',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Endorsed + worth.',
+   frontstage:'Efforts vs. Value + Opportunity Cost.',
+   backstage:'Both land.',
+   support:'',acts:['Efforts vs. Value','Opportunity Cost','Exit card'],validation:'Both land.',note:''},
+  {dim:'recognition',label:'Recognition ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Name the Invisible + Bingo Reflection.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Name the Invisible','Bingo Reflection','Exit card'],validation:'Precise naming.',note:'EXIT.'},
+ ]},
+
+{id:'t5',arch:'TRB',entry:'clarity',pathType:'accel',
+ title:'Clarity entry — Validation+Value already present, jumps to Recognition',
+ sub:'Clarity → Recognition ★',
+ nodes:[
+  {dim:'clarity',label:'Clarity',isEntry:true,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Clarity confirmed AND exit card shows both worth + belief. Validation+Value already present.',
+   frontstage:'Past/Present/Future — confirmed.',
+   backstage:'Combined arc + worth + belief in exit card → skip Validation+Value, move to Recognition.',
+   support:'',acts:['Past/Present/Future (30 min)','Exit card — watch for arc + worth + belief combined'],
+   validation:'Combined signal → jump to Recognition.',note:'Acceleration.'},
+  {dim:'recognition',label:'Recognition ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Precise naming. Exit.',
+   frontstage:'Name the Invisible + Bingo Reflection.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Name the Invisible','Bingo Reflection','Exit card'],validation:'Precise naming.',note:'EXIT.'},
+ ]},
+
+{id:'t6',arch:'TRB',entry:'validation',pathType:'correct',
+ title:'Has some recognition — wants it confirmed and given worth',
+ sub:'Validation+Value → Recognition ★',
+ nodes:[
+  {dim:'validation',label:'Validation + Value',isEntry:true,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Enters at Validation+Value. Endorsement and worth delivered together.',
+   frontstage:'Efforts vs. Value + Storytelling.',
+   backstage:'Both land vs. only one. If Clarity shaky → step back to t7.',
+   support:'',
+   acts:['Icebreaker (15 min)','Efforts vs. Value — TRB version (30 min)','Storytelling / World Building — extension = validation (25 min)','Exit card: "What did someone see in what you\'ve built?"'],
+   validation:'Both belief + worth in exit card → proceed. If one missing → stay. Transmission issue → t7.',note:''},
+  {dim:'recognition',label:'Recognition ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Name the Invisible + Bingo Reflection.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Name the Invisible (30 min)','Bingo Reflection (20 min)','Exit card'],validation:'Precise naming.',note:'EXIT.'},
+ ]},
+
+{id:'t7',arch:'TRB',entry:'validation',pathType:'stepback',
+ title:'Validation+Value entry — Clarity gap (can\'t transmit inventory)',
+ sub:'Validation+Value → [Clarity] → Validation+Value → Recognition ★',
+ nodes:[
+  {dim:'validation',label:'Validation + Value',isEntry:true,isPeak:false,isInserted:false,sessions:'1',
+   customer:'Peers can\'t endorse clearly because inventory isn\'t transmitted clearly. Generic, not specific.',
+   frontstage:'Efforts vs. Value — endorsement generic, not specific.',
+   backstage:'Generic endorsement detected → Clarity gap → insert Clarity.',
+   support:'',acts:['Efforts vs. Value','Exit card — watch endorsement specificity'],
+   validation:'Generic endorsement → insert Clarity.',note:''},
+  {dim:'clarity',label:'Clarity (transmissible)',isEntry:false,isPeak:false,isInserted:true,sessions:'1+',
+   customer:'Inventory made transmissible. Peers now receive specifically.',
+   frontstage:'Fog vs. Focus (TRB version).',
+   backstage:'Specific reception confirmed.',
+   support:'',acts:['Fog vs. Focus — TRB version (30 min)','Exit card: "What did you transmit today?"'],
+   validation:'Specific reception → return to Validation+Value.',note:'INSERTED.'},
+  {dim:'validation',label:'Validation + Value',isEntry:false,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Now transmissible — specific endorsement possible.',
+   frontstage:'Efforts vs. Value + Opportunity Cost.',
+   backstage:'Both land.',
+   support:'',acts:['Efforts vs. Value (30 min)','Opportunity Cost (25 min)','Exit card'],validation:'Both land.',note:''},
+  {dim:'recognition',label:'Recognition ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Exit.',
+   frontstage:'Name the Invisible + Bingo Reflection.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Name the Invisible','Bingo Reflection','Exit card'],validation:'Precise naming.',note:'EXIT.'},
+ ]},
+
+{id:'t8',arch:'TRB',entry:'value',pathType:'correct',
+ title:'Knows what they\'ve built — questioning if others see its worth',
+ sub:'Value (→ Validation+Value) → Recognition ★',
+ nodes:[
+  {dim:'validation',label:'Value → Validation+Value',isEntry:true,isPeak:false,isInserted:false,sessions:'1+',
+   customer:'Entry at Value maps to Validation+Value dimension for TRBs. Worth + belief confirmed together.',
+   frontstage:'Opportunity Cost Mapping (TRB version) + Rename the Invisible (value edition).',
+   backstage:'Both land. If Validation shaky → step back to Clarity.',
+   support:'Shared doc.',
+   acts:['Icebreaker — Would You Rather trade-off (15 min)','Opportunity Cost Mapping — peers reframe cost as investment (30 min)','Rename the Invisible (value edition) — what was maintenance, peers name as growth (25 min)','Exit card: "What did you reclassify today?"'],
+   validation:'Both worth + belief articulated → proceed. If shaky → another session.',note:''},
+  {dim:'recognition',label:'Recognition ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Peak. Precise naming. Exit.',
+   frontstage:'Name the Invisible + Bingo Reflection.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Name the Invisible (30 min)','Bingo Reflection (20 min)','Exit card'],validation:'Precise naming.',note:'EXIT.'},
+ ]},
+
+{id:'t9',arch:'TRB',entry:'recognition',pathType:'correct',
+ title:'Closest to peak — may exit in one or two sessions',
+ sub:'Recognition ★ (confirm + exit OR Validation+Value gap → insert)',
+ nodes:[
+  {dim:'recognition',label:'Recognition ★',isEntry:true,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Enters at peak. Peers name precisely → confirm. If partial → Validation+Value inserted then Recognition again.',
+   frontstage:'Name the Invisible (TRB version) + Bingo Reflection.',
+   backstage:'Full landing → EXIT. Partial (warm but vague) → insert Validation+Value → Recognition again.',
+   support:'Rose.',
+   acts:['Icebreaker — Bingo (15 min)','Name the Invisible — peers arrive at same inventory independently (30 min)','Bingo Reflection — TRB emerges as person others cite (20 min)','Exit card: "What did someone name that you\'ve never heard named before?"'],
+   validation:'Full precise landing → EXIT. Partial → insert Validation+Value.',
+   note:'Two outcomes. Fastest possible TRB path (one session if peak fully lands). Partial = one more step.'},
+ ]},
+
+{id:'t10',arch:'TRB',entry:'recognition',pathType:'stepback',
+ title:'Recognition entry — Validation+Value gap; partial landing',
+ sub:'Recognition → [Validation+Value] → Recognition ★',
+ nodes:[
+  {dim:'recognition',label:'Recognition',isEntry:true,isPeak:false,isInserted:false,sessions:'1',
+   customer:'Naming is warm but vague — not precise enough to confirm inventory. Partial landing.',
+   frontstage:'Name the Invisible — warm but not specific.',
+   backstage:'Generic warmth detected. → Insert Validation+Value.',
+   support:'',acts:['Name the Invisible (30 min)','Bingo Reflection (20 min)','Exit card — diagnostic: specific vs. generic'],
+   validation:'Generic (warm but not precise) → insert Validation+Value.',note:''},
+  {dim:'validation',label:'Validation + Value',isEntry:false,isPeak:false,isInserted:true,sessions:'1+',
+   customer:'Endorsement + worth landed together. Now specific peer naming is possible.',
+   frontstage:'Efforts vs. Value + Opportunity Cost.',
+   backstage:'Both land.',
+   support:'',acts:['Efforts vs. Value (30 min)','Opportunity Cost (25 min)','Exit card'],
+   validation:'Both land → return to Recognition.',note:'INSERTED.'},
+  {dim:'recognition',label:'Recognition ★',isEntry:false,isPeak:true,isInserted:false,sessions:'1+',
+   customer:'Second attempt — now specific naming possible. Peak. Exit.',
+   frontstage:'Name the Invisible + Bingo Reflection.',
+   backstage:'Peak confirmed.',
+   support:'Rose.',acts:['Name the Invisible (30 min)','Bingo Reflection (20 min)','Exit card'],
+   validation:'Precise naming confirmed.',note:'EXIT.'},
+ ]},
+
+{id:'t11',arch:'TRB',entry:'recognition',pathType:'accel',
+ title:'Recognition entry — confirmed immediately, fastest TRB exit',
+ sub:'Recognition ★ (one session, precise landing, immediate exit)',
+ nodes:[
+  {dim:'recognition',label:'Recognition ★',isEntry:true,isPeak:true,isInserted:false,sessions:'1',
+   customer:'Peers name precisely. TRB confirms: "Yes, that\'s exactly it." Immediate exit.',
+   frontstage:'Name the Invisible + Bingo Reflection — both fully land.',
+   backstage:'Peak threshold reached in one session. Exit message prepared immediately.',
+   support:'Rose. Exit message.',
+   acts:['Icebreaker — Bingo (15 min)','Name the Invisible — precise, specific (30 min)','Bingo Reflection — TRB cited by others (20 min)','Exit card: "What did someone name that you\'ve never heard named before?"'],
+   validation:'Precise naming + TRB confirms accuracy in one session → EXIT immediately.',
+   note:'Fastest possible TRB path. Rare — requires the person to be genuinely at their peak.'},
+ ]},
+];
+
+
+
+const CPATHS=[
+{id:'CP1',name:'Trust layer to honest self-location',hub:false,
+ carries:'Whether the form is answered truthfully. Every score, placement and group downstream is computed on this one input.',
+ chain:[
+  {lane:'Touchpoint',t:'4-touchpoint trust layer, pre-form',k:true},
+  {lane:'Touchpoint',t:'Onboarding form'},
+  {lane:'Customer',t:'Self-locates entry promise',k:true},
+  {lane:'Backstage',t:'Promise-dimension scoring'}],
+ breaks:'The trust layer is thin or rushed, so the person answers the form as they would answer any form — performing a version of themselves rather than locating one.',
+ surfaces:'Not at onboarding. First visible in the entry session, when what the peers see does not match what the form said.',
+ sig:'A gap between the form self-location and what the person actually brings into the room. Nobody is currently tasked with checking that gap.',sigType:'none',
+ outTo:['CP2']},
+
+{id:'CP2',name:'Placement to group to addition landing',hub:true,
+ carries:'The production line for the whole service. Peers, not the team, deliver the promise, so group composition is the manufacturing step.',
+ chain:[
+  {lane:'Backstage',t:'Promise-dimension scoring'},
+  {lane:'Backstage agent',t:'Scorer places archetype, invisible to the person',k:true},
+  {lane:'Backstage',t:'Group composition — 1–2 TRBs per 4–6',k:true},
+  {lane:'Frontstage agent',t:'Peer group delivers the addition',k:true},
+  {lane:'Customer',t:'Addition lands, or is deflected'}],
+ breaks:'Scoring is off, or the TRB ratio in the group is wrong, so the additions come back generic. A group of five Strivers cannot name each other precisely — nobody in the room has the distance.',
+ surfaces:'In the room, as deflection or a thin exit card.',
+ sig:'Observed deflection plus a vague exit card. Both are read by the same person who composed the group.',sigType:'',
+ inFrom:['CP1','CP4','CP5'],outTo:['CP3','CP6']},
+
+{id:'CP3',name:'Three-signal routing loop',hub:false,
+ carries:'Every continue, step-back and accelerate decision in all 23 journeys. It is the only routing mechanism in the service.',
+ chain:[
+  {lane:'Backstage agent',t:'Observer watches whether the addition lands',k:true},
+  {lane:'Touchpoint',t:'Exit card language',k:true},
+  {lane:'Touchpoint',t:'One-week delta'},
+  {lane:'Backstage agent',t:'Router calls continue / step-back / accelerate',k:true},
+  {lane:'Touchpoint',t:'Next cohort assigned'}],
+ breaks:'Two of the three signals are self-reported by someone with a reason to perform progress, and the third is observed by the same person who then makes the routing call. The loop grades its own work.',
+ surfaces:'Two sessions later, as a person parked in a dimension they finished, or pushed past one they had not.',
+ sig:'There is no signal internal to this loop that would catch it. This is the weakest link in the blueprint and the place a jury will press.',sigType:'none',
+ inFrom:['CP2'],outTo:['CP4','CP5','CP6']},
+
+{id:'CP4',name:'Step-back without a verdict',hub:false,
+ carries:'The design commitment that the service produces evidence and not verdicts. Every step-back journey — 7 of 23 — runs through here.',
+ chain:[
+  {lane:'Backstage',t:'Deflection detected'},
+  {lane:'Journey',t:'Reassurance session inserted',k:true},
+  {lane:'Touchpoint',t:'Nudge wording — going deeper, never regression',k:true},
+  {lane:'Frontstage',t:'Pre-session 1:1 if needed'},
+  {lane:'Customer',t:'Returns to the original dimension'}],
+ breaks:'The framing leaks — in the nudge, the invite, or a facilitator sentence in the room — and the person reads it as being sent back.',
+ surfaces:'As non-return. The person does not attend the inserted session at all.',
+ sig:'Attendance between the trigger session and the inserted one. Cheap to track and currently unrecorded.',sigType:'sig',
+ inFrom:['CP3'],outTo:['CP2']},
+
+{id:'CP5',name:'Promise-blind nudge',hub:false,
+ carries:'The condition that makes self-location real. If the person knows which promise is being looked for, they produce it.',
+ chain:[
+  {lane:'Backstage',t:'Cohort assigned by dimension'},
+  {lane:'Touchpoint',t:'Nudge written promise-blind',k:true},
+  {lane:'Touchpoint',t:'Session invite carries no label'},
+  {lane:'Frontstage agent',t:'Host keeps the vocabulary out of the room',k:true},
+  {lane:'Customer',t:'Arrives not knowing what is being measured'}],
+ breaks:'The label leaks. Usually not in the written nudge, which gets reviewed, but in the room — a host naming the dimension while introducing an activity.',
+ surfaces:'Immediately, as performance. The exit card comes back in the facilitator’s vocabulary rather than the person’s.',
+ sig:'Exit card language compared against the session script. If the words match, the label leaked.',sigType:'sig',
+ inFrom:['CP3'],outTo:['CP2']},
+
+{id:'CP6',name:'Rose handover',hub:false,
+ carries:'The single moment a team-held record becomes a participant-facing object. The highest-risk node in the service.',
+ chain:[
+  {lane:'Backstage agent',t:'Observations written to the rose'},
+  {lane:'Support',t:'Rose kept team-facing through mid sessions',k:true},
+  {lane:'Touchpoint',t:'Rose revealed at the peak session',k:true},
+  {lane:'Customer',t:'Sees current shape against potential shape'},
+  {lane:'Journey',t:'Exit'}],
+ breaks:'The potential shape reads as a target they failed to reach. A record turns into a verdict at the last possible moment, and the comparison is one the person did not choose.',
+ surfaces:'In the room, with no recovery window. Every other path fails slowly and shows up a session later; this one fails one session before exit.',
+ sig:'The exit card written immediately after the reveal. It is the only instrument pointed at this, and it is collected minutes later by the person who revealed it.',sigType:'none',
+ inFrom:['CP2','CP3'],outTo:['CP7']},
+
+{id:'CP7',name:'Peak threshold to exit',hub:false,
+ carries:'The end of the service. Whether someone leaves with standing they can use, or just leaves.',
+ chain:[
+  {lane:'Frontstage agent',t:'Peer group delivers the peak promise',k:true},
+  {lane:'Backstage agent',t:'Threshold judge confirms it is reached',k:true},
+  {lane:'Touchpoint',t:'Exit message'},
+  {lane:'Touchpoint',t:'Re-entry door left open'}],
+ breaks:'The threshold is a team judgement the participant cannot see or contest, which makes the exit a verdict issued about them.',
+ surfaces:'After exit, and probably never to the team. The person leaves without the standing the service claims to produce.',
+ sig:'Whether the exit card is a complete sentence in their own words rather than a fragment. Weak, but it is what exists.',sigType:'',
+ inFrom:['CP6']}
+];
+
+const SHARED=[
+{art:'Exit card',on:['CP1','CP3','CP5','CP6','CP7'],
+ what:'One card is carrying five separate diagnostic jobs: checking the form against the room, supplying signal two of three for routing, catching a vocabulary leak, reading the reaction to the rose, and evidencing the exit threshold. If it is a single index card with one prompt, four of those jobs are not being done.'},
+{art:'Session observation',on:['CP2','CP3','CP6'],
+ what:'The same person watches the room, calls the route, and keeps the record. Three paths depend on one pair of eyes, and no path checks that pair of eyes.'},
+{art:'The rose',on:['CP3','CP6','CP7'],
+ what:'Updated from the routing signals, revealed at the peak, and the artefact the exit rests on. An error in CP3 is written into the rose and then shown to the participant as fact.'},
+{art:'Promise-dimension scoring',on:['CP1','CP2'],
+ what:'Bad form data and bad placement are the same failure one step apart. Neither has a check between them.'},
+{art:'Group composition',on:['CP2','CP4'],
+ what:'The inserted step-back session needs a group too, and it is usually not the same group. The composition rule has to hold twice for the same person.'},
+{art:'Nudge message wording',on:['CP4','CP5'],
+ what:'One message has to do two contradictory things — conceal the promise dimension, and not read as a correction. These get written under time pressure.'},
+{art:'One-week follow-up form',on:['CP3','CP4'],
+ what:'The only signal that arrives from outside the room, and it is self-reported. It is also the de facto attendance check for the step-back path.'}
+];
+
+function cpNodeBox(x,y,id,l1,l2,hub){
+  const sw=hub?2.2:1.2, sc=hub?'#f2f2f2':'rgba(242,242,242,.28)';
+  return `<g><rect x="${x}" y="${y}" width="150" height="46" rx="5" fill="rgba(255,255,255,.07)" stroke="${sc}" stroke-width="${sw}"/>`
+   +`<text x="${x+10}" y="${y+18}" font-size="10.5" font-weight="700" fill="#f2f2f2">${id}</text>`
+   +`<text x="${x+10}" y="${y+30}" font-size="9.5" fill="#ababab">${l1}</text>`
+   +`<text x="${x+10}" y="${y+40}" font-size="9.5" fill="#ababab">${l2}</text></g>`;
+}
+function cpMapSVG(){
+  const A='marker-end="url(#cpar)"', AR='marker-end="url(#cpar-r)"';
+  const F='stroke="#ababab" stroke-width="1.4" fill="none"';
+  const R='stroke="#E0896B" stroke-width="1.4" stroke-dasharray="5 3" fill="none"';
+  return `<svg viewBox="0 0 1010 430" width="100%" style="max-width:1010px;height:auto;font-family:Satoshi,sans-serif;">
+  <defs>
+    <marker id="cpar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ababab"/></marker>
+    <marker id="cpar-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#E0896B"/></marker>
+  </defs>
+
+  <path d="M180,183 L222,183" ${F} ${A}/>
+  <path d="M380,183 L442,183" ${F} ${A}/>
+  <path d="M600,174 C652,174 668,93 712,93" ${F} ${A}/>
+  <path d="M600,192 C652,192 668,273 712,273" ${F} ${A}/>
+  <path d="M305,206 L305,324" ${F} ${A}/>
+  <path d="M468,206 C432,252 398,300 374,324" ${F} ${A}/>
+  <path d="M380,353 L442,353" ${F} ${A}/>
+
+  <path d="M795,66 C795,28 620,20 470,20 C400,20 350,54 350,152" ${R} ${AR}/>
+  <path d="M795,296 C795,306 786,308 768,308 L292,308 C266,308 258,288 258,214" ${R} ${AR}/>
+
+  <text x="470" y="12" font-size="9" fill="#E0896B" text-anchor="middle">after a step-back, the person re-enters CP2 with a different group</text>
+  <text x="565" y="300" font-size="9" fill="#E0896B" text-anchor="middle">after a nudge, the next session re-runs CP2</text>
+
+  ${cpNodeBox(30,160,'CP1','Trust layer to','self-location',false)}
+  ${cpNodeBox(230,160,'CP2','Placement, group,','addition landing',true)}
+  ${cpNodeBox(450,160,'CP3','Three-signal','routing loop',false)}
+  ${cpNodeBox(720,70,'CP4','Step-back without','a verdict',false)}
+  ${cpNodeBox(720,250,'CP5','Promise-blind','nudge',false)}
+  ${cpNodeBox(230,330,'CP6','Rose handover',' ',false)}
+  ${cpNodeBox(450,330,'CP7','Peak threshold','to exit',false)}
+
+  <line x1="30" y1="412" x2="58" y2="412" ${F}/>
+  <text x="64" y="415" font-size="9.5" fill="#ababab">runs forward</text>
+  <line x1="160" y1="412" x2="188" y2="412" ${R}/>
+  <text x="194" y="415" font-size="9.5" fill="#E0896B">returns into CP2 — the chain runs again</text>
+  <rect x="410" y="405" width="16" height="13" rx="2" fill="rgba(255,255,255,.07)" stroke="#f2f2f2" stroke-width="2.2"/>
+  <text x="432" y="415" font-size="9.5" fill="#ababab">hub — four paths pass through it</text>
+</svg>`;
+}
+
+
+
+const $=id=>document.getElementById(id);
+const E={SITF:['reassurance','recognition','validation','value','clarity'],TRB:['reassurance','clarity','validation','value','recognition']};
+const PT={correct:'Correct',stepback:'Step-back',accel:'Accelerated'};
+const PTC={correct:'#ababab',stepback:'#E0896B',accel:'#80AFE0'};
+let arch='SITF',entry=null,paths={correct:1,stepback:1,accel:1},openSet=new Set();
+const TOTAL=JOURNEYS.length;
+
+/* lanes: zone colour + collapsible labels */
+function initLanes(){
+  [...document.querySelectorAll('.lane:not(.divider)')].forEach((l,i)=>{
+    l.classList.add(i<5?'zv':'zb');
+    const lb=l.querySelector('.lane-label');
+    lb.setAttribute('role','button');lb.tabIndex=0;lb.setAttribute('aria-expanded','true');
+    lb.insertAdjacentHTML('beforeend','<span class="chev"></span>');
+    const t=()=>{const c=l.classList.toggle('collapsed');lb.setAttribute('aria-expanded',!c)};
+    lb.onclick=t;lb.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}};
+  });
+}
+function allLanes(c){document.querySelectorAll('.lane:not(.divider)').forEach(l=>{l.classList.toggle('collapsed',c);l.querySelector('.lane-label').setAttribute('aria-expanded',!c)})}
+
+/* journeys */
+function chips(j){return j.nodes.map(n=>`<span class="chip${n.isPeak?' peak':''}${n.isInserted?' ins':''}" style="--c:${PC[n.dim]}">${n.isPeak?'★ ':n.isInserted?'+ ':''}${n.label.replace(' ★','')}</span>`).join('<i class="ar">›</i>')}
+function nodeHTML(n,i){
+  const s=n.sessions==='1'?'1 session':n.sessions+' sessions';
+  return `<details class="nd"${i===0?' open':''}><summary><span class="dot" style="--c:${PC[n.dim]}"></span><b>${n.label}</b>${n.isPeak?'<span class="tg">Peak</span>':''}${n.isInserted?'<span class="tg in">Inserted</span>':''}<span class="mut">${s}</span></summary><div class="nb">
+  ${n.note?`<p class="note">${n.note}</p>`:''}
+  <div class="g4">${[['Customer',n.customer],['Frontstage',n.frontstage],['Backstage',n.backstage],['Support',n.support||'Standard']].map(([a,b])=>`<div class="cb"><span>${a}</span>${b}</div>`).join('')}</div>
+  <div><div class="lbl">Activities</div><ul class="acts">${n.acts.map(a=>`<li>${a}</li>`).join('')}</ul></div>
+  <div class="vs"><span>Validation signal</span>${n.validation}</div></div></details>`;
+}
+function jrow(j){
+  const a=j.arch==='SITF';
+  return `<details class="jr glass"${openSet.has(j.id)?' open':''} ontoggle="tg('${j.id}',this.open)"><summary><div class="jm"><div class="jt">${j.title}</div><div class="chips">${chips(j)}</div></div><div class="jb"><span class="bd" style="--c:${a?'#80AFE0':'#E0896B'}">${a?'Striver in the Fog':'Reflective Builder'}</span><span class="bd" style="--c:${PTC[j.pathType]}">${PT[j.pathType]}</span></div></summary><div class="jd"><p class="sub">${j.sub}</p>${j.nodes.map(nodeHTML).join('')}</div></details>`;
+}
+function tg(id,o){o?openSet.add(id):openSet.delete(id)}
+function visible(){return JOURNEYS.filter(j=>j.arch===arch&&paths[j.pathType]&&(!entry||j.entry===entry))}
+function buildEntry(){
+  $('ef').innerHTML=E[arch].map(e=>{const c=JOURNEYS.filter(j=>j.arch===arch&&j.entry===e).length;return `<button class="btn${entry===e?' on':''}" style="--c:${PC[e]}" onclick="setEntry('${e}')">${PL[e]} ${c}</button>`}).join('');
+}
+function buildRows(){
+  const vs=visible();
+  $('jcount').textContent=`${vs.length} of ${JOURNEYS.filter(j=>j.arch===arch).length} journeys`;
+  $('jrows').innerHTML=vs.length?vs.map(jrow).join(''):'<p class="mut" style="padding:14px">No journeys match. Switch a filter back on.</p>';
+}
+function setArch(a){arch=a;entry=null;['SITF','TRB'].forEach(x=>$('ba-'+x).classList.toggle('on',x===a));buildEntry();buildRows()}
+function setEntry(e){entry=entry===e?null:e;buildEntry();buildRows()}
+function togglePath(p){paths[p]=!paths[p];$('pf-'+p).classList.toggle('on',!!paths[p]);buildRows()}
+function allJ(o){document.querySelectorAll('.jr').forEach(d=>d.open=o)}
+function allCP(o){document.querySelectorAll('.cp').forEach(d=>d.open=o)}
+
+/* critical paths */
+function buildCP(){
+  const SG={none:['No signal catches this','#E0896B'],sig:['Signal exists','#80AFE0'],'':['Partial signal','#ababab']};
+  $('cp-list').innerHTML=CPATHS.map(c=>{
+    const chain=c.chain.map((s,i)=>`<div class="cp-step${s.k?' k':''}"><span class="cs-lane">${s.lane}</span>${s.k?'<span class="dia sm"></span>':''}${s.t}</div>${i<c.chain.length-1?'<span class="cp-arr">›</span>':''}`).join('');
+    const links=(c.inFrom||c.outTo)?`<div class="cp-links">${c.inFrom?'Fed by '+c.inFrom.map(x=>`<span class="cp-chip in">${x}</span>`).join(''):''}${c.inFrom&&c.outTo?'<span>·</span>':''}${c.outTo?'Feeds '+c.outTo.map(x=>`<span class="cp-chip out">${x}</span>`).join(''):''}</div>`:'';
+    return `<details class="cp glass${c.hub?' hub':''}"${c.hub?' open':''}><summary><span class="cp-id">${c.id}</span><span class="cp-name">${c.name}</span>${c.hub?'<span class="tg">Hub</span>':''}<span class="bd" style="--c:${SG[c.sigType][1]}">${SG[c.sigType][0]}</span></summary><div class="cp-body"><p class="cp-carries">${c.carries}</p><div class="cp-chain">${chain}</div><div class="cp-grid"><div class="cp-f"><b>Breaks when</b>${c.breaks}</div><div class="cp-f"><b>Surfaces as</b>${c.surfaces}</div><div class="cp-f ${c.sigType}"><b>${c.sigType==='none'?'No signal catches this':'Signal that would catch it'}</b>${c.sig}</div></div>${links}</div></details>`;
+  }).join('');
+  $('cp-map').innerHTML=cpMapSVG();
+  $('cp-shared').innerHTML=SHARED.map(r=>`<div class="sh-row"><b>${r.art}</b><div>${r.on.map(x=>`<span class="cp-chip">${x}</span>`).join('')} <span class="bd" style="--c:${r.on.length>=4?'#E0896B':'#ababab'}">${r.on.length} paths</span></div><div>${r.what}</div></div>`).join('');
+  $('cp-flags').innerHTML=[
+   ['CP3 grades its own work.','One person observes the addition, reads the exit card, and then makes the routing call. Two of the three signals are self-reported by someone with a reason to perform progress. No instrument would catch a wrong route, and every one of the '+TOTAL+' journeys is routed by this loop. Separating the observer from the router is the cheapest available fix.'],
+   ['The exit card is doing five jobs.','It is the routing signal, the trust-layer check, the vocabulary-leak check, the reaction to the rose, and the exit evidence. One prompt on one card cannot carry that. Either structure the card per job, or name the checks that are not currently happening.'],
+   ['CP6 has no recovery window.','Every other path fails slowly and surfaces a session later, which leaves room to correct. The rose reveal fails in the room, one session before exit, and the comparison shown is one the participant did not choose. This is where the evidence-not-verdict commitment is most exposed and needs a resolved position before presentation.']
+  ].map(f=>`<div class="flag"><b>${f[0]}</b>${f[1]}</div>`).join('');
+}
+
+function setView(v){
+  const b=v==='bp';
+  $('v-bp').style.display=b?'flex':'none';$('v-cp').style.display=b?'none':'flex';
+  ['bp','cp'].forEach(x=>{const t=$('t-'+x);t.classList.toggle('on',x===v);t.setAttribute('aria-selected',x===v)});
+}
+
+$('hsub').textContent=`Service blueprint · ${TOTAL} customer journeys · 7 critical paths`;
+$('jh').textContent=`${TOTAL} customer journeys`;
+$('sigs').innerHTML=VSIG.map(s=>`<div><b>${s.label}</b>${s.text}</div>`).join('');
+$('dimleg').innerHTML=['reassurance','recognition','validation','value','clarity'].map(d=>`<div><span class="sw" style="--c:${PC[d]}"></span>${PL[d]}</div>`).join('');
+initLanes();buildCP();buildEntry();buildRows();
+</script>
+</body>
+</html>
