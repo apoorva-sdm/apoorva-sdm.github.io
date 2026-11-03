@@ -37,3 +37,6 @@ a.pcard:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 :root[data-theme="light"] a.pcard:hover { box-shadow: 0 18px 40px rgba(1,7,7,.14); }
 :root[data-theme="light"] .estima .e1 { color: #4a5252; }
 :root[data-theme="light"] .estima .e2 { color: #8a9292; }
+
+/* a card that is off screen pauses its looping pictures (thumbs.js marks it), so scrolling past stays light */
+.pcard[data-off] *, .pcard[data-off] *::before, .pcard[data-off] *::after { animation-play-state: paused !important; }

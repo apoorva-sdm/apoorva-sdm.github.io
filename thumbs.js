@@ -1,11 +1,18 @@
-// Selected Work thumbnails: every card's picture loops continuously (never paused).
+// Selected Work thumbnails: every card's picture loops continuously while the card is on screen;
+// off screen the scripted loops wait at the end of their round and the CSS loops pause, so scrolling stays light.
 // Jar, Float and Event Tourism are pure CSS loops; TMFL, Everest and CX Navigator are scripted here.
 (() => {
   if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const A = (el, kf, o) => el.animate(kf, { fill: 'forwards', ...o }).finished;
   const wait = ms => new Promise(r => setTimeout(r, ms));
   const soft = 'cubic-bezier(.45,0,.2,1)', smooth = 'cubic-bezier(.32,.72,0,1)';
-  const loop = async step => { for (;;) await step(); };
+  // which cards are on screen (with a little margin, so a loop is already moving when its card scrolls in)
+  const onScreen = new Map(), waiters = new Map();
+  const io = new IntersectionObserver(es => es.forEach(e => { const c = e.target; onScreen.set(c, e.isIntersecting);
+    c.toggleAttribute('data-off', !e.isIntersecting); if (e.isIntersecting) (waiters.get(c) || []).splice(0).forEach(r => r()); }), { rootMargin: '200px 0px' });
+  document.querySelectorAll('.pcard').forEach(c => io.observe(c));
+  const inView = card => onScreen.get(card) ? Promise.resolve() : new Promise(r => { if (!waiters.has(card)) waiters.set(card, []); waiters.get(card).push(r); });
+  const loop = async (card, step) => { for (;;) { await inView(card); await step(); } };
 
   // ---- TMFL: the zoomed-out phone on Home glides in, then the story plays —
   // scroll the queue, tap a case → the OTP types in, scroll to Send OTP and tap → tap John Doe, the Biometric pop-up, tap Next →
@@ -31,7 +38,7 @@
       await wait(260);
     };
     phone.style.transform = OUT;
-    loop(async () => {
+    loop(card, async () => {
       await wait(700);
       await A(phone, [{ transform: OUT }, { transform: 'none' }], { duration: 1200, easing: soft });
       await wait(500);
@@ -62,7 +69,7 @@
   const evScroll = document.getElementById('evScroll');
   if (evScroll) {
     const go = (a, b, ms) => A(evScroll, [{ transform: `translateY(${-a}px)` }, { transform: `translateY(${-b}px)` }], { duration: ms, easing: soft });
-    loop(async () => { await wait(1200); await go(0, 150, 1800); await wait(1600); await go(150, 0, 1600); await wait(2500); });
+    loop(evScroll.closest('.pcard'), async () => { await wait(1200); await go(0, 150, 1800); await wait(1600); await go(150, 0, 1600); await wait(2500); });
   }
 
   // ---- CX Navigator: zoom onto the meter; the score counts 0 → 72 while the Potential Score tag rides the arc from red to green
@@ -76,7 +83,7 @@
       const tick = now => { const t = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - t, 3); place(from + (to - from) * e); t < 1 ? requestAnimationFrame(tick) : done(); };
       requestAnimationFrame(tick); });
     cx.style.transform = FROM; place(0);
-    loop(async () => {
+    loop(cx.closest('.pcard'), async () => {
       await wait(800);
       await A(cx, [{ transform: FROM }, { transform: TO }], { duration: 1600, easing: soft });
       await run(0, 1, 1800); await wait(1400);
