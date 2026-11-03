@@ -36,6 +36,10 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .logo { left: 120px; top: 32px; width: 48px; height: 48px; border-radius: 40px; }
   .logo img { filter: var(--logoF); position: absolute; left: 6.84px; top: 14.76px; width: 34.32px; height: 18.48px; display: block; }
   .nav { left: 841px; top: 32px; display: flex; gap: 20px; align-items: center; }
+  /* the top bar stays put while the page scrolls under it: frosted glass, drawn at the stage's scale (--s, set with the stage) */
+  .topbar { position: fixed; left: 0; top: 0; z-index: 50; width: 100%; height: calc(104px * var(--s, 1)); background: rgba(1,7,7,.55);
+            -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255,255,255,.06); }
+  .topbar .tbIn { position: absolute; left: 0; top: 0; width: 1440px; height: 104px; transform: scale(var(--s, 1)); transform-origin: 0 0; }
   .nav a { font-family: 'Satoshi', sans-serif; font-weight: 400; font-size: 14px; line-height: 19px; letter-spacing: 0.28px;
            color: var(--ink); padding: 14px 20px; border-radius: 50px; text-decoration: none; white-space: nowrap;
            display: flex; align-items: center; gap: 10px; transition: background .25s; }
@@ -94,7 +98,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .foot .chess { position: absolute; left: 534px; top: 53px; margin: 0; font-family: 'Bricolage Grotesque', sans-serif; font-weight: 400; font-size: 22px;
                  line-height: 30px; letter-spacing: .44px; color: #afafaf; white-space: nowrap; }
   .foot .kspin { position: absolute; left: 494px; top: 45px; width: 30px; height: 45px; overflow: hidden; }
-  .foot .kspin img { position: absolute; left: 0; top: 0; width: 2160px; height: 45px; max-width: none; animation: kspin 5s steps(72) infinite; }
+  .foot .kspin img { position: absolute; left: 0; top: 0; width: 2160px; height: 45px; max-width: none; animation: kspin 3.5s steps(72) infinite; }
   @keyframes kspin { to { transform: translateX(-2160px); } }
   @media (prefers-reduced-motion: reduce) { .foot .kspin img { animation: none; } }
   /* prev / next pills, as on About */
@@ -172,12 +176,16 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
       <svg viewBox="0 0 16 16"><path d="M0 8C0 10.1217 0.842855 12.1566 2.34315 13.6569C3.84344 15.1571 5.87827 16 8 16C10.1217 16 12.1566 15.1571 13.6569 13.6569C15.1571 12.1566 16 10.1217 16 8C16 5.87827 15.1571 3.84344 13.6569 2.34315C12.1566 0.842855 10.1217 0 8 0C5.87827 0 3.84344 0.842855 2.34315 2.34315C0.842855 3.84344 0 5.87827 0 8ZM5.904 10.803C5.85788 10.8508 5.8027 10.8888 5.7417 10.9151C5.6807 10.9413 5.61509 10.955 5.5487 10.9556C5.48231 10.9562 5.41647 10.9436 5.35502 10.9184C5.29357 10.8933 5.23775 10.8561 5.1908 10.8092C5.14386 10.7623 5.10673 10.7064 5.08159 10.645C5.05645 10.5835 5.0438 10.5177 5.04437 10.4513C5.04495 10.3849 5.05874 10.3193 5.08495 10.2583C5.11115 10.1973 5.14924 10.1421 5.197 10.096L9.293 6H6.525C6.39239 6 6.26521 5.94732 6.17145 5.85355C6.07768 5.75979 6.025 5.63261 6.025 5.5C6.025 5.36739 6.07768 5.24021 6.17145 5.14645C6.26521 5.05268 6.39239 5 6.525 5H10.5C10.6326 5 10.7598 5.05268 10.8536 5.14645C10.9473 5.24021 11 5.36739 11 5.5V9.475C11 9.60761 10.9473 9.73479 10.8536 9.82855C10.7598 9.92232 10.6326 9.975 10.5 9.975C10.3674 9.975 10.2402 9.92232 10.1464 9.82855C10.0527 9.73479 10 9.60761 10 9.475V6.707L5.904 10.803Z" fill="currentColor"/></svg>
     </a>
   </nav>
+<script>// lift the logo and nav out of the scaled stage into the fixed top bar (a fixed bar can't live inside a scaled box)
+(() => { const bar = document.createElement('header'), inner = document.createElement('div'); bar.className = 'topbar'; bar.id = 'topbar'; inner.className = 'tbIn'; bar.append(inner);
+  ['themeBtn', 'themeTip', 'logo', 'nav'].forEach(id => { const el = document.getElementById(id); if (el) inner.append(el); });
+  document.documentElement.style.setProperty('--s', innerWidth / 1440); document.body.append(bar); })();</script>
 
 </div></div>
 <script>
 const stage = document.getElementById('stage'), shell = document.getElementById('shell');
 let H = +stage.dataset.h;
-function fit() { const s = innerWidth / 1440; stage.style.transform = `scale(${s})`; shell.style.height = H * s + 'px'; }
+function fit() { const s = innerWidth / 1440; document.documentElement.style.setProperty('--s', s); stage.style.transform = `scale(${s})`; shell.style.height = H * s + 'px'; }
 fit(); addEventListener('resize', fit);
 // Brave can miss a window's final size (full screen, a resize while the tab was hidden): check again on return and every so often
 let fitW = innerWidth; addEventListener('pageshow', fit); document.addEventListener('visibilitychange', fit);
