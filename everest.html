@@ -66,7 +66,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .glass { position: relative; isolation: isolate;
     background: linear-gradient(135deg, rgba(var(--hi), calc(0.085 * var(--hiA))) 0%, rgba(var(--hi), calc(0.10 * var(--hiA))) 55%, rgba(var(--hi), calc(0.13 * var(--hiA))) 100%);
     -webkit-backdrop-filter: blur(4px); backdrop-filter: blur(4px); }
-  .glass::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none;
+  .glass::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none; clip-path: var(--ring, none);
     background: conic-gradient(from 0deg,
       rgba(var(--hi), calc(.37 * var(--hiA))) 0deg, rgba(var(--hi), calc(.37 * var(--hiA))) calc(var(--c,72deg) + 0.5deg),
       rgba(var(--hi), calc(.03 * var(--hiA))) calc(var(--c,72deg) + 6deg), rgba(var(--hi), calc(.03 * var(--hiA))) calc(var(--c,72deg) + 11deg),
@@ -641,4 +641,13 @@ col.querySelectorAll('.gal').forEach(g => sideways(g, 330));
 </script>
 <script src="thumbs.js"></script>
 <script src="mailcopy.js"></script>
+<script>
+// glass rim: its thin ring is cut with a clip path as well as the mask, so it stays a ring where Safari fails to draw the mask
+const glassRing = el => { const w = el.offsetWidth, h = el.offsetHeight; if (!w || !h) return; const b = getComputedStyle(el).borderTopLeftRadius, n = parseFloat(b) || 0;
+  const r = Math.min(/%/.test(b) ? Math.min(w, h) * n / 100 : n, w / 2, h / 2), box = (o, q) => { const W = w - 2 * o, H = h - 2 * o; q = Math.max(q, 0);
+    return `M${o + q} ${o}h${W - 2 * q}a${q} ${q} 0 0 1 ${q} ${q}v${H - 2 * q}a${q} ${q} 0 0 1 ${-q} ${q}h${2 * q - W}a${q} ${q} 0 0 1 ${-q} ${-q}v${2 * q - H}a${q} ${q} 0 0 1 ${q} ${-q}z`; };
+  el.style.setProperty('--ring', `path(evenodd, '${box(0, r)}${box(1, r - 1)}')`); };
+const glassRO = window.ResizeObserver ? new ResizeObserver(es => es.forEach(e => glassRing(e.target))) : null;
+document.querySelectorAll('.glass').forEach(el => { glassRing(el); if (glassRO) glassRO.observe(el); });
+</script>
 </body></html>
