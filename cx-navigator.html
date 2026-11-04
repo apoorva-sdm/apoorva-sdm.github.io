@@ -608,8 +608,10 @@ col.querySelectorAll('.gal').forEach(g => sideways(g, 330));
   const go = () => { if (ready && scrolled && seen && !v.ended) { const p = v.play(); if (p) p.catch(offer); } };
   v.addEventListener('canplay', () => { ready = true; go(); }, { once: true });
   const url = v.dataset.src;
-  fetch(url).then(x => x.ok ? x.blob() : Promise.reject()).then(b => URL.createObjectURL(new Blob([b], { type: 'video/mp4' })), () => url)
-    .then(src => { v.src = src; v.preload = 'auto'; v.load(); });
+  // a download that stalls never holds the video back: after 6 seconds it gives up and the clip streams instead
+  const stop = new AbortController(), limit = setTimeout(() => stop.abort(), 6000);
+  fetch(url, { signal: stop.signal }).then(x => x.ok ? x.blob() : Promise.reject()).then(b => URL.createObjectURL(new Blob([b], { type: 'video/mp4' })), () => url)
+    .then(src => { clearTimeout(limit); v.src = src; v.preload = 'auto'; v.load(); });
   addEventListener('scroll', () => { if (!scrolled) { scrolled = true; go(); } }, { passive: true, once: true });
   new IntersectionObserver(([e]) => { seen = e.intersectionRatio >= .5; seen ? go() : v.pause(); }, { threshold: [0, .5] }).observe(v);
   v.addEventListener('ended', offer);
