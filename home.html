@@ -749,7 +749,7 @@ async function intro() {
   await wait(550); reveal($('sub'), 2300, 14, 8);
   await wait(550); await reveal($('tag'), 2200, 10, 6);
 }
-// ---- 2. first scroll: board, the knight turning down onto it, then the strengths left → right
+// ---- 2. on page load (once per load; a refresh plays it again): board, the knight turning down onto it, then the strengths left → right
 async function scene() {
   if (revealed) return; revealed = true;
   await loaded;                                               // doesn't wait for the heading's fade to finish
@@ -762,7 +762,7 @@ async function scene() {
     c.addEventListener('animationend', () => { c.classList.remove('in'); c.classList.add('ready'); }, { once: true });
   }, 2000 + i * 380));
 }
-// the first scroll plays the scene and glides the page so the whole scene is in view; scrolling is never blocked
+// the first scroll glides the page so the whole scene is in view; scrolling is never blocked
 const keys = new Set(['ArrowDown', 'PageDown', ' ', 'Spacebar', 'End']);
 function frameScene() {
   if (window.__toFooter) return;                                         // heading to the footer (Get In Touch): don't pull back up
@@ -788,6 +788,7 @@ if (reduced) {   // people who ask their device for less motion get the finished
   scrollTo(0, 0);
   addEventListener('wheel', onWheel, { passive: false }); addEventListener('touchmove', onTouch, { passive: true }); addEventListener('keydown', onKey); addEventListener('scroll', onScroll, { passive: true });
   introDone = intro();
+  scene();                                                    // as soon as the video and board are ready, no scroll needed
 }
 // (the light-mode tip is off with the theme switch, so nothing runs on every scroll for it)
 // ---- skills: opening one slides it so its name grows away from the knight (left ones leftwards, the top one from its centre)

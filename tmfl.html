@@ -179,6 +179,8 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   /* slides sit 40px apart so on a scaled page the next screen's edge never peeks into view */
   .F.evo .track { position: absolute; left: 0; top: 0; display: flex; gap: 40px; will-change: transform; transition: transform 1.2s cubic-bezier(.65,0,.35,1); }
   .F.evo .slide { position: relative; flex: none; width: 1016px; height: 412px; }
+  /* below the screens: the arrows at the two corners, the dots between them */
+  .F.evo .arrow { top: 554px; } .F.evo .arrow.prev { left: 0; } .F.evo .arrow.next { right: 0; }
   .F .dots { left: 0; width: 1016px; height: 16px; display: flex; justify-content: center; gap: 10px; }
   .F .dots button { width: 7px; height: 7px; padding: 0; border: 0; border-radius: 50%; background: rgba(255,255,255,.22); cursor: pointer; transition: background-color .4s ease, width .4s ease; margin-top: 4px; }
   .F .dots button.on { width: 20px; border-radius: 4px; background: rgba(255,255,255,.7); }
@@ -345,6 +347,9 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .F .mcar .notes > div { position: relative; left: 0 !important; top: 0 !important; width: 100% !important; height: auto !important; padding: 4px; box-sizing: border-box; }
   .F .mcar .notes > div:first-child { padding-left: 0; }
   .F .mcar .notes p { position: static; width: auto !important; height: auto !important; text-align: left !important; }
+  /* the words beside the desktop screens (Scheme, CPC): heading 16px, body 14px */
+  .F .mcar .notes p.b4 { font-size: 16px !important; }
+  .F .mcar .notes p.s4 { font-size: 14px !important; }
   /* Final solutions: each module's screens glide by slowly; arrows at the corners below, dots between */
   .F .mcar .win { left: 0; top: 0; overflow: hidden; }
   .F .mcar .track { position: absolute; left: 0; top: 0; display: flex; gap: 40px; will-change: transform; transition: transform 1.2s cubic-bezier(.65,0,.35,1); }
@@ -600,7 +605,7 @@ addEventListener('resize', () => { fitBar(); marked = -1; mark(); }); fitBar(); 
 const fade = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); fade.unobserve(e.target); } }), { rootMargin: '0px 0px -8% 0px', threshold: .08 });
 sections.forEach(s => fade.observe(s));
 
-// ---- Design evolution: the tabs and the dots both pick an iteration; on its own it glides on slowly
+// ---- Design evolution: the tabs, the dots and the arrows all pick an iteration; on its own it glides on slowly
 (() => {
   const ev = col.querySelector('.F.evo'); if (!ev) return;
   const track = ev.querySelector('.track'), tabs = [...ev.querySelectorAll('.evTab')], dots = [...ev.querySelectorAll('.dots button')], N = dots.length, HOLD = 6000;
@@ -609,12 +614,18 @@ sections.forEach(s => fade.observe(s));
     dots.forEach((d, n) => d.classList.toggle('on', n === k % N));
     tabs.forEach((t, n) => { t.classList.toggle('on', n === k % N); t.setAttribute('aria-selected', String(n === k % N)); }); };
   // after the copy of the first iteration slides in, quietly jump back to the real one
-  track.addEventListener('transitionend', e => { if (e.target === track && i === N) { go(0, false); track.offsetWidth; } });
+  // (a timer backs this up in case the browser skips the transitionend event, so the copy never lingers)
+  const settle = () => { if (i === N) { go(0, false); track.offsetWidth; } };
+  track.addEventListener('transitionend', e => { if (e.target === track) settle(); });
+  const step = k => { go(k); if (i === N) setTimeout(settle, 1400); };
   const live = () => seen && !hover && !reduce;
-  const tick = () => { clearTimeout(timer); timer = setTimeout(() => { if (live()) go(i + 1); tick(); }, HOLD); };
+  const tick = () => { clearTimeout(timer); timer = setTimeout(() => { if (live()) step(i + 1); tick(); }, HOLD); };
   ev.addEventListener('mouseenter', () => { hover = true; }); ev.addEventListener('mouseleave', () => { hover = false; tick(); });
   const pick = n => { if (n === i % N) return; go(n); tick(); };
   dots.forEach((d, n) => d.addEventListener('click', () => pick(n)));
+  // arrows: one iteration either way, wrapping round at the two ends; go() moves the tab along with it
+  ev.querySelector('.arrow.next').addEventListener('click', () => { settle(); step(i + 1); tick(); });
+  ev.querySelector('.arrow.prev').addEventListener('click', () => { settle(); if (i === 0) { go(N, false); track.offsetWidth; } step(i - 1); tick(); });
   tabs.forEach((t, n) => { t.addEventListener('click', () => pick(n));
     t.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); pick(n); }
       if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') { const m = (n + (e.key === 'ArrowRight' ? 1 : N - 1)) % N; pick(m); tabs[m].focus(); } }); });
@@ -690,7 +701,7 @@ col.querySelectorAll('.F.pulse .pz').forEach(z => { const tip = z.nextElementSib
 
 // ---- Final solutions: each module's screens glide by slowly and loop; hover pauses, arrows and dots step
 col.querySelectorAll('.mcar').forEach(car => {
-  const W = +car.dataset.w, track = car.querySelector('.track'), dots = [...car.querySelectorAll('.dots button')], N = dots.length, HOLD = 6000;
+  const W = +car.dataset.w, track = car.querySelector('.track'), dots = [...car.querySelectorAll('.dots button')], N = dots.length, HOLD = 5000;   // the same pace as CX Navigator
   let i = 0, timer = 0, hover = false, seen = false;
   const go = (k, anim = true) => { track.style.transition = anim ? '' : 'none'; track.style.transform = `translateX(${-(W + 40) * k}px)`; i = k;
     dots.forEach((d, n) => d.classList.toggle('on', n === k % N)); };
@@ -698,7 +709,8 @@ col.querySelectorAll('.mcar').forEach(car => {
   const settle = () => { if (i === N) { go(0, false); track.offsetWidth; } };
   track.addEventListener('transitionend', e => { if (e.target === track) settle(); });
   const tick = () => { clearTimeout(timer); timer = setTimeout(() => { if (seen && !hover && !reduce) { go(i + 1); if (i === N) setTimeout(settle, 1400); } tick(); }, HOLD); };
-  car.addEventListener('mouseenter', () => { hover = true; }); car.addEventListener('mouseleave', () => { hover = false; tick(); });
+  // these carousels fill the column, so a pointer resting anywhere on them must not freeze them: only the arrows and dots hold them
+  car.querySelectorAll('.arrow, .dots').forEach(c => { c.addEventListener('mouseenter', () => { hover = true; }); c.addEventListener('mouseleave', () => { hover = false; tick(); }); });
   dots.forEach((d, n) => d.addEventListener('click', () => { if (n !== i % N) go(n); tick(); }));
   car.querySelector('.next').addEventListener('click', () => { if (i === N) settle(); go(i + 1); if (i === N) setTimeout(settle, 1400); tick(); });
   car.querySelector('.prev').addEventListener('click', () => { if (i === 0 || i === N) { go(N, false); track.offsetWidth; } go(i - 1); tick(); });
