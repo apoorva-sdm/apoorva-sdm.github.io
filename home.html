@@ -21,7 +21,12 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
 <!-- load the hero visuals first so nothing pops in -->
 <link rel="preload" as="image" href="board2-export.webp" fetchpriority="high">
 <link rel="preload" as="image" href="knight-fig-src.webp" fetchpriority="high">
-<script>document.documentElement.dataset.theme = 'dark';</script>
+<script>document.documentElement.dataset.theme = 'dark';
+// the entrance plays on the first visit in a tab and on every browser refresh; coming back from another page shows the finished scene straight away
+(() => { let seen = false; try { seen = sessionStorage.getItem('homeSeen') === '1'; sessionStorage.setItem('homeSeen', '1'); } catch (e) { seen = document.referrer.indexOf(location.origin) === 0; }
+  const nav = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+  if (seen && !(nav && nav.type === 'reload') && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('settled'); })();
+</script>
 <style>
   /* two themes: dark (the Figma design) and light. Everything colour-related reads these. */
   :root { --bg: #010707; --bgrgb: 1,7,7; --ink: #f2f2f2; --ink2: #fff; --hook: #e4e4e4; --blue: #729FC3;
@@ -424,6 +429,11 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
 
   /* everything starts hidden; the script reveals it */
   .pre { opacity: 0; }
+  /* already seen: everything is in its final place from the first paint */
+  .settled .pre { opacity: 1; }
+  .settled .rig, .settled .rig .still { opacity: 1; }
+  .settled .rig canvas { visibility: hidden; }
+  .settled .skill:not(.ready) { opacity: 1; transform: none; filter: none; }
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="knightLight" color-interpolation-filters="sRGB"><feComponentTransfer>
@@ -600,10 +610,12 @@ const wait = ms => new Promise(r => setTimeout(r, ms));
 function tween(ms, fn, ease = E.out) { return new Promise(r => { const t0 = performance.now();
   const step = now => { const p = clamp((now - t0) / ms); fn(ease(p)); p < 1 ? requestAnimationFrame(step) : r(); }; requestAnimationFrame(step); }); }
 // soft entrance: fade + small rise + unblur, all on the GPU-friendly properties
-function reveal(el, ms, rise = 14, blur = 8) { el.style.willChange = 'opacity, transform, filter';
+function reveal(el, ms, rise = 14, blur = 8) {
   const keep = el.dataset.themed !== undefined ? ' var(--logoF)' : '';     // elements that also carry a theme filter keep it
-  return tween(ms, p => { el.style.opacity = p; el.style.transform = `translateY(${rise * (1 - p)}px)`; el.style.filter = p < 1 ? `blur(${blur * (1 - p)}px)${keep}` : ''; })
-    .then(() => { el.style.willChange = ''; }); }
+  // run by the browser's compositor rather than frame by frame in script, so it stays smooth while images and video are still loading
+  const a = el.animate([{ opacity: 0, transform: `translateY(${rise}px)`, filter: `blur(${blur}px)${keep}` }, { opacity: 1, transform: 'translateY(0px)', filter: `blur(0px)${keep}` }],
+    { duration: ms, easing: 'cubic-bezier(.33,1,.68,1)', fill: 'both' });
+  return a.finished.then(() => { el.style.opacity = 1; el.style.transform = 'translateY(0px)'; el.style.filter = ''; a.cancel(); }); }
 
 // ---- the turn video, drawn with real transparency: left half = colour, right half = see-through mask
 const gl = cv.getContext('webgl', { premultipliedAlpha: true, alpha: true });
@@ -734,22 +746,23 @@ function inMemory(v) {
 }
 // the heading only waits for the fonts and the pictures at the top; the knight scene also waits for its video and board
 const decoded = sel => [...document.querySelectorAll(sel)].map(i => i.decode().catch(() => {}));
+const SETTLED = document.documentElement.classList.contains('settled');
 const heroReady = Promise.all([window.FONTS, ...decoded('#inf img, #logo img')]);
 const loaded = Promise.all([
   heroReady,
-  Promise.race([inMemory(video), wait(10000)]),   // never wait forever
+  SETTLED || Promise.race([inMemory(video), wait(10000)]),   // never wait forever; the finished scene doesn't need the video at all
   ...decoded('#boardWrap img, #still img'),
 ]);
 let introDone, revealed = false;
 async function intro() {
-  await heroReady; await wait(150);
+  await heroReady; await wait(100);
   setTimeout(carousel, 2000);   // first phrase change 2s after the page appears
   // the nav is simply there (the same on every page); only the content below it makes its entrance
-  await wait(350); reveal($('hero'), 2400, 16, 10); reveal($('inf'), 2400, 16, 10);
-  await wait(550); reveal($('sub'), 2300, 14, 8);
-  await wait(550); await reveal($('tag'), 2200, 10, 6);
+  await wait(100); reveal($('hero'), 1500, 16, 10); reveal($('inf'), 1500, 16, 10);
+  await wait(350); reveal($('sub'), 1400, 14, 8);
+  await wait(350); await reveal($('tag'), 1300, 10, 6);
 }
-// ---- 2. on page load (once per load; a refresh plays it again): board, the knight turning down onto it, then the strengths left → right
+// ---- 2. first scroll: board, the knight turning down onto it, then the strengths left → right
 async function scene() {
   if (revealed) return; revealed = true;
   await loaded;                                               // doesn't wait for the heading's fade to finish
@@ -762,7 +775,7 @@ async function scene() {
     c.addEventListener('animationend', () => { c.classList.remove('in'); c.classList.add('ready'); }, { once: true });
   }, 2000 + i * 380));
 }
-// the first scroll glides the page so the whole scene is in view; scrolling is never blocked
+// the first scroll plays the scene and glides the page so the whole scene is in view; scrolling is never blocked
 const keys = new Set(['ArrowDown', 'PageDown', ' ', 'Spacebar', 'End']);
 function frameScene() {
   if (window.__toFooter) return;                                         // heading to the footer (Get In Touch): don't pull back up
@@ -786,10 +799,16 @@ if (reduced) {   // people who ask their device for less motion get the finished
 } else {
   if ('scrollRestoration' in history) history.scrollRestoration = 'manual';   // always open at the top
   scrollTo(0, 0);
-  addEventListener('wheel', onWheel, { passive: false }); addEventListener('touchmove', onTouch, { passive: true }); addEventListener('keydown', onKey); addEventListener('scroll', onScroll, { passive: true });
-  introDone = intro();
-  scene();                                                    // as soon as the video and board are ready, no scroll needed
+  if (SETTLED) settle();
+  else { addEventListener('wheel', onWheel, { passive: false }); addEventListener('touchmove', onTouch, { passive: true }); addEventListener('keydown', onKey); addEventListener('scroll', onScroll, { passive: true });
+    introDone = intro(); }
 }
+// the finished scene, with nothing to wait for: the stylesheet has it in place, this hands over to the live page
+function settle() { revealed = true; stopListening(); document.documentElement.classList.add('settled');
+  setTimeout(carousel, 2000); pose(1); cv.style.visibility = 'hidden'; knightLanded = true;
+  document.querySelectorAll('.skill').forEach(c => c.classList.add('ready')); }
+// coming back with the browser's back button can restore this page exactly as it was left: finish the scene if it never played
+addEventListener('pageshow', e => { if (e.persisted && !revealed && !reduced) settle(); });
 // (the light-mode tip is off with the theme switch, so nothing runs on every scroll for it)
 // ---- skills: opening one slides it so its name grows away from the knight (left ones leftwards, the top one from its centre)
 const skillEls = [...document.querySelectorAll('.skill')];
