@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preload" as="image" href="cx/560-6313.svg?v=tnvfsq" fetchpriority="high">
 <link rel="stylesheet" href="fonts/fonts.css">
 <script>
 // start loading every face the page uses straight away, and let the page wait for exactly these before measuring anything
@@ -578,8 +579,8 @@ col.querySelectorAll('.pair, .F.evo, .F.more, .gal').forEach(c => early.observe(
 (() => { const start = () => { const q = [...document.querySelectorAll('img[loading="lazy"]')];
     const one = im => new Promise(ok => { if (im.complete && im.naturalWidth) return ok(); im.addEventListener('load', ok, { once: true }); im.addEventListener('error', ok, { once: true });
       im.loading = 'eager'; setTimeout(ok, 4000); }).then(() => im.decode ? im.decode().catch(() => {}) : 0);
-    const next = () => { const b = q.splice(0, 4); if (b.length) Promise.all(b.map(one)).then(next); }; next(); };
-  document.readyState === 'complete' ? start() : addEventListener('load', start, { once: true }); })();
+    const next = () => { const b = q.splice(0, 6); if (b.length) Promise.all(b.map(one)).then(next); }; next(); };
+  start(); })();
 
 // ---- sideways rows (View projects, picture rows): arrows and edge shadows appear only when there is more to see that way
 const sideways = (box, step) => {
@@ -634,5 +635,6 @@ const glassRing = el => { const w = el.offsetWidth, h = el.offsetHeight; if (!w 
 const glassRO = window.ResizeObserver ? new ResizeObserver(es => es.forEach(e => glassRing(e.target))) : null;
 document.querySelectorAll('.glass').forEach(el => { glassRing(el); if (glassRO) glassRO.observe(el); });
 </script>
+<script src="warm.js"></script>
 <script src="loop/loop.js?v=17"></script>
 </body></html>
