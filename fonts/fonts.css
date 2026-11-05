@@ -2,6 +2,7 @@
    Satoshi: Fontshare (ITF Free Font License). Bricolage Grotesque: Google Fonts (OFL). */
 @font-face { font-family: 'Satoshi'; src: url('satoshi-300.woff2') format('woff2'); font-weight: 300; font-style: normal; font-display: block; }
 @font-face { font-family: 'Satoshi'; src: url('satoshi-400.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: block; }
+@font-face { font-family: 'Satoshi'; src: url('satoshi-300-italic.woff2') format('woff2'); font-weight: 300; font-style: italic; font-display: block; }
 @font-face { font-family: 'Satoshi'; src: url('satoshi-400-italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: block; }
 @font-face { font-family: 'Satoshi'; src: url('satoshi-500.woff2') format('woff2'); font-weight: 500; font-style: normal; font-display: block; }
 @font-face { font-family: 'Satoshi'; src: url('satoshi-700.woff2') format('woff2'); font-weight: 700; font-style: normal; font-display: block; }

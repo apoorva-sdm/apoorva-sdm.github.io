@@ -124,7 +124,8 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   /* every thumbnail is the 566 x 722 design shown at 90%: 509.4 x 649.8, 56px apart */
   .stage > .pcard { transform: scale(.9); transform-origin: 0 0; }
   .stage > a.pcard:hover { transform: translateY(-6px) scale(.9); }
-</style></head>
+</style><link rel="stylesheet" href="loop/loop.css?v=1">
+</head>
 <body>
 <div id="shell"><div class="stage" id="stage" data-h="2447.6" style="height:2447.6px">
 <script>(() => { const s = innerWidth / 1440, st = document.getElementById('stage'); st.style.transform = `scale(${s})`; document.getElementById('shell').style.height = 2447.6 * s + 'px'; })();</script>
@@ -211,4 +212,5 @@ const glassRing = el => { const w = el.offsetWidth, h = el.offsetHeight; if (!w 
 const glassRO = window.ResizeObserver ? new ResizeObserver(es => es.forEach(e => glassRing(e.target))) : null;
 document.querySelectorAll('.glass').forEach(el => { glassRing(el); if (glassRO) glassRO.observe(el); });
 </script>
+<script src="loop/loop.js?v=1"></script>
 </body></html>

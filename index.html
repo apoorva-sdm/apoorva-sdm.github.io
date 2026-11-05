@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8">
+<html lang="en" class="homePage"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="fonts/fonts.css">
 <link rel="stylesheet" href="cards.css">
@@ -433,7 +433,8 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .settled .rig, .settled .rig .still { opacity: 1; }
   .settled .rig canvas { visibility: hidden; }
   .settled .skill:not(.ready) { opacity: 1; transform: none; filter: none; }
-</style></head>
+</style><link rel="stylesheet" href="loop/loop.css?v=1">
+</head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="knightLight" color-interpolation-filters="sRGB"><feComponentTransfer>
 <feFuncR type="table" tableValues="0.0000 0.0530 0.1060 0.1591 0.2121 0.2651 0.3181 0.3711 0.4247 0.4622 0.4780 0.5114 0.5443 0.5737 0.6027 0.6299 0.6540 0.6762 0.6973 0.7180 0.7368 0.7540 0.7705 0.7847 0.8000 0.8114 0.8225 0.8383 0.8462 0.8599 0.8660 0.8788 0.8827 0.8971 0.8987 0.9091 0.9192 0.9236 0.9329 0.9387 0.9465 0.9490 0.9569 0.9609 0.9661 0.9727 0.9767 0.9806 0.9843 0.9847 0.9885 0.9895 0.9926 0.9961 0.9964 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000 1.0000"/>
@@ -661,6 +662,7 @@ function pose(p) {
   const blur = 10 * (1 - E.out(p / 0.42));                   // …out of a soft blur
   rig.style.filter = blur > 0.05 ? `blur(${blur.toFixed(2)}px)` : 'none';
   still.style.opacity = noVideo ? 1 : E.inOut((p - 0.76) / 0.24);   // long, soft blend into your exact image          // hand over to the exact image once it has landed
+  cv.style.opacity = 1 - E.inOut((p - 0.85) / 0.15);                   // the turning knight fades out as the still fades in. Left on top of each other the two add up to a brighter knight, which then drops the moment the turn is hidden
   rig.style.transform = `translate3d(${DRIFT(p).toFixed(3)}px, ${LIFTY(p).toFixed(3)}px, 0) rotate(${ROLL(p).toFixed(3)}deg) scale(${SCALE(p).toFixed(4)})`;
 }
 const TURN_S = 1.9;               // seconds for the knight's turn and landing (was 2.6; quicker on 3 Nov, same easing)
@@ -765,15 +767,18 @@ async function intro() {
   setTimeout(carousel, 2000);   // first phrase change 2s after the page appears
   // the nav is simply there (the same on every page); only the content below it makes its entrance
   await wait(100); reveal($('hero'), 1500, 16, 10); reveal($('inf'), 1500, 16, 10);
-  await wait(350); reveal($('sub'), 1400, 14, 8);
+  await wait(350); reveal($('sub'), 1400, 14, 8); window.__loopIn = true; dispatchEvent(new Event('loopin'));   // Loop and his pill come in with the subtitle
   await wait(350); await reveal($('tag'), 1300, 10, 6);
 }
 // ---- 2. first scroll: board, the knight turning down onto it, then the strengths left → right
+// Loop waits on his pill until the knight scene has played, then lives in the nav until the page is refreshed
+function loopUp() { window.__loopUp = true; dispatchEvent(new Event('loopup')); }
 async function scene() {
   if (revealed) return; revealed = true;
   await loaded;                                               // doesn't wait for the heading's fade to finish
   $('fadeBottom').style.opacity = 1;
   playTurn();                                                 // 0 → 1.9s: the knight turns and lands
+  setTimeout(loopUp, 300);                                    // Loop glides up to the nav while the knight turns
   reveal($('boardWrap'), 1700, 30, 0);                        // 0 → 1.7s: the board comes up with it
   // from 2.0s (just after the knight lands): the five skills rise in one at a time, left → right, ~0.38s apart
   [...document.querySelectorAll('.skill')].forEach((c, i) => setTimeout(() => {
@@ -810,7 +815,7 @@ if (reduced) {   // people who ask their device for less motion get the finished
     introDone = intro(); }
 }
 // the finished scene, with nothing to wait for: the stylesheet has it in place, this hands over to the live page
-function settle() { revealed = true; stopListening(); document.documentElement.classList.add('settled');
+function settle() { revealed = true; stopListening(); loopUp(); document.documentElement.classList.add('settled');
   setTimeout(carousel, 2000); pose(1); cv.style.visibility = 'hidden'; knightLanded = true;
   document.querySelectorAll('.skill').forEach(c => c.classList.add('ready')); }
 // coming back with the browser's back button can restore this page exactly as it was left: finish the scene if it never played
@@ -874,4 +879,6 @@ window.__scene = scene;   // for testing
 </script>
 <script src="thumbs.js"></script>
 <script src="mailcopy.js"></script>
+
+<script src="loop/loop.js?v=1"></script>
 </body></html>
