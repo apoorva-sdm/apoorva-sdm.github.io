@@ -760,4 +760,11 @@ const glassRing = el => { const w = el.offsetWidth, h = el.offsetHeight; if (!w 
 const glassRO = window.ResizeObserver ? new ResizeObserver(es => es.forEach(e => glassRing(e.target))) : null;
 document.querySelectorAll('.glass').forEach(el => { glassRing(el); if (glassRO) glassRO.observe(el); });
 </script>
+<script>// Safari only starts a lazy picture when it is almost on screen, so thumbnails such as the Float logo arrived late. Once the page has loaded, fetch them in the background, four at a time
+(() => { const start = () => { const q = [...document.querySelectorAll('img[loading="lazy"]')];
+    const next = () => { const im = q.shift(); if (!im) return; im.loading = 'eager'; const go = () => (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(next);
+      if (im.complete) go(); else { im.addEventListener('load', go, { once: true }); im.addEventListener('error', next, { once: true }); } };
+    for (let i = 0; i < 4; i++) next(); };
+  const go = () => setTimeout(start, 400);
+  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true }); })();</script>
 </body></html>

@@ -27,6 +27,9 @@ a.pcard:focus-visible { outline: 2px solid var(--blue); outline-offset: 4px; }
 /* tags fill the panel's width with even 13.5px gaps (as on the CX Navigator card); each tag grows a little to get there, text centred */
 .pcard .tags { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 13.5px; }
 .pcard .tags span { flex: 1 1 auto; text-align: center; background: var(--tagBg); color: var(--tagInk); border: var(--tagBd); }
+/* four pills share one row: a tighter gap and side padding, so they fit the panel */
+.pcard .tags.four { gap: 12px 8px; }
+.pcard .tags.four span { padding-left: 16px; padding-right: 16px; }
 /* the darker paper / vibe-coding cards: shorter, fainter panel, regular-weight title */
 .pcard.dark { background: #161616; --c1: #e4e4e4; --c2: #e4e4e4; }
 .pcard.dark .panel { top: 510px; height: 212px; gap: 0; background: rgba(255,255,255,.04);

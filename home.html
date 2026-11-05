@@ -2,7 +2,7 @@
 <html lang="en" class="homePage"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="fonts/fonts.css">
-<link rel="stylesheet" href="cards.css">
+<link rel="stylesheet" href="cards.css?v=2">
 <!-- the page's own fonts start downloading at once; Inter / Open Sans (only inside two thumbnails) load without holding the page up -->
 <link rel="preload" as="font" type="font/woff2" href="fonts/satoshi-400.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="fonts/satoshi-500.woff2" crossorigin>
@@ -510,7 +510,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
     <p class="brand" style="left:438px">AI SaaS</p>
     <p class="brand cplx" style="left:41.6px;top:31.7px">Complexity: High</p>
     <div class="panel"><div><p class="t nw">Shaping Everest’s Custom Agentic AI ERP</p><p class="s">Industry-specific AI Admin ERP winning billable project phase - 2</p></div>
-      <p class="tags"><span>AI Problem Solving</span><span>Product Startegy</span><span>UX Design</span></p></div>
+      <p class="tags"><span>AI Problem Solving</span><span>Product Strategy</span><span>UX Design</span></p></div>
   </div>
   <div class="pcard w abs" style="left:182.6px;top:3087.6px;background:#bfe0e8 url(work/cx-bg-nov3.webp) center / cover no-repeat;--pb:20px;--c1:#000;--c2:#000;--tagBg:rgba(255,255,255,.18);--tagInk:#010707"><a class="cardLink" href="cx-navigator.html" aria-label="Reimagining customer strategy through CX Navigator"></a>
     <div class="laptop art" id="cxLap" aria-hidden="true"><div class="lid"><img loading="lazy" decoding="async" src="work/cx-screen.webp" alt="" style="width:720px;height:512px"><span class="cxNum" id="cxNum">72</span><span class="cxTag" id="cxTag">Potential Score</span></div><div class="base"></div></div>
@@ -533,7 +533,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
     <p class="brand" style="left:387px;top:26px">Value Creation</p>
     <p class="brand cplx" style="left:35.9px;top:26px">Complexity: High</p>
     <div class="panel"><div><p class="t nw">Building Float: From Zero to First Revenue</p><p class="s">₹1,560 in revenue and 85.7% return-intent rate in three MVP iterations</p></div>
-      <p class="tags"><span>Service Design</span><span>MVP</span><span>GTM</span><span>Business Design</span></p></div>
+      <p class="tags four"><span>Service Design</span><span>MVP</span><span>Innovation</span><span>Service Audit</span></p></div>
   </div>
   <div class="pcard w abs" style="left:748px;top:3087.6px;background:#b9c9dc url(work/et-bg-nov3.webp) center / cover no-repeat;--c1:#000;--c2:#000;--tagBg:rgba(139,173,204,.2);--tagInk:#222"><a class="cardLink" href="event-tourism.html" aria-label="Tracing cultural evolution for event tourism in Gujarat"></a>
     <span class="art" style="left:85px;top:115px;width:353px;height:303px;overflow:hidden"><img loading="lazy" decoding="async" src="work/event-lion.webp" alt="" style="position:absolute;left:0;top:0;width:118.98%;height:138.61%;max-width:none"></span>
@@ -879,4 +879,11 @@ window.__scene = scene;   // for testing
 <script src="thumbs.js"></script>
 <script src="mailcopy.js"></script>
 
+<script>// Safari only starts a lazy picture when it is almost on screen, so thumbnails such as the Float logo arrived late. Once the page has loaded, fetch them in the background, four at a time
+(() => { const start = () => { const q = [...document.querySelectorAll('img[loading="lazy"]')];
+    const next = () => { const im = q.shift(); if (!im) return; im.loading = 'eager'; const go = () => (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(next);
+      if (im.complete) go(); else { im.addEventListener('load', go, { once: true }); im.addEventListener('error', next, { once: true }); } };
+    for (let i = 0; i < 4; i++) next(); };
+  const go = () => setTimeout(start, 400);
+  if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true }); })();</script>
 </body></html>
