@@ -261,7 +261,6 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   @media (prefers-reduced-motion: reduce) { .wave.waving img { animation: none; } }
   /* the theme switch is off (3 Nov): the site stays in the dark design */
   .themeBtn, .themeTip { display: none !important; }
-</style><link rel="stylesheet" href="loop/loop.css?v=1">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="knightLight" color-interpolation-filters="sRGB"><feComponentTransfer>
@@ -761,5 +760,4 @@ const glassRing = el => { const w = el.offsetWidth, h = el.offsetHeight; if (!w 
 const glassRO = window.ResizeObserver ? new ResizeObserver(es => es.forEach(e => glassRing(e.target))) : null;
 document.querySelectorAll('.glass').forEach(el => { glassRing(el); if (glassRO) glassRO.observe(el); });
 </script>
-<script src="loop/loop.js?v=1"></script>
 </body></html>
