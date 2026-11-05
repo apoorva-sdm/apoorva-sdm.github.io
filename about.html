@@ -204,11 +204,13 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .rig .inner { position: absolute; left: 1.575px; top: 1.045px; width: 229.78px; height: 344.67px; transform: rotate(-0.525deg); isolation: isolate; }
   .rig canvas { position: absolute; left: 41.74px; top: 17.05px; width: 145.41px; height: 308.76px; display: block; }
   .rig .still { position: absolute; inset: 0; opacity: 0; }
+  .rig .still, .rig .pan, .rig .top { will-change: opacity; }
   /* the knight's layers add up instead of stacking: fading one out while the next fades in is a true cross-fade, never a double image */
   .rig canvas, .rig .still, .rig .top { mix-blend-mode: plus-lighter; }
   .rig .still img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
   /* the camera rising to look straight down on the knight, and the top view it walks in (same box: base centre stays put) */
   .rig .pan, .rig .top { position: absolute; left: 41.74px; top: 17.05px; width: 145.41px; height: 365.76px; display: block; opacity: 0; }
+  .rig .hopShade { position: absolute; left: 41.74px; top: 17.05px; width: 145.41px; height: 365.76px; display: block; opacity: 0; filter: brightness(0) blur(9px); will-change: transform, opacity; }
   :root[data-theme="light"] .rig canvas, :root[data-theme="light"] .rig .top { filter: url(#knightLight); }
   #turn, [id^="clip-"] { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 
@@ -343,7 +345,7 @@ If that sounds like someone you’d like on your team, let’s talk.</p>
     </div>
 
     <div id="diaZone" class="abs" style="left:140px;top:1600px;width:1160px;height:420px;pointer-events:none"></div>
-    <div class="kWrap abs" id="kWrap"><div class="kScale"><div class="rig abs" id="rig"><div class="inner"><canvas id="turnCanvas" width="210" height="445"></canvas><canvas class="pan" id="panCanvas" width="270" height="679"></canvas><div class="still" id="still"><img class="forDark" src="knight-fig-src.webp" alt="Glass knight chess piece"><img class="forLight" src="knight-light-src.webp" alt="Glass knight chess piece"></div><img class="top" id="topStill" loading="lazy" src="knight-top-v5.webp" alt="Glass knight seen from above, facing right"></div></div></div></div>
+    <div class="kWrap abs" id="kWrap"><div class="kScale"><div class="rig abs" id="rig"><div class="inner"><img class="hopShade" id="hopShade" loading="lazy" src="knight-top-v5.webp" alt=""><canvas id="turnCanvas" width="210" height="445"></canvas><canvas class="pan" id="panCanvas" width="210" height="528"></canvas><div class="still" id="still"><img class="forDark" src="knight-fig-src.webp" alt="Glass knight chess piece"><img class="forLight" src="knight-light-src.webp" alt="Glass knight chess piece"></div><img class="top" id="topStill" loading="lazy" src="knight-top-v5.webp" alt="Glass knight seen from above, facing right"></div></div></div></div>
     <video id="turn" src="turn-about-v15.mp4" muted playsinline preload="none"></video>
 
     <button class="iterate glass abs" id="iterate" type="button" aria-disabled="true" aria-label="Iterate: replay the knight's walk a different way">Iterate<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1.33337L14 3.33337L12 5.33337M4 14.6667L2 12.6667L4 10.6667"/><path d="M14 3.33337H6.66667C5.42899 3.33337 4.242 3.82504 3.36683 4.70021C2.49167 5.57538 2 6.76236 2 8.00004M2 12.6667H9.33333C10.571 12.6667 11.758 12.175 12.6332 11.2999C13.5083 10.4247 14 9.23772 14 8.00004"/></svg></button>
@@ -454,7 +456,7 @@ cards.forEach(c => c.setAttribute('aria-hidden', 'true'));
 
 // ---- 3. the knight: the same 3D turn as the home page, at this page's size, then its walk through the triple diamond
 const still = $('still'), rig = $('rig'), video = $('turn'), cv = $('turnCanvas'), kWrap = $('kWrap');
-const panCv = $('panCanvas'), topStill = $('topStill');
+const panCv = $('panCanvas'), topStill = $('topStill'), hopShade = $('hopShade');
 // a colour|alpha video drawn with real transparency onto a canvas
 function player(canvas, vid0) {
   // keep the last picture: a canvas drawn while invisible would otherwise be wiped before it fades in (a blank flash)
@@ -569,7 +571,9 @@ function place(pt, lift = 0, hop = 0) {
   const h = clamp(lift * 0.6 + hop);
   const up = view === 'side' ? 9 * lift + 12 * hop : 0;
   kWrap.style.transform = `translate3d(${(pt.x - HOME.x).toFixed(2)}px, ${(pt.y - HOME.y - up).toFixed(2)}px, 0)`;
-  kWrap.style.filter = view === 'top' && h > 0.01 ? `drop-shadow(${(2 + 7 * h).toFixed(1)}px ${(3 + 9 * h).toFixed(1)}px ${(3 + 7 * h).toFixed(1)}px rgba(0,0,0,${(0.55 - 0.2 * h).toFixed(2)}))` : '';
+  const on = view === 'top' && h > 0.01;
+  hopShade.style.opacity = on ? ((0.55 - 0.2 * h) * Math.min(1, h * 6)).toFixed(3) : 0;
+  if (on) hopShade.style.transform = `translate3d(${((2 + 7 * h) / 0.576).toFixed(2)}px, ${((3 + 9 * h) / 0.576).toFixed(2)}px, 0)`;
 }
 const phases = Object.fromEntries([...document.querySelectorAll('.phase')].map(p => [p.dataset.phase, p]));
 function light(name) { Object.entries(phases).forEach(([k, el]) => el.classList.toggle('on', k === name)); }
@@ -605,33 +609,35 @@ async function walk() {
 // (the strip is re-timed from the render, whose camera slowed for one frame in every 13: that showed as a small stutter)
 // the camera move is a strip of ready-made pictures, not a video: Safari could hand a video's frames over late or in slightly different
 // colours, which showed as a jump in the knight. The whole strip is unpacked before the story starts; lowering is the same strip backwards.
-const PAN = { w: 270, h: 679, cols: 7, n: 52 }, panCtx = panCv.getContext('2d');
+const PAN = { w: 210, h: 528, cols: 13, n: 78 }, panCtx = panCv.getContext('2d');
 let panSheet = null;
 // the strip is unpacked away from the page's main work (fetch → bitmap), so loading it never stutters scrolling
-function loadPan() { return fetch('knight-pan-v2.webp').then(r => r.ok ? r.blob() : Promise.reject()).then(b => createImageBitmap(b)).then(s => { panSheet = s; })
-  .catch(() => new Promise(ok => { const im = new Image(); im.onerror = ok; im.onload = () => { panSheet = im; (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(ok); }; im.src = 'knight-pan-v2.webp'; })); }
-// the side view sits half a pixel lower than the strip's first picture, so the strip starts there and eases onto its own spot by the top view
-function panTo(i) { panCv.style.transform = `translateY(${(0.5 * (1 - i / (PAN.n - 1))).toFixed(3)}px)`; panCtx.clearRect(0, 0, PAN.w, PAN.h); panCtx.drawImage(panSheet, (i % PAN.cols) * PAN.w, Math.floor(i / PAN.cols) * PAN.h, PAN.w, PAN.h, 0, 0, PAN.w, PAN.h); }
-function play(backwards) { return new Promise(done => {
-  const at = i => backwards ? PAN.n - 1 - i : i;
-  panTo(at(0));
-  const t0 = performance.now(), ms = KT.clip * 1000;
-  (function tick(now) { const p = clamp((now - t0) / ms); panTo(at(Math.round(p * (PAN.n - 1)))); p < 1 ? requestAnimationFrame(tick) : done(); })(t0); }); }
+function loadPan() { return fetch('knight-pan-v4.webp').then(r => r.ok ? r.blob() : Promise.reject()).then(b => createImageBitmap(b)).then(s => { panSheet = s; panTo(0); })
+  .catch(() => new Promise(ok => { const im = new Image(); im.onerror = ok; im.onload = () => { panSheet = im; (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(ok); }; im.src = 'knight-pan-v4.webp'; })); }
+// 60 pictures a second, the same as a video. The strip starts and ends on the exact still pictures, which is why the swaps in and out need no
+// fading: two half-faded layers looked darker for a moment in some browsers
+function panTo(pos) { const i = Math.round(pos); panCtx.clearRect(0, 0, PAN.w, PAN.h); panCtx.drawImage(panSheet, (i % PAN.cols) * PAN.w, Math.floor(i / PAN.cols) * PAN.h, PAN.w, PAN.h, 0, 0, PAN.w, PAN.h); }
+const nextPaint = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+function play(backwards) { return new Promise(done => { const last = PAN.n - 1, t0 = performance.now(), ms = KT.clip * 1000;
+  (function tick(now) { const p = clamp((now - t0) / ms); panTo(backwards ? last * (1 - p) : last * p); p < 1 ? requestAnimationFrame(tick) : done(); })(t0); }); }
 const clipsOk = () => !!panSheet;
 // the layers add up (see .rig), so these fades are true cross-fades between pictures of the same pose
 const fade = (out, inn, ms) => tween(ms, e => { out.style.opacity = 1 - e; inn.style.opacity = e; }, E.sine);
 async function toTop() {        // side view (your knight) → camera rises → top view picture
   if (!clipsOk()) { await fade(still, topStill, 600); view = 'top'; return; }
   // the clip's first frames are the same pose as your knight, so the switch from the still to the clip can't be seen
-  // the camera starts very slowly, so the still melts into the strip during those first moments: a straight swap showed as a small jump
-  await Promise.all([play(false), fade(still, panCv, 220)]);
-  await fade(panCv, topStill, KT.fadeOut); view = 'top';
+  panTo(0); await nextPaint();                  // the canvas holds the same picture as the still before they swap
+  panCv.style.opacity = 1; still.style.opacity = 0;
+  await play(false);
+  topStill.style.opacity = 1; panCv.style.opacity = 0; view = 'top';
 }
 async function toSide() {       // top view → camera comes back down → your knight
   if (!clipsOk()) { await fade(topStill, still, 600); view = 'side'; return; }
   view = 'side';
-  await Promise.all([play(true), fade(topStill, panCv, 220)]);
-  await fade(panCv, still, KT.fadeIn);
+  panTo(PAN.n - 1); await nextPaint();
+  panCv.style.opacity = 1; topStill.style.opacity = 0;
+  await play(true);
+  still.style.opacity = 1; panCv.style.opacity = 0;
 }
 const diamonds = $('diamonds'), iterateBtn = $('iterate');
 let knightBusy = true;
@@ -710,7 +716,7 @@ const pageIn = document.readyState === 'complete' ? Promise.resolve() : new Prom
 const loaded = Promise.all([
   window.FONTS,
   pageIn.then(() => Promise.race([inMemory(video), wait(10000)])),
-  pageIn.then(() => Promise.race([loadPan(), wait(10000)])),
+  pageIn.then(() => { topStill.loading = 'eager'; return Promise.race([Promise.all([loadPan(), topStill.decode().catch(() => {}), still.querySelector('img').decode().catch(() => {})]), wait(10000)]); }),
   // only the pictures that load straight away (lazy ones, like the footer knight, load when scrolled to; Safari would wait for them)
   ...[...document.images].filter(i => i.loading !== 'lazy').map(i => Promise.race([i.decode().catch(() => {}), wait(4000)])),
 ]);
@@ -766,5 +772,5 @@ document.querySelectorAll('.glass').forEach(el => { glassRing(el); if (glassRO) 
   if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true }); })();</script>
 <script>// once this page is settled, quietly fetch the other two so the footer buttons move between them without a wait
 addEventListener('load', () => setTimeout(() => ['home.html', 'about.html', 'playground.html'].filter(u => !location.pathname.endsWith(u)).forEach(u => fetch(u, { priority: 'low' }).catch(() => {})), 2000));</script>
-<script src="loop/loop.js?v=15"></script>
+<script src="loop/loop.js?v=17"></script>
 </body></html>

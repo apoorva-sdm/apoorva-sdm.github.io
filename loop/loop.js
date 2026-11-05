@@ -30,15 +30,14 @@
   // frames 11-26 are the turn. Only the nav view and the chat's first screen have them; the pill and the conversation stay on his resting frame.
   // Between two frames the picture is an exact blend, so the turn moves on every screen refresh instead of stepping
   const STEPS = 16;
-  const cell = (c, im, w, f, al) => { c.globalAlpha = al; const bm = im.cut && im.cut[f]; if (bm) c.drawImage(bm, 0, 0, w, w); else c.drawImage(im, (f % 6) * w, (f / 6 | 0) * w, w, w, 0, 0, w, w); };
-  // cut the turn into ready-to-draw pictures ahead of time, one per pause, so the browser never stops to unpack a big image in the middle of a turn
-  const prepare = async (im, w) => { try { if (im.decode) await im.decode(); if (!window.createImageBitmap) return; const cut = []; for (let f = 0; f <= 10 + STEPS; f++) { cut[f] = await createImageBitmap(im, (f % 6) * w, (f / 6 | 0) * w, w, w);
-      await new Promise(ok => setTimeout(ok, 16)); } im.cut = cut; } catch (e) {} };
+  const cell = (c, im, w, f, al) => { c.globalAlpha = al; c.drawImage(im.ready || im, (f % 6) * w, (f / 6 | 0) * w, w, w, 0, 0, w, w); };
+  // each sheet is unpacked once, away from the page's main work (fetch → bitmap). Cutting it into pictures here stole a frame at a time from the knight's moves
+  const prepare = async im => { try { if (!window.createImageBitmap) return; const b = await fetch(im.src).then(r => r.blob()); im.ready = await createImageBitmap(b); } catch (e) {} };
   const paint = (c, im, w, a, b, m) => { if (!im.complete || !im.naturalWidth) return; c.globalCompositeOperation = 'source-over'; c.globalAlpha = 1; c.clearRect(0, 0, w, w);
     if (m < .01) cell(c, im, w, a, 1); else { c.globalCompositeOperation = 'lighter'; cell(c, im, w, a, 1 - m); cell(c, im, w, b, m); c.globalCompositeOperation = 'source-over'; } c.globalAlpha = 1; };
   const draw = (n, pos = 0) => { const key = n + '|' + pos.toFixed(2), lo = Math.floor(pos), a = pos ? (lo ? 10 + lo : 0) : n, b = pos ? 10 + Math.min(STEPS, lo + 1) : n, m = pos ? pos - lo : 0, rest = pos ? 0 : n;
     if (key !== drawn) { drawn = key; paint(ctx, sheet, C, rest, rest, 0); paint(ctxN, plain, C, a, b, m); }
-    if (bigReady > 1 && key !== chatDrawn) { chatDrawn = key; paint(c2, big, 448, rest, rest, 0); paint(c3, bigK, 448, a, b, m); } };
+    if (bigReady > 1 && key !== chatDrawn && dock.classList.contains('chatOpen')) { chatDrawn = key; paint(c2, big, 448, rest, rest, 0); paint(c3, bigK, 448, a, b, m); } };
   const ease = t => t < .5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
   const REST = 5200, OPEN = 700, HOLD = 2000, CYCLE = REST + OPEN + HOLD + OPEN;      // neutral 5.2s, opens in .7s, smiles 2s, settles in .7s
   const cycle = t => { const k = t % CYCLE; if (k < REST) return 0; if (k < REST + OPEN) return ease((k - REST) / OPEN);
@@ -97,7 +96,7 @@
     lcThink.textContent = `Loop thought for ${Math.max(1, Math.round((performance.now() - began) / 1000))}s`; waiting = false; chat.classList.remove('waiting'); const { bubbles, cards } = toBubbles(reply); bubbles.forEach((r, i) => bubble(r, i ? '' : 'first')); cards.forEach(card); toEnd();
     if (!failed) { turns.push({ role: 'user', content: q }, { role: 'assistant', content: reply.slice(0, 1500) }); turns.splice(0, Math.max(0, turns.length - 10)); } };
   // his large pictures come in quietly soon after the page is up (or the moment the pointer nears him), so he's already there when the chat opens
-  const loadBig = () => { if (big.src) return; big.fetchPriority = bigK.fetchPriority = 'low'; big.onload = bigK.onload = e => { bigReady++; chatDrawn = -1; if (e.target === bigK) prepare(bigK, 448); else if (big.decode) big.decode().catch(() => {}); }; big.src = 'loop/loop-frames-lg.webp?v=33'; bigK.src = 'loop/loop-frames-lg-knight.webp?v=38'; };
+  const loadBig = () => { if (big.src) return; big.fetchPriority = bigK.fetchPriority = 'low'; big.onload = bigK.onload = e => { bigReady++; chatDrawn = -1; prepare(e.target); }; big.src = 'loop/loop-frames-lg.webp?v=33'; bigK.src = 'loop/loop-frames-lg-knight.webp?v=38'; };
   (document.readyState === 'complete' ? setTimeout(loadBig, 2500) : addEventListener('load', () => setTimeout(loadBig, 2500), { once: true }));
   dock.addEventListener('pointerover', loadBig, { once: true });
   const openChat = () => { loadBig();
@@ -137,8 +136,8 @@
   const show = () => { if (dock.classList.contains('in')) return; dock.classList.add('in');
     if (intro) [ask, me, glow].forEach(el => el.animate([{ opacity: 0, translate: '0 14px' }, { opacity: 1, translate: '0 0' }], { duration: 1400, easing: 'cubic-bezier(.33,1,.68,1)', fill: 'backwards' })); };
   sheet.fetchPriority = 'low';
-  const boot = () => { if (!HOME) prepare(plain, C); place(); if (!HOME || window.__loopUp) goUp(true); running = true; drawn = -1; draw(0); requestAnimationFrame(tick);
+  const boot = () => { if (!HOME) prepare(plain); place(); if (!HOME || window.__loopUp) goUp(true); running = true; drawn = -1; draw(0); requestAnimationFrame(tick);
     if (!intro || window.__loopIn) show(); else { addEventListener('loopin', show, { once: true }); setTimeout(show, 6000); } };
-  if (HOME) { plain.onload = () => { drawn = -1; prepare(plain, C); }; sheet.onload = boot; sheet.src = 'loop/loop-frames.webp?v=34'; } else plain.onload = boot;   // only Home needs the frames with his knight
+  if (HOME) { plain.onload = () => { drawn = -1; prepare(plain); }; sheet.onload = boot; sheet.src = 'loop/loop-frames.webp?v=34'; } else plain.onload = boot;   // only Home needs the frames with his knight
   plain.src = 'loop/loop-frames-plain.webp?v=39';
 })();

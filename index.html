@@ -896,5 +896,5 @@ window.__scene = scene;   // for testing
   if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true }); })();</script>
 <script>// once this page is settled, quietly fetch the other two so the footer buttons move between them without a wait
 addEventListener('load', () => setTimeout(() => ['home.html', 'about.html', 'playground.html'].filter(u => !location.pathname.endsWith(u)).forEach(u => fetch(u, { priority: 'low' }).catch(() => {})), 2000));</script>
-<script src="loop/loop.js?v=15"></script>
+<script src="loop/loop.js?v=17"></script>
 </body></html>
