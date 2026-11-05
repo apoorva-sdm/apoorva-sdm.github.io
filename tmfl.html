@@ -380,7 +380,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
 </style>
 <link rel="stylesheet" href="cards.css?v=2">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Open+Sans:wght@400&display=swap" media="print" onload="this.media='all'">
-<link rel="stylesheet" href="loop/loop.css?v=6">
+<link rel="stylesheet" href="loop/loop.css?v=7">
 </head>
 <body>
 <div id="shell"><div class="stage" id="stage" data-h="14000" style="height:14000px">
@@ -684,8 +684,8 @@ col.querySelectorAll('.pair, .F.evo, .F.more, .gal').forEach(c => early.observe(
 (() => { const start = () => { const q = [...document.querySelectorAll('img[loading="lazy"]')];
     const one = im => new Promise(ok => { if (im.complete && im.naturalWidth) return ok(); im.addEventListener('load', ok, { once: true }); im.addEventListener('error', ok, { once: true });
       im.loading = 'eager'; setTimeout(ok, 4000); }).then(() => im.decode ? im.decode().catch(() => {}) : 0);
-    const next = () => { const b = q.splice(0, 6); if (b.length) Promise.all(b.map(one)).then(next); }; next(); };
-  start(); })();
+    const next = () => { const b = q.splice(0, 4); if (b.length) Promise.all(b.map(one)).then(next); }; next(); };
+  document.readyState === 'complete' ? start() : addEventListener('load', start, { once: true }); })();
 
 // ---- sideways rows (View projects, picture rows): arrows and edge shadows appear only when there is more to see that way
 const sideways = (box, step) => {
@@ -706,7 +706,7 @@ const sideways = (box, step) => {
 };
 col.querySelectorAll('.F.more').forEach(m => sideways(m, 381));
 // the View Projects pictures are unpacked as soon as the page has loaded, so nothing is left to do when the row scrolls in
-(() => { const go = () => col.querySelectorAll('.F.more img').forEach(im => { if (im.decode) im.decode().catch(() => {}); }); document.readyState === 'complete' ? go() : addEventListener('load', go, { once: true }); })();
+(() => { const go = () => col.querySelectorAll('.F.more img').forEach(im => { if (im.decode) im.decode().catch(() => {}); }); col.querySelectorAll('.F.more .pcard[style*="url("]').forEach(c => { const u = /url\(([^)]+)\)/.exec(c.getAttribute('style')); if (u) { const im = new Image(); im.src = u[1]; if (im.decode) im.decode().catch(() => {}); } }); document.readyState === 'complete' ? go() : addEventListener('load', go, { once: true }); })();
 col.querySelectorAll('.gal').forEach(g => sideways(g, 330));
 
 (window.FONTS || Promise.resolve()).then(() => { layout(); fitBar(); mark(); });
@@ -722,7 +722,7 @@ col.querySelectorAll('.gal').forEach(g => sideways(g, 330));
   const url = v.dataset.src;
   // a download that stalls never holds the video back: after 6 seconds it gives up and the clip streams instead
   const stop = new AbortController(), limit = setTimeout(() => stop.abort(), 6000);
-  fetch(url, { signal: stop.signal }).then(x => x.ok ? x.blob() : Promise.reject()).then(b => URL.createObjectURL(new Blob([b], { type: 'video/mp4' })), () => url)
+  fetch(url, { signal: stop.signal, priority: 'high' }).then(x => x.ok ? x.blob() : Promise.reject()).then(b => URL.createObjectURL(new Blob([b], { type: 'video/mp4' })), () => url)
     .then(src => { clearTimeout(limit); v.src = src; v.preload = 'auto'; v.load(); });
   addEventListener('scroll', () => { if (!scrolled) { scrolled = true; go(); } }, { passive: true, once: true });
   new IntersectionObserver(([e]) => { seen = e.intersectionRatio >= .5; seen ? go() : v.pause(); }, { threshold: [0, .5] }).observe(v);
@@ -761,7 +761,7 @@ col.querySelectorAll('.mcar').forEach(car => {
   early.observe(car);
 });
 </script>
-<script src="thumbs.js"></script>
+<script src="thumbs.js?v=2"></script>
 <script src="mailcopy.js"></script>
 <script>
 // glass rim: its thin ring is cut with a clip path as well as the mask, so it stays a ring where Safari fails to draw the mask

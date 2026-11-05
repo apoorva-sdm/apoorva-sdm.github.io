@@ -12,7 +12,6 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>About | Apoorva B S</title>
 <link rel="preload" as="image" href="knight-fig-src.webp">
-<link rel="expect" href="#recs" blocking="render">
 <script>document.documentElement.dataset.theme = 'dark';</script>
 <style>
   /* same two themes as the home page */
@@ -22,7 +21,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
           --hi: 1,7,7; --hiA: .38; --logoF: invert(1) hue-rotate(180deg); color-scheme: light; }
   @view-transition { navigation: auto; }
   .nav { view-transition-name: site-nav; } .logo { view-transition-name: site-logo; } .themeBtn { view-transition-name: site-theme; }
-  ::view-transition-group(site-logo), ::view-transition-group(site-theme) { animation: none; }
+  ::view-transition-group(site-nav), ::view-transition-group(site-logo), ::view-transition-group(site-theme) { animation: none; }
   ::view-transition-old(site-nav), ::view-transition-old(site-logo), ::view-transition-old(site-theme) { display: none; }
   ::view-transition-new(site-nav), ::view-transition-new(site-logo), ::view-transition-new(site-theme) { animation: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .7s; animation-timing-function: cubic-bezier(.4,0,.2,1); }
@@ -264,7 +263,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   @media (prefers-reduced-motion: reduce) { .wave.waving img { animation: none; } }
   /* the theme switch is off (3 Nov): the site stays in the dark design */
   .themeBtn, .themeTip { display: none !important; }
-</style><link rel="stylesheet" href="loop/loop.css?v=6">
+</style><link rel="stylesheet" href="loop/loop.css?v=7">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="knightLight" color-interpolation-filters="sRGB"><feComponentTransfer>

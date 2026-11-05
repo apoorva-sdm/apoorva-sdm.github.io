@@ -25,7 +25,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   /* smooth switch between themes */
   @view-transition { navigation: auto; }
   .nav { view-transition-name: site-nav; } .logo { view-transition-name: site-logo; } .themeBtn { view-transition-name: site-theme; }
-  ::view-transition-group(site-logo), ::view-transition-group(site-theme) { animation: none; }
+  ::view-transition-group(site-nav), ::view-transition-group(site-logo), ::view-transition-group(site-theme) { animation: none; }
   ::view-transition-old(site-nav), ::view-transition-old(site-logo), ::view-transition-old(site-theme) { display: none; }
   ::view-transition-new(site-nav), ::view-transition-new(site-logo), ::view-transition-new(site-theme) { animation: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .7s; animation-timing-function: cubic-bezier(.4,0,.2,1); }
@@ -127,7 +127,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   /* every thumbnail is the 566 x 722 design shown at 90%: 509.4 x 649.8, 56px apart */
   .stage > .pcard { transform: scale(.9); transform-origin: 0 0; }
   .stage > a.pcard:hover { transform: translateY(-6px) scale(.9); }
-</style><link rel="stylesheet" href="loop/loop.css?v=6">
+</style><link rel="stylesheet" href="loop/loop.css?v=7">
 </head>
 <body>
 <div id="shell"><div class="stage" id="stage" data-h="2447.6" style="height:2447.6px">

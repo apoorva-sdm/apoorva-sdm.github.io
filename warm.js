@@ -11,6 +11,9 @@
   const next = async () => { if (running) return; running = true; while (queue.length) await page(queue.shift()); running = false; };
   const start = () => { document.querySelectorAll('a[href]').forEach(a => { const f = file(a.href); if (f && !done.has(f) && !queue.includes(f)) queue.push(f); }); next(); };
   document.addEventListener('pointerover', e => { const a = e.target.closest && e.target.closest('a[href]'); const f = a && file(a.href); if (f && !done.has(f)) { queue.unshift(f); next(); } }, { passive: true });
-  const go = () => setTimeout(() => (window.requestIdleCallback || (f => f()))(start), 1500);
+  // a story video is downloading on this page: it comes first, so the page's own video is never held up
+  const story = document.getElementById('story');
+  const go = () => { const begin = () => setTimeout(() => (window.requestIdleCallback || (f => f()))(start), 1500); if (!story) return begin();
+    let once = false; const run = () => { if (!once) { once = true; begin(); } }; story.addEventListener('canplay', run, { once: true }); setTimeout(run, 7000); };
   document.readyState === 'complete' ? go() : addEventListener('load', go, { once: true });
 })();

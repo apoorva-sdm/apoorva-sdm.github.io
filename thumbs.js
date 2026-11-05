@@ -8,9 +8,12 @@
   const soft = 'cubic-bezier(.45,0,.2,1)', smooth = 'cubic-bezier(.32,.72,0,1)';
   // which cards are on screen (with a little margin, so a loop is already moving when its card scrolls in)
   const onScreen = new Map(), waiters = new Map();
-  const io = new IntersectionObserver(es => es.forEach(e => { const c = e.target; onScreen.set(c, e.isIntersecting);
-    c.toggleAttribute('data-off', !e.isIntersecting); if (e.isIntersecting) (waiters.get(c) || []).splice(0).forEach(r => r()); }), { rootMargin: '200px 0px' });
-  document.querySelectorAll('.pcard').forEach(c => io.observe(c));
+  // in a sideways row (View Projects) the whole row counts: cards past its right edge are already running when they are scrolled to
+  const groups = new Map();
+  document.querySelectorAll('.pcard').forEach(c => { const t = c.closest('.F.more') || c; if (!groups.has(t)) groups.set(t, []); groups.get(t).push(c); });
+  const io = new IntersectionObserver(es => es.forEach(e => groups.get(e.target).forEach(c => { onScreen.set(c, e.isIntersecting);
+    c.toggleAttribute('data-off', !e.isIntersecting); if (e.isIntersecting) (waiters.get(c) || []).splice(0).forEach(r => r()); })), { rootMargin: '200px 0px' });
+  groups.forEach((_, t) => io.observe(t));
   const inView = card => onScreen.get(card) ? Promise.resolve() : new Promise(r => { if (!waiters.has(card)) waiters.set(card, []); waiters.get(card).push(r); });
   const loop = async (card, step) => { for (;;) { await inView(card); await step(); } };
 

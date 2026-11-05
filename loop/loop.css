@@ -26,7 +26,7 @@
   .snap, .snap * { transition: none !important; }
   /* the pills sit 70.4px left of Home's first position, which leaves room for him: his width plus the nav's 20px gap. Home starts without the shift and slides over when he arrives */
   .nav { transform: translateX(-70.4px); transition: transform 1.1s cubic-bezier(.45,0,.15,1); }
-  html.homePage .nav:not(.roomForLoop) { transform: none; }
+  html.homePage:not(.settled) .nav:not(.roomForLoop) { transform: none; }
   .loopDock.up .loopBob { animation: none; }
   /* he carries his knight on the pill and sets it down on the way up to the nav */
   #loopCv, #loopCvN { transition: opacity .6s ease; }
