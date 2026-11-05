@@ -96,7 +96,11 @@
     if (run !== chatRun) return;                                   // the window was closed while he was thinking
     lcThink.textContent = `Loop thought for ${Math.max(1, Math.round((performance.now() - began) / 1000))}s`; waiting = false; chat.classList.remove('waiting'); const { bubbles, cards } = toBubbles(reply); bubbles.forEach((r, i) => bubble(r, i ? '' : 'first')); cards.forEach(card); toEnd();
     if (!failed) { turns.push({ role: 'user', content: q }, { role: 'assistant', content: reply.slice(0, 1500) }); turns.splice(0, Math.max(0, turns.length - 10)); } };
-  const openChat = () => { if (!big.src) { big.onload = bigK.onload = e => { bigReady++; chatDrawn = -1; if (e.target === bigK) prepare(bigK, 448); }; big.src = 'loop/loop-frames-lg.webp?v=33'; bigK.src = 'loop/loop-frames-lg-knight.webp?v=38'; }
+  // his large pictures come in quietly soon after the page is up (or the moment the pointer nears him), so he's already there when the chat opens
+  const loadBig = () => { if (big.src) return; big.fetchPriority = bigK.fetchPriority = 'low'; big.onload = bigK.onload = e => { bigReady++; chatDrawn = -1; if (e.target === bigK) prepare(bigK, 448); else if (big.decode) big.decode().catch(() => {}); }; big.src = 'loop/loop-frames-lg.webp?v=33'; bigK.src = 'loop/loop-frames-lg-knight.webp?v=38'; };
+  (document.readyState === 'complete' ? setTimeout(loadBig, 2500) : addEventListener('load', () => setTimeout(loadBig, 2500), { once: true }));
+  dock.addEventListener('pointerover', loadBig, { once: true });
+  const openChat = () => { loadBig();
     near = false; glanceOn = false; nextGlance = rests + 2; shade.classList.add('on'); dock.classList.add('chatOpen'); chat.classList.add('open'); chat.setAttribute('aria-hidden', 'false'); setTimeout(() => lcIn.focus({ preventScroll: true }), 60); };
   const closeChat = () => { chatRun++; waiting = false; turns.length = 0; shade.classList.remove('on'); dock.classList.remove('chatOpen'); chat.classList.remove('open', 'talking', 'waiting'); chat.setAttribute('aria-hidden', 'true');
     setTimeout(() => { if (!chat.classList.contains('open')) thread.replaceChildren(); }, 450); lcIn.value = ''; lcForm.classList.remove('typing'); if (!dock.classList.contains('up')) ask.focus({ preventScroll: true }); near = false; };   // closing erases the chat, as the window promises
@@ -111,10 +115,14 @@
   // in the nav he takes the end of the row: his hand's edge lines up with the page's 120px right margin (where Get In Touch normally ends),
   // and the pills slide left to make room, keeping the nav's own 20px gap. All measured in stage units, so it holds at any window size
   const nav = document.getElementById('nav');
-  const place = () => { const s = innerWidth / 1440; document.documentElement.style.setProperty('--ps', Math.min(s, (innerHeight - 16) / 641)); const edge = nav.offsetLeft + nav.offsetWidth, R = 24;   // edge: where the row ends with no Loop in it
+  // the screen height he's placed from: fixed once on a phone (it only changes there when the address bar slides or the phone turns)
+  const touch = matchMedia('(pointer: coarse)').matches; let dockH = 0, dockW = 0;
+  const measure = () => { if (touch && dockH && innerWidth === dockW) return; dockW = innerWidth; dockH = document.documentElement.clientHeight; document.documentElement.style.setProperty('--dockH', dockH + 'px'); };
+  measure();
+  const place = () => { measure(); const s = innerWidth / 1440; document.documentElement.style.setProperty('--ps', Math.min(s, (innerHeight - 16) / 641)); const edge = nav.offsetLeft + nav.offsetWidth, R = 24;   // edge: where the row ends with no Loop in it
     const cx = edge - 1.05 * R, left = cx - 1.05 * R;                                                 // his centre, and his left hand's edge
     
-    const homeX = 1440 - 156.8, homeY = document.documentElement.clientHeight / s - 135;                // the centre of his spot on the pill
+    const homeX = 1440 - 156.8, homeY = dockH / s - 135;                // the centre of his spot on the pill
     dock.style.setProperty('--nx', cx - homeX + 'px'); dock.style.setProperty('--ny', 55.5 - homeY + 'px'); };
   let running = false;
   const goUp = jump => { if (dock.classList.contains('up')) return; place();

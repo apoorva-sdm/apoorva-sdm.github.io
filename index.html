@@ -36,7 +36,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   /* smooth switch between themes */
   @view-transition { navigation: auto; }
   .nav { view-transition-name: site-nav; } .logo { view-transition-name: site-logo; } .themeBtn { view-transition-name: site-theme; }
-  ::view-transition-group(site-nav), ::view-transition-group(site-logo), ::view-transition-group(site-theme) { animation: none; }
+  ::view-transition-group(site-logo), ::view-transition-group(site-theme) { animation: none; }
   ::view-transition-old(site-nav), ::view-transition-old(site-logo), ::view-transition-old(site-theme) { display: none; }
   ::view-transition-new(site-nav), ::view-transition-new(site-logo), ::view-transition-new(site-theme) { animation: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .7s; animation-timing-function: cubic-bezier(.4,0,.2,1); }
@@ -84,7 +84,9 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   :root:not([data-theme="light"]) .rot b { background: linear-gradient(90deg, #729fc3 5.508%, #b9d9f2 93.22%); -webkit-background-clip: text; background-clip: text; color: transparent; }
   /* vertical carousel: a one-line window (as wide as "Critical Thinker", so the rest of the line never moves);
      words slide up from below with a soft spring. The first word is repeated at the end so the loop has no jump. */
-  .rot { display: inline-block; height: 43.2px; transition: width 1.05s cubic-bezier(.42, 0, .18, 1);  overflow: hidden; vertical-align: top; }
+  .rot { display: inline-block; height: 43.2px; overflow: hidden; vertical-align: top; }
+  .sub > * { transform: translateX(var(--lineX, 0px)); }
+  .sub.gliding > * { transition: transform 1.05s cubic-bezier(.42, 0, .18, 1); }
   .rotList { display: flex; flex-direction: column; align-items: flex-end; will-change: transform; }
   .rotList.moving { transition: transform 1.05s cubic-bezier(.42, 0, .18, 1.07); }
   .rot b { display: block; height: 43.2px; white-space: pre; }
@@ -285,14 +287,15 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .phone { transform-origin: 0 0; will-change: transform; }
   .phScreen { position: relative; width: 292px; height: 660px; border-radius: 36px; overflow: hidden; background: #fafafa; }
   /* screens stack; the next one is pushed in from the right like a real app (thumbs.js) */
-  .phSlide { position: absolute; inset: 0; overflow: hidden; background: #fafafa; transform: translateX(100%); will-change: transform; }
+  /* parked well clear of the screen: right against its edge, the next screen's white could show as a hairline over the purple bar when the card re-drew on hover */
+  .phSlide { position: absolute; inset: 0; overflow: hidden; background: #fafafa; transform: translateX(calc(100% + 6px)); will-change: transform; }
   .phSlide.on { transform: none; }
   .phScroll { will-change: transform; } .phScroll > img { display: block; }
   /* the status bar and purple app bar stay put while the queue scrolls under them */
-  .phHead { position: absolute; left: 0; top: 0; width: 293px; height: 69px; overflow: hidden; } .phHead > img { display: block; }
-  /* screens are slightly overscanned (293px) so no sliver of background shows at the edges */
-  .phInner { position: absolute; left: 0; top: 0; width: 374px; height: 800px; transform: scale(.78342); transform-origin: 0 0; }
-  .phInner.fl { width: 360px; transform: scale(.81389); }
+  .phHead { position: absolute; left: 0; top: 0; width: 295px; height: 69.5px; overflow: hidden; } .phHead > img { display: block; }
+  /* screens are slightly overscanned (295px): the screenshots' purple bar stops 2px short of their right edge, and that white sliver must stay outside the phone */
+  .phInner { position: absolute; left: 0; top: 0; width: 374px; height: 800px; transform: scale(.787); transform-origin: 0 0; }
+  .phInner.fl { width: 360px; transform: scale(.8175); }
   .phInner > img, .phInner .phScroll > img { position: absolute; left: 0; top: 0; display: block; }
   .phInner .phScroll { position: absolute; inset: 0; }
   .otp { clip-path: inset(410px 374px 342px 18px); }
@@ -433,7 +436,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .settled .rig, .settled .rig .still { opacity: 1; }
   .settled .rig canvas { visibility: hidden; }
   .settled .skill:not(.ready) { opacity: 1; transform: none; filter: none; }
-</style><link rel="stylesheet" href="loop/loop.css?v=4">
+</style><link rel="stylesheet" href="loop/loop.css?v=6">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="knightLight" color-interpolation-filters="sRGB"><feComponentTransfer>
@@ -492,7 +495,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   <div class="pcard w abs" style="left:182.6px;top:1676px;background:#c6c6c6;--c1:#010707;--c2:#000;--tagBg:#dfcfe3;--tagInk:#010707;--tagBd:1px solid #d8c4da;--pb:32px"><a class="cardLink" href="tmfl.html" aria-label="Fifth Element: Transforming multi stakeholder NBFC vehicle LOS"></a>
     <img loading="lazy" decoding="async" class="art" src="work/tmfl-img66.webp" alt="" style="left:0;top:0;width:566px;height:1006px;object-fit:cover;opacity:.6">
     <div class="phone art" id="tmPhone" style="left:124px;top:90px" aria-hidden="true"><div class="phScreen">
-      <div class="phSlide on"><div class="phScroll"><img fetchpriority="low" src="work/tmfl/home-tall.webp" alt="" style="width:293px"></div><div class="phHead"><img fetchpriority="low" src="work/tmfl/home-tall.webp" alt="" style="width:293px"></div></div>
+      <div class="phSlide on"><div class="phScroll"><img fetchpriority="low" src="work/tmfl/home-tall.webp" alt="" style="width:295px"></div><div class="phHead"><img fetchpriority="low" src="work/tmfl/home-tall.webp" alt="" style="width:295px"></div></div>
       <div class="phSlide"><div class="phInner"><div class="phScroll"><img fetchpriority="low" src="work/tmfl/qsa-empty.webp" alt="" style="width:374px;height:800px"><img fetchpriority="low" class="otp" src="work/tmfl/qsa.webp" alt="" style="width:374px;height:800px"></div><div class="phHead" style="width:374px;height:85px"><img fetchpriority="low" src="work/tmfl/qsa.webp" alt="" style="width:374px"></div></div></div>
       <div class="phSlide"><div class="phInner"><div class="phScroll"><img fetchpriority="low" src="work/tmfl/kyc.webp" alt="" style="width:374px;height:800px"><div class="kycDim"></div>
         <div class="kycModal"><p class="mt">Biometric KYC</p><p class="ms">Biometric KYC Successful! Please click on Next to view captured details.</p>
@@ -521,7 +524,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
       <p class="tags" style="--tagBg:rgba(212,248,226,.18)"><span>Interaction Design</span><span>Rapid Prototyping</span><span>Wireframing</span></p></div>
   </div>
   <div class="pcard w abs" style="left:748px;top:2381.8px;background:linear-gradient(-152.45deg, #1a1620 11.14%, #321850 58.37%);--c2:#d7d7d7;--tagBg:rgba(207,193,232,.1)"><a class="cardLink" href="jar.html" aria-label="Hypothesis-driven User Research at Jar"></a>
-    <span class="art coinWrap" style="left:213px;top:117px;width:120px;height:120px" aria-hidden="true"><span class="coinMove"><span class="coinGlow"></span><span class="coin3d"><img loading="lazy" decoding="async" class="cf" src="work/jar-coin.svg" alt=""><img loading="lazy" decoding="async" class="cb" src="work/jar-coin.svg" alt=""><i style="transform:translateZ(-6px)"></i><i style="transform:translateZ(-5px)"></i><i style="transform:translateZ(-4px)"></i><i style="transform:translateZ(-3px)"></i><i style="transform:translateZ(-2px)"></i><i style="transform:translateZ(-1px)"></i><i style="transform:translateZ(0px)"></i><i style="transform:translateZ(1px)"></i><i style="transform:translateZ(2px)"></i><i style="transform:translateZ(3px)"></i><i style="transform:translateZ(4px)"></i><i style="transform:translateZ(5px)"></i><i style="transform:translateZ(6px)"></i></span></span></span>
+    <span class="art coinWrap" style="left:213px;top:117px;width:120px;height:120px" aria-hidden="true"><span class="coinMove"><span class="coinGlow"></span><span class="coin3d"><img fetchpriority="low" decoding="sync" class="cf" src="work/jar-coin.svg" alt=""><img fetchpriority="low" decoding="sync" class="cb" src="work/jar-coin.svg" alt=""><i style="transform:translateZ(-6px)"></i><i style="transform:translateZ(-5px)"></i><i style="transform:translateZ(-4px)"></i><i style="transform:translateZ(-3px)"></i><i style="transform:translateZ(-2px)"></i><i style="transform:translateZ(-1px)"></i><i style="transform:translateZ(0px)"></i><i style="transform:translateZ(1px)"></i><i style="transform:translateZ(2px)"></i><i style="transform:translateZ(3px)"></i><i style="transform:translateZ(4px)"></i><i style="transform:translateZ(5px)"></i><i style="transform:translateZ(6px)"></i></span></span></span>
     <p class="brand" style="left:438px;--tagBg:rgba(27,23,34,.1)">FinTech</p>
     <p class="brand cplx" style="left:32.4px;--tagBg:rgba(27,23,34,.1)">Complexity: Moderate</p>
     <div class="panel" style="top:456px;padding:24px 32px"><div style="display:flex;flex-direction:column;gap:12px"><p class="t nw" style="padding:10px 0">Hypothesis-driven User Research at Jar</p><p class="s" style="padding:0">47% user mistook investment for savings, driving an insight-led onboarding redesign</p></div>
@@ -529,8 +532,8 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   </div>
   <div class="pcard w abs" style="left:182.6px;top:2381.8px;background:linear-gradient(180deg, #57659c 0%, #1a3265 100%)"><a class="cardLink" href="float.html" aria-label="Building Float: From Zero to First Revenue"></a>
     <span class="art sparks" aria-hidden="true"><i class="spark sa" style="left:541.0px;top:32.0px;width:30px;height:30px;--x1:-22px;--y1:14px;--x2:10px;--y2:-12px;--t:13s;--d:-0.0s"></i><i class="spark sb" style="left:131.0px;top:132.0px;width:18px;height:18px;--x1:18px;--y1:10px;--x2:-10px;--y2:18px;--t:11s;--d:-1.7s"></i><i class="spark sc" style="left:401.0px;top:301.0px;width:34px;height:34px;--x1:-16px;--y1:-18px;--x2:14px;--y2:8px;--t:15s;--d:-3.4s"></i><i class="spark sa" style="left:340.0px;top:354.0px;width:18px;height:18px;--x1:14px;--y1:-12px;--x2:-18px;--y2:-6px;--t:9s;--d:-5.1s"></i><i class="spark sb" style="left:487.0px;top:354.0px;width:28px;height:28px;--x1:-12px;--y1:16px;--x2:16px;--y2:10px;--t:12s;--d:-6.8s"></i><i class="spark sc" style="left:23.0px;top:370.0px;width:30px;height:30px;--x1:20px;--y1:-14px;--x2:-8px;--y2:12px;--t:14s;--d:-8.5s"></i><i class="spark sa" style="left:176.0px;top:623.0px;width:28px;height:28px;--x1:-18px;--y1:-10px;--x2:12px;--y2:-16px;--t:10s;--d:-10.2s"></i><i class="spark sb" style="left:555.0px;top:367.0px;width:22px;height:22px;--x1:-20px;--y1:12px;--x2:-6px;--y2:-14px;--t:16s;--d:-11.9s"></i><i class="spark sc" style="left:262.0px;top:512.0px;width:16px;height:16px;--x1:16px;--y1:12px;--x2:-12px;--y2:8px;--t:11s;--d:-13.6s"></i><i class="spark sa" style="left:460.0px;top:590.0px;width:20px;height:20px;--x1:-14px;--y1:-16px;--x2:10px;--y2:14px;--t:13s;--d:-15.3s"></i></span>
-    <img loading="lazy" decoding="async" class="art" src="work/float-logo-b.svg" alt="" style="left:173px;top:208px;width:46.161px;height:87.42px">
-    <img loading="lazy" decoding="async" class="art" src="work/float-logo-a.svg" alt="" style="left:227.49px;top:219.36px;width:165.468px;height:77.876px">
+    <img fetchpriority="low" decoding="sync" class="art" src="work/float-logo-b.svg" alt="" style="left:173px;top:208px;width:46.161px;height:87.42px">
+    <img fetchpriority="low" decoding="sync" class="art" src="work/float-logo-a.svg" alt="" style="left:227.49px;top:219.36px;width:165.468px;height:77.876px">
     <p class="brand" style="left:387px;top:26px">Value Creation</p>
     <p class="brand cplx" style="left:35.9px;top:26px">Complexity: High</p>
     <div class="panel"><div><p class="t nw">Building Float: From Zero to First Revenue</p><p class="s">₹1,560 in revenue and 85.7% return-intent rate in three MVP iterations</p></div>
@@ -695,10 +698,13 @@ function playTurn() {
 // the phrase window is as wide as the widest phrase; shift it left by the extra width so
 // "Critical Thinker" and "with 2+ years at…" stay exactly at their Figma positions
 // the phrase window is exactly as wide as the phrase showing, so the whole line stays centred
-let phraseWidths = [];
+let phraseWidths = [], phraseMax = 0;
+function centreLine(i, glide = true) { const sub = $('sub'); sub.classList.toggle('gliding', glide); sub.style.setProperty('--lineX', (phraseWidths[i] - phraseMax) / 2 + 'px'); }
 window.FONTS.then(() => { const list = $('rotList'), rot = list.parentElement;
-  phraseWidths = [...list.children].map(b => b.offsetWidth);
-  rot.style.transition = 'none'; rot.style.width = phraseWidths[0] + 'px'; rot.offsetWidth; rot.style.transition = '';
+  phraseWidths = [...list.children].map(b => Math.ceil(b.getBoundingClientRect().width / (innerWidth / 1440)));
+  // the window stays as wide as the longest phrase and the whole line glides sideways instead: resizing the window re-laid the line out on every
+  // frame, and the words shimmered as they snapped to whole pixels
+  phraseMax = Math.max(...phraseWidths); rot.style.width = phraseMax + 'px'; centreLine(0, false);
   // land "Critical Thinker" exactly on Figma's x = 374.7 (the line is centred, this only corrects rounding)
   const k = innerWidth / 1440, x = list.children[0].getBoundingClientRect().left / k;
   document.documentElement.style.setProperty('--subShift', (2 * (374.7 - x)).toFixed(2) + 'px'); });
@@ -707,11 +713,12 @@ window.FONTS.then(() => { const list = $('rotList'), rot = list.parentElement;
 function carousel() {
   const list = $('rotList'), n = list.children.length - 1, step = 43.2; let i = 0;
   const next = () => {
-    i++; list.classList.add('moving'); list.style.transform = `translateY(${-i * step}px)`;
-    if (phraseWidths[i]) list.parentElement.style.width = phraseWidths[i] + 'px';   // the line re-centres as the phrase changes
-    if (i === n) list.addEventListener('transitionend', () => {        // landed on the repeated first phrase: reset invisibly
-      list.classList.remove('moving'); list.style.transform = 'translateY(0)'; i = 0; }, { once: true });
     setTimeout(next, 2400);
+    if (document.hidden) return;                                       // a tab in the background waits, so it can never run past the last phrase
+    i++; list.classList.add('moving'); list.style.transform = `translateY(${-i * step}px)`;
+    centreLine(i);                                                     // the line re-centres as the phrase changes
+    if (i === n) setTimeout(() => {                                    // landed on the repeated first phrase: reset invisibly
+      list.classList.remove('moving'); list.style.transform = 'translateY(0)'; i = 0; }, 1150);
   };
   next();
 }
@@ -887,5 +894,7 @@ window.__scene = scene;   // for testing
     for (let i = 0; i < 4; i++) next(); };
   const go = () => setTimeout(start, 400);
   if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true }); })();</script>
-<script src="loop/loop.js?v=13"></script>
+<script>// once this page is settled, quietly fetch the other two so the footer buttons move between them without a wait
+addEventListener('load', () => setTimeout(() => ['home.html', 'about.html', 'playground.html'].filter(u => !location.pathname.endsWith(u)).forEach(u => fetch(u, { priority: 'low' }).catch(() => {})), 2000));</script>
+<script src="loop/loop.js?v=15"></script>
 </body></html>

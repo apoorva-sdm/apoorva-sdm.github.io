@@ -1,6 +1,7 @@
 /* Loop, shared by every page. Home adds the pill and the first-scroll move; everywhere else he simply sits in the nav */
   /* Loop, the chat helper (Figma 1046:16812): fixed to the bottom right of the screen, drawn at the stage's scale so the pill's right edge stays on "Get In Touch"'s */
-  .loopDock { position: fixed; left: 0; bottom: calc(68px * var(--s, 1)); z-index: 55; width: 1440px; height: 0; transform: scale(var(--s, 1)); transform-origin: 0 100%; pointer-events: none; }
+  /* placed from the top: on a phone the address bar slides away as you scroll, and anything tied to the screen's bottom edge drifts with it */
+  .loopDock { position: fixed; left: 0; top: calc(var(--dockH, 100vh) - 68px * var(--s, 1)); z-index: 55; width: 1440px; height: 0; transform: scale(var(--s, 1)); transform-origin: 0 100%; pointer-events: none; }
   /* each part fades on its own: fading the whole group would stop the pill's glass from seeing the glow behind it, and the glow would flash when the fade ended */
   .loopDock:not(.in) > * { opacity: 0; pointer-events: none; }
   .loopAsk { position: absolute; right: 120.8px; bottom: 0; width: 213px; height: 43px; border: 0; border-radius: 50px; padding: 0; cursor: pointer; pointer-events: auto;
@@ -101,6 +102,7 @@
   .lcNote { flex: none; margin: 0 auto; font-weight: 300; font-size: 11px; line-height: 1.35; letter-spacing: .22px; color: #464646; text-align: center; }
   .lcForm { position: absolute; left: 24px; top: 498px; width: 421px; height: 51px; margin: 0; }
   .lcForm input { display: block; width: 100%; height: 100%; padding: 16px; transition: width .28s cubic-bezier(.33,1,.68,1), background .2s; border: 0; border-radius: 20px; outline: 0; background: rgba(255,255,255,.08); font: 300 14px/1.35 'Satoshi', sans-serif; letter-spacing: .28px; color: #ababab; }
+  .lcForm input { color: #f2f2f2; caret-color: #f2f2f2; }
   .lcForm input::placeholder { color: #ababab; opacity: 1; }
   .lcForm input:focus { background: rgba(255,255,255,.11); }
   /* the send button (Figma 1072:30084) only appears once something is typed; the input makes room for it, 4px apart */

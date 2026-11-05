@@ -12,6 +12,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>About | Apoorva B S</title>
 <link rel="preload" as="image" href="knight-fig-src.webp">
+<link rel="expect" href="#recs" blocking="render">
 <script>document.documentElement.dataset.theme = 'dark';</script>
 <style>
   /* same two themes as the home page */
@@ -21,7 +22,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
           --hi: 1,7,7; --hiA: .38; --logoF: invert(1) hue-rotate(180deg); color-scheme: light; }
   @view-transition { navigation: auto; }
   .nav { view-transition-name: site-nav; } .logo { view-transition-name: site-logo; } .themeBtn { view-transition-name: site-theme; }
-  ::view-transition-group(site-nav), ::view-transition-group(site-logo), ::view-transition-group(site-theme) { animation: none; }
+  ::view-transition-group(site-logo), ::view-transition-group(site-theme) { animation: none; }
   ::view-transition-old(site-nav), ::view-transition-old(site-logo), ::view-transition-old(site-theme) { display: none; }
   ::view-transition-new(site-nav), ::view-transition-new(site-logo), ::view-transition-new(site-theme) { animation: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation-duration: .7s; animation-timing-function: cubic-bezier(.4,0,.2,1); }
@@ -261,7 +262,7 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   @media (prefers-reduced-motion: reduce) { .wave.waving img { animation: none; } }
   /* the theme switch is off (3 Nov): the site stays in the dark design */
   .themeBtn, .themeTip { display: none !important; }
-</style><link rel="stylesheet" href="loop/loop.css?v=4">
+</style><link rel="stylesheet" href="loop/loop.css?v=6">
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><filter id="knightLight" color-interpolation-filters="sRGB"><feComponentTransfer>
@@ -342,10 +343,8 @@ If that sounds like someone you’d like on your team, let’s talk.</p>
     </div>
 
     <div id="diaZone" class="abs" style="left:140px;top:1600px;width:1160px;height:420px;pointer-events:none"></div>
-    <div class="kWrap abs" id="kWrap"><div class="kScale"><div class="rig abs" id="rig"><div class="inner"><canvas id="turnCanvas" width="210" height="445"></canvas><canvas class="pan" id="panCanvas" width="210" height="528"></canvas><div class="still" id="still"><img class="forDark" src="knight-fig-src.webp" alt="Glass knight chess piece"><img class="forLight" src="knight-light-src.webp" alt="Glass knight chess piece"></div><img class="top" id="topStill" src="knight-top-v4.png" alt="Glass knight seen from above, facing right"></div></div></div></div>
+    <div class="kWrap abs" id="kWrap"><div class="kScale"><div class="rig abs" id="rig"><div class="inner"><canvas id="turnCanvas" width="210" height="445"></canvas><canvas class="pan" id="panCanvas" width="270" height="679"></canvas><div class="still" id="still"><img class="forDark" src="knight-fig-src.webp" alt="Glass knight chess piece"><img class="forLight" src="knight-light-src.webp" alt="Glass knight chess piece"></div><img class="top" id="topStill" loading="lazy" src="knight-top-v5.webp" alt="Glass knight seen from above, facing right"></div></div></div></div>
     <video id="turn" src="turn-about-v15.mp4" muted playsinline preload="none"></video>
-    <video id="clip-rise" src="rise-v5.mp4" muted playsinline preload="none"></video>
-    <video id="clip-lower" src="lower-v5.mp4" muted playsinline preload="none"></video>
 
     <button class="iterate glass abs" id="iterate" type="button" aria-disabled="true" aria-label="Iterate: replay the knight's walk a different way">Iterate<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1.33337L14 3.33337L12 5.33337M4 14.6667L2 12.6667L4 10.6667"/><path d="M14 3.33337H6.66667C5.42899 3.33337 4.242 3.82504 3.36683 4.70021C2.49167 5.57538 2 6.76236 2 8.00004M2 12.6667H9.33333C10.571 12.6667 11.758 12.175 12.6332 11.2999C13.5083 10.4247 14 9.23772 14 8.00004"/></svg></button>
     <h2 class="h2 abs" style="top:2242.71px">Professional Experience</h2>
@@ -378,19 +377,13 @@ If that sounds like someone you’d like on your team, let’s talk.</p>
 </div></div>
 
 <!-- only used when the page is opened straight from a folder: browsers block drawing a separate video file there -->
-<script>if (location.protocol === 'file:') document.write('<script src="turn-v12.js"><\/script><script src="clips-v5.js"><\/script>');</script>
+<script>if (location.protocol === 'file:') document.write('<script src="turn-v12.js"><\/script>');</script>
 <script>
 if (location.protocol === 'file:' && window.TURN_VIDEO) {
   const bin = atob(window.TURN_VIDEO), bytes = new Uint8Array(bin.length);
   for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
   document.getElementById('turn').src = URL.createObjectURL(new Blob([bytes], { type: 'video/mp4' }));
   delete window.TURN_VIDEO;
-}
-if (location.protocol === 'file:' && window.CLIPS) {
-  for (const [k, b64] of Object.entries(window.CLIPS)) { const bin = atob(b64), bytes = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
-    document.getElementById('clip-' + k).src = URL.createObjectURL(new Blob([bytes], { type: 'video/mp4' })); }
-  delete window.CLIPS;
 }
 </script>
 <script>
@@ -443,24 +436,25 @@ function goTo(p, dir) {
   hidePair(pairNow, dir); pairNow = (p + pairs) % pairs; setDots(); showPair(pairNow, dir);
   scheduleRecs();                                     // a click restarts the wait, so the new pair gets its full time
 }
-let autoOn = false;
-function scheduleRecs() { clearTimeout(recTimer); if (autoOn && !recPaused && !document.hidden) recTimer = setTimeout(() => goTo(pairNow + 1, 1), 3700); }
+let autoOn = false, recSeen = false;
+function scheduleRecs() { clearTimeout(recTimer); if (autoOn && recSeen && !recPaused && !document.hidden) recTimer = setTimeout(() => goTo(pairNow + 1, 1), 3700); }
 const recWrap = $('recs');
 recWrap.querySelector('.prev').addEventListener('click', () => goTo(pairNow - 1, -1));
 recWrap.querySelector('.next').addEventListener('click', () => goTo(pairNow + 1, 1));
 dotBtns.forEach((d, i) => d.addEventListener('click', () => goTo(i, i > pairNow ? 1 : -1)));
 recWrap.addEventListener('keydown', e => { if (e.key === 'ArrowRight') goTo(pairNow + 1, 1); if (e.key === 'ArrowLeft') goTo(pairNow - 1, -1); });
-recWrap.addEventListener('mouseenter', () => { recPaused = true; clearTimeout(recTimer); });
-recWrap.addEventListener('mouseleave', () => { recPaused = false; scheduleRecs(); });
-recWrap.addEventListener('focusin', () => { recPaused = true; clearTimeout(recTimer); });
-recWrap.addEventListener('focusout', () => { recPaused = false; scheduleRecs(); });
+// only the arrows and dots hold it still: a pointer that happens to rest on the cards, or a button left focused by a click, must not freeze it
+const recHold = on => { recPaused = on; on ? clearTimeout(recTimer) : scheduleRecs(); };
+recWrap.querySelectorAll('.arrow, .dots').forEach(c => { c.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') recHold(true); }); c.addEventListener('pointerleave', e => { if (e.pointerType === 'mouse') recHold(false); }); });
+recWrap.addEventListener('focusin', e => { if (e.target.matches(':focus-visible')) recHold(true); });
+recWrap.addEventListener('focusout', () => recHold(false));
+new IntersectionObserver(([e]) => { recSeen = e.isIntersecting; recSeen ? scheduleRecs() : clearTimeout(recTimer); }, { threshold: .3 }).observe(cards[0]);
 document.addEventListener('visibilitychange', scheduleRecs);
 cards.forEach(c => c.setAttribute('aria-hidden', 'true'));
 
 // ---- 3. the knight: the same 3D turn as the home page, at this page's size, then its walk through the triple diamond
 const still = $('still'), rig = $('rig'), video = $('turn'), cv = $('turnCanvas'), kWrap = $('kWrap');
 const panCv = $('panCanvas'), topStill = $('topStill');
-const CLIP = Object.fromEntries(['rise', 'lower'].map(k => [k, $('clip-' + k)]));
 // a colour|alpha video drawn with real transparency onto a canvas
 function player(canvas, vid0) {
   // keep the last picture: a canvas drawn while invisible would otherwise be wiped before it fades in (a blank flash)
@@ -488,7 +482,7 @@ function player(canvas, vid0) {
           else gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, gl.RGB, gl.UNSIGNED_BYTE, vid);
           gl.viewport(0, 0, canvas.width, canvas.height); gl.clearColor(0,0,0,0); gl.clear(gl.COLOR_BUFFER_BIT); gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4); return true; } catch (e) { return false; } } };
 }
-const turnPlayer = player(cv, video), clipPlayer = player(panCv, CLIP.rise);
+const turnPlayer = player(cv, video);
 const gl = turnPlayer.ok, draw = turnPlayer.draw;
 function curve(pts) {
   const n = pts.length, xs = pts.map(q => q[0]), ys = pts.map(q => q[1]), dd = [], m = new Array(n);
@@ -608,39 +602,35 @@ async function walk() {
   }
   return here;
 }
-// play one of the rendered clips on the knight's canvas
-// always a real seek (even to where it already is): a clip loaded from memory may not have its picture decoded until asked
-function seek(v, t) { return new Promise(r => { v.addEventListener('seeked', r, { once: true }); v.currentTime = t; setTimeout(r, 400); }); }
-// onStart runs once, with the clip's first fresh frame on the canvas: after a replay, Safari can hand over the clip's last
-// picture (the other camera angle) until it has really started again, so the canvas is only shown from that frame on
-function play(v, onStart) { return new Promise(done => {
-  let over = false, started = false;
-  const start = () => { if (!started) { started = true; if (onStart) onStart(); } };
-  const end = () => { if (over) return; over = true; clipPlayer.draw(v); start(); done(); };
-  let lastVF = -1e9;   // as for the turn: a screen-refresh loop fills in if Safari stops sending frame calls
-  const fresh = () => v.currentTime > 0.03;
-  const onFrame = () => { lastVF = performance.now(); if (fresh()) { clipPlayer.draw(v); start(); } if (!v.ended && !over) v.requestVideoFrameCallback(onFrame); };
-  v.addEventListener('ended', end, { once: true });
-  if (v.requestVideoFrameCallback) v.requestVideoFrameCallback(onFrame);
-  (function tick() { if (performance.now() - lastVF > 40 && fresh()) { clipPlayer.draw(v); start(); } if (!v.ended && !over) requestAnimationFrame(tick); })();
-  v.playbackRate = (v.duration || 2.5) / KT.clip;
-  const pr = v.play(); if (pr) pr.catch(end);
-  setTimeout(end, KT.clip * 1000 + 300); }); }   // never let a stalled clip hold up the story
-const clipsOk = () => clipPlayer.ok && CLIP.rise.readyState >= 2 && CLIP.lower.readyState >= 2;
+// (the strip is re-timed from the render, whose camera slowed for one frame in every 13: that showed as a small stutter)
+// the camera move is a strip of ready-made pictures, not a video: Safari could hand a video's frames over late or in slightly different
+// colours, which showed as a jump in the knight. The whole strip is unpacked before the story starts; lowering is the same strip backwards.
+const PAN = { w: 270, h: 679, cols: 7, n: 52 }, panCtx = panCv.getContext('2d');
+let panSheet = null;
+// the strip is unpacked away from the page's main work (fetch → bitmap), so loading it never stutters scrolling
+function loadPan() { return fetch('knight-pan-v2.webp').then(r => r.ok ? r.blob() : Promise.reject()).then(b => createImageBitmap(b)).then(s => { panSheet = s; })
+  .catch(() => new Promise(ok => { const im = new Image(); im.onerror = ok; im.onload = () => { panSheet = im; (im.decode ? im.decode().catch(() => {}) : Promise.resolve()).then(ok); }; im.src = 'knight-pan-v2.webp'; })); }
+// the side view sits half a pixel lower than the strip's first picture, so the strip starts there and eases onto its own spot by the top view
+function panTo(i) { panCv.style.transform = `translateY(${(0.5 * (1 - i / (PAN.n - 1))).toFixed(3)}px)`; panCtx.clearRect(0, 0, PAN.w, PAN.h); panCtx.drawImage(panSheet, (i % PAN.cols) * PAN.w, Math.floor(i / PAN.cols) * PAN.h, PAN.w, PAN.h, 0, 0, PAN.w, PAN.h); }
+function play(backwards) { return new Promise(done => {
+  const at = i => backwards ? PAN.n - 1 - i : i;
+  panTo(at(0));
+  const t0 = performance.now(), ms = KT.clip * 1000;
+  (function tick(now) { const p = clamp((now - t0) / ms); panTo(at(Math.round(p * (PAN.n - 1)))); p < 1 ? requestAnimationFrame(tick) : done(); })(t0); }); }
+const clipsOk = () => !!panSheet;
 // the layers add up (see .rig), so these fades are true cross-fades between pictures of the same pose
 const fade = (out, inn, ms) => tween(ms, e => { out.style.opacity = 1 - e; inn.style.opacity = e; }, E.sine);
 async function toTop() {        // side view (your knight) → camera rises → top view picture
   if (!clipsOk()) { await fade(still, topStill, 600); view = 'top'; return; }
-  await seek(CLIP.rise, 0);
   // the clip's first frames are the same pose as your knight, so the switch from the still to the clip can't be seen
-  await play(CLIP.rise, () => { panCv.style.opacity = 1; still.style.opacity = 0; });
+  // the camera starts very slowly, so the still melts into the strip during those first moments: a straight swap showed as a small jump
+  await Promise.all([play(false), fade(still, panCv, 220)]);
   await fade(panCv, topStill, KT.fadeOut); view = 'top';
 }
 async function toSide() {       // top view → camera comes back down → your knight
   if (!clipsOk()) { await fade(topStill, still, 600); view = 'side'; return; }
-  await seek(CLIP.lower, 0);
   view = 'side';
-  await play(CLIP.lower, () => { panCv.style.opacity = 1; topStill.style.opacity = 0; });
+  await Promise.all([play(true), fade(topStill, panCv, 220)]);
   await fade(panCv, still, KT.fadeIn);
 }
 const diamonds = $('diamonds'), iterateBtn = $('iterate');
@@ -673,7 +663,7 @@ async function firstRun() {
 function frameKnight() {
   const k = innerWidth / 1440, top = (1540 - 257.3) * k, bottom = (2100 - 257.3) * k;
   const target = Math.max(0, Math.min((top + bottom) / 2 - innerHeight / 2, top - 12));
-  if (Math.abs(target - scrollY) > 24) scrollTo({ top: target, behavior: 'smooth' });
+  if (Math.abs(target - scrollY) > 24 && !window.__toFooter) scrollTo({ top: target, behavior: 'smooth' });
 }
 let journeyStarted = false;
 async function journey() {
@@ -715,17 +705,19 @@ function inMemory(v) {
     .then(b => { v.src = URL.createObjectURL(b); }, () => { v.preload = 'auto'; })
     .then(() => { v.load(); return ready(); });
 }
+// the page never waits for the knight's files: they only start once everything on screen has arrived, and only his walk waits for them
+const pageIn = document.readyState === 'complete' ? Promise.resolve() : new Promise(r => addEventListener('load', r, { once: true }));
 const loaded = Promise.all([
   window.FONTS,
-  Promise.race([inMemory(video), wait(10000)]),
-  ...Object.values(CLIP).map(v => Promise.race([inMemory(v), wait(10000)])),
+  pageIn.then(() => Promise.race([inMemory(video), wait(10000)])),
+  pageIn.then(() => Promise.race([loadPan(), wait(10000)])),
   // only the pictures that load straight away (lazy ones, like the footer knight, load when scrolled to; Safari would wait for them)
   ...[...document.images].filter(i => i.loading !== 'lazy').map(i => Promise.race([i.decode().catch(() => {}), wait(4000)])),
 ]);
 const fontsIn = window.FONTS.then(() => { sizeCards(); });
 
 async function intro() {        // nothing fades in any more: the page is simply there, and the hand waves from the first paint
-  await loaded; await fontsIn;
+  await fontsIn;
 }
 
 function watch(el, fn, threshold = 0.3) {
@@ -745,9 +737,13 @@ if (reduced) {
   const introDone = intro();
   // sections fade up softly as they come into view
   document.querySelectorAll('.rv').forEach(el => watch(el, async () => { await introDone; reveal(el, 1800, 16, 8); }, 0.4));
-  // the first pair is there from the start (below the fold); the carousel begins turning 4 seconds after the page has loaded
-  loaded.then(() => fontsIn).then(() => { showPair(0, 1, 0); setTimeout(() => { autoOn = true; goTo(1, 1); }, 4000); });
-  watch($('diaZone'), async () => { await introDone; journey(); }, 0.35);
+  // the first pair is there as soon as the fonts are; the carousel turns while it is on screen, starting 3.7 seconds after it comes into view
+  fontsIn.then(() => { showPair(0, 1, 0); autoOn = true; scheduleRecs(); });
+  // gliding past on the way to the footer ("Get In Touch") must not stop the page here: the knight waits until the diamonds are really looked at
+  const walkWhenSeen = () => watch($('diaZone'), async () => { await introDone;
+    if (window.__toFooter) { window.__toFooter = false; await wait(1800); return walkWhenSeen(); }
+    journey(); }, 0.35);
+  walkWhenSeen();
 }
 window.__journey = journey;
 </script>
@@ -768,5 +764,7 @@ document.querySelectorAll('.glass').forEach(el => { glassRing(el); if (glassRO) 
     for (let i = 0; i < 4; i++) next(); };
   const go = () => setTimeout(start, 400);
   if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true }); })();</script>
-<script src="loop/loop.js?v=13"></script>
+<script>// once this page is settled, quietly fetch the other two so the footer buttons move between them without a wait
+addEventListener('load', () => setTimeout(() => ['home.html', 'about.html', 'playground.html'].filter(u => !location.pathname.endsWith(u)).forEach(u => fetch(u, { priority: 'low' }).catch(() => {})), 2000));</script>
+<script src="loop/loop.js?v=15"></script>
 </body></html>
