@@ -376,7 +376,8 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   @media (prefers-reduced-motion: reduce) { .coinMove, .coin3d { animation: none; transform: none; opacity: 1; } .spark, .streak path { animation: none; } .streak { display: none; } }
 </style>
 <link rel="stylesheet" href="cards.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&family=Inter:wght@400;600&family=Open+Sans:wght@400&display=swap" media="print" onload="this.media='all'"></head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;600&family=Inter:wght@400;600&family=Open+Sans:wght@400&display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="loop/loop.css?v=4">
+</head>
 <body>
 <div id="shell"><div class="stage" id="stage" data-h="15602" style="height:15602px">
 <script>(() => { const s = innerWidth / 1440, st = document.getElementById('stage'); st.style.transform = `scale(${s})`; document.getElementById('shell').style.height = 15602 * s + 'px'; })();</script>
@@ -740,4 +741,5 @@ const glassRing = el => { const w = el.offsetWidth, h = el.offsetHeight; if (!w 
 const glassRO = window.ResizeObserver ? new ResizeObserver(es => es.forEach(e => glassRing(e.target))) : null;
 document.querySelectorAll('.glass').forEach(el => { glassRing(el); if (glassRO) glassRO.observe(el); });
 </script>
+<script src="loop/loop.js?v=13"></script>
 </body></html>

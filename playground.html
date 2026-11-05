@@ -124,7 +124,8 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   /* every thumbnail is the 566 x 722 design shown at 90%: 509.4 x 649.8, 56px apart */
   .stage > .pcard { transform: scale(.9); transform-origin: 0 0; }
   .stage > a.pcard:hover { transform: translateY(-6px) scale(.9); }
-</style></head>
+</style><link rel="stylesheet" href="loop/loop.css?v=4">
+</head>
 <body>
 <div id="shell"><div class="stage" id="stage" data-h="2447.6" style="height:2447.6px">
 <script>(() => { const s = innerWidth / 1440, st = document.getElementById('stage'); st.style.transform = `scale(${s})`; document.getElementById('shell').style.height = 2447.6 * s + 'px'; })();</script>
@@ -218,4 +219,5 @@ document.querySelectorAll('.glass').forEach(el => { glassRing(el); if (glassRO) 
     for (let i = 0; i < 4; i++) next(); };
   const go = () => setTimeout(start, 400);
   if (document.readyState === 'complete') go(); else addEventListener('load', go, { once: true }); })();</script>
+<script src="loop/loop.js?v=13"></script>
 </body></html>
