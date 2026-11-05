@@ -199,11 +199,13 @@ window.FONTS = document.fonts ? Promise.all(['300 16px Satoshi', '400 16px Satos
   .F.more .cards { position: relative; width: 1863px; height: 433px; }
   .F.more .card { position: absolute; top: 0; width: 340px; height: 433px; border-radius: 0; }
   .F.more .card { overflow: hidden; border-radius: 14.4px; }
-  .F.more .pcard { position: relative; transform: scale(.6007); transform-origin: 0 0; }   /* Home's 566 x 722 card at Figma's 340 x 433 */
+  .F.more .pcard { position: relative; transform: scale(.6007); transform-origin: 0 0; will-change: transform; }   /* each card is drawn ahead on its own layer, so sliding the row only moves finished pictures */
+  .F.more .streak { will-change: transform; }   /* the streak redraws alone, without redrawing the card under it */   /* Home's 566 x 722 card at Figma's 340 x 433 */
   .F.more .shade { position: absolute; top: 0; width: 140px; height: 433px; pointer-events: none; z-index: 1; opacity: 0; transition: opacity .35s ease; }
   /* a soft dark grey rather than black, so the edge fades gently */
-  .F.more .shade.l { left: 0; background: linear-gradient(90deg, rgba(24,26,26,.92) 0%, rgba(24,26,26,.55) 38%, rgba(24,26,26,0)); }
-  .F.more .shade.r { right: 0; background: linear-gradient(270deg, rgba(24,26,26,.92) 0%, rgba(24,26,26,.55) 38%, rgba(24,26,26,0)); }
+  /* the page's own colour, fading in soft steps, so the edge melts into the background instead of showing as a band */
+  .F.more .shade.l { left: 0; background: linear-gradient(90deg, rgba(1,7,7,.9) 0%, rgba(1,7,7,.78) 15%, rgba(1,7,7,.56) 35%, rgba(1,7,7,.3) 58%, rgba(1,7,7,.1) 80%, rgba(1,7,7,0) 100%); }
+  .F.more .shade.r { right: 0; background: linear-gradient(270deg, rgba(1,7,7,.9) 0%, rgba(1,7,7,.78) 15%, rgba(1,7,7,.56) 35%, rgba(1,7,7,.3) 58%, rgba(1,7,7,.1) 80%, rgba(1,7,7,0) 100%); }
   .F.more .arrow { top: 196px; opacity: 0; visibility: hidden; }
   .F.more .arrow.prev { left: 16px; } .F.more .arrow.next { right: 32px; }
   .F.more.canL .shade.l, .F.more.canR .shade.r { opacity: 1; }
@@ -743,7 +745,7 @@ panels.forEach(p => p.querySelectorAll('.gl').forEach(g => {
 })();
 
 </script>
-<script src="thumbs.js?v=2"></script>
+<script src="thumbs.js?v=3"></script>
 <script src="mailcopy.js"></script>
 <script>
 // glass rim: its thin ring is cut with a clip path as well as the mask, so it stays a ring where Safari fails to draw the mask
